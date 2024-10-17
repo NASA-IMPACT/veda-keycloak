@@ -1,0 +1,31 @@
+---
+enabled: true
+realm: veda
+clients:
+  - clientId: stac-api
+    name: stac-api
+    rootUrl: http://localhost:8080
+    baseUrl: /stac-api
+    enabled: true
+    attributes: {}
+    redirectUris:
+      - "http://localhost:8080/stac-api/*"
+    webOrigins:
+      - "http://localhost:8080"
+    protocol: openid-connect
+    fullScopeAllowed: true
+roles:
+  client:
+    stac-api:
+      - name: stac:collection:create
+        description: Create a collection
+      - name: stac:collection:update
+        description: Update a collection
+      - name: stac:collection:delete
+        description: Delete a collection
+      - name: stac:item:create
+        description: Create a new item
+      - name: stac:item:update
+        description: Update an item
+      - name: stac:item:delete
+        description: Delete an item

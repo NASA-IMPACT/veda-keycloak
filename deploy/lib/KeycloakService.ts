@@ -1,64 +1,22 @@
 import * as cdk from "aws-cdk-lib";
-import { Vpc, IVpc } from "aws-cdk-lib/aws-ec2";
 import { ContainerImage, Secret as ecsSecret } from "aws-cdk-lib/aws-ecs";
 import { ApplicationLoadBalancedFargateService } from "aws-cdk-lib/aws-ecs-patterns";
 import { Secret, ISecret } from "aws-cdk-lib/aws-secretsmanager";
-import {
-  DatabaseInstance,
-  DatabaseInstanceEngine,
-  DatabaseInstanceProps,
-  PostgresEngineVersion,
-} from "aws-cdk-lib/aws-rds";
-import { InstanceType, InstanceClass, InstanceSize } from "aws-cdk-lib/aws-ec2";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { Construct } from "constructs";
+import { StackInputProps } from "./KeycloakStack";
+import { IVpc } from "aws-cdk-lib/aws-ec2";
+import { DatabaseInstance } from "aws-cdk-lib/aws-rds";
 
-export class KeycloakStack extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props: StackProps) {
-    super(scope, id, props);
-
-    const vpc = props.vpcId
-      ? Vpc.fromLookup(this, "Vpc", { vpcId: props.vpcId })
-      : new Vpc(this, "vpc");
-
-    // RDS PostgreSQL Instance
-    const databaseName = "keycloak";
-    const { database } = new KeycloakDatabase(this, "KeycloakDatabase", {
-      vpc,
-      databaseName,
-    });
-
-    const { albService } = new KeycloakService(this, "KeycloakService", {
-      vpc,
-      databaseName,
-      databaseInstance: database,
-      ...props,
-    });
-  }
+interface KeycloakServiceProps extends StackInputProps {
+  vpc: IVpc;
+  databaseName: string;
+  databaseInstance: DatabaseInstance;
 }
 
-class KeycloakDatabase extends Construct {
-  database: DatabaseInstance;
-  constructor(scope: Construct, id: string, props: DatabaseProps) {
-    super(scope, id);
-
-    this.database = new DatabaseInstance(this, "KeycloakPostgres", {
-      instanceIdentifier: props.instanceIdentifier,
-      engine: DatabaseInstanceEngine.postgres({
-        version: PostgresEngineVersion.VER_16_4,
-      }),
-      instanceType: InstanceType.of(
-        InstanceClass.BURSTABLE4_GRAVITON,
-        InstanceSize.MEDIUM
-      ),
-      removalPolicy: cdk.RemovalPolicy.DESTROY, // For dev environments
-      ...props,
-    });
-  }
-}
-
-class KeycloakService extends Construct {
+export class KeycloakService extends Construct {
   albService: ApplicationLoadBalancedFargateService;
+  adminSecret: Secret;
 
   constructor(scope: Construct, id: string, props: KeycloakServiceProps) {
     super(scope, id);
@@ -67,8 +25,7 @@ class KeycloakService extends Construct {
     if (!props.databaseInstance.secret) throw new Error("DB secret not found");
 
     // Secrets for Keycloak admin and DB password
-    const adminSecret = new Secret(this, "KeycloakAdminCredentials", {
-      secretName: "KeycloakAdminCredentials",
+    this.adminSecret = new Secret(this, "admin-creds", {
       generateSecretString: {
         excludePunctuation: true,
         includeSpace: false,
@@ -82,7 +39,7 @@ class KeycloakService extends Construct {
     const ecsSecretFactory = (secret: ISecret) => (val: string) =>
       ecsSecret.fromSecretsManager(secret, val);
     const ecsDbSecret = ecsSecretFactory(props.databaseInstance.secret);
-    const ecsAdminSecret = ecsSecretFactory(adminSecret);
+    const ecsAdminSecret = ecsSecretFactory(this.adminSecret);
 
     // SSL Certificate for the Load Balancer
     const certificate = Certificate.fromCertificateArn(
@@ -98,7 +55,7 @@ class KeycloakService extends Construct {
     // Fargate Service with ALB, SSL, and Health Check
     this.albService = new ApplicationLoadBalancedFargateService(
       this,
-      "KeycloakFargateService",
+      "service",
       {
         vpc: props.vpc,
         desiredCount: 1,
@@ -149,25 +106,4 @@ class KeycloakService extends Construct {
       this.albService.service
     );
   }
-}
-
-interface DatabaseProps extends Omit<DatabaseInstanceProps, "engine"> {
-  vpc: IVpc;
-  databaseName: string;
-}
-
-interface StackInputProps {
-  hostname: string;
-  sslCertificateArn: string;
-  keycloakVersion: string;
-}
-
-interface KeycloakServiceProps extends StackInputProps {
-  vpc: IVpc;
-  databaseName: string;
-  databaseInstance: DatabaseInstance;
-}
-
-interface StackProps extends cdk.StackProps, StackInputProps {
-  vpcId?: string;
 }

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
-import { KeycloakStack } from "../lib/keycloak-stack";
+import { KeycloakStack } from "./lib/KeycloakStack";
+import { join } from "path";
 
 const app = new cdk.App();
 new KeycloakStack(app, `VedaKeycloakStack-${process.env.STAGE || "dev"}`, {
@@ -19,4 +20,5 @@ new KeycloakStack(app, `VedaKeycloakStack-${process.env.STAGE || "dev"}`, {
     "arn:aws:acm:us-west-2:853558080719:certificate/012bf180-dc4c-4dee-9cba-d3eb64607e13",
   hostname: "https://keycloak.delta-backend.xyz",
   keycloakVersion: "26.0.0",
+  configDir: join(__dirname, "..", "config"),
 });
