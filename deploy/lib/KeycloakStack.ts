@@ -3,6 +3,7 @@ import { Vpc } from "aws-cdk-lib/aws-ec2";
 import { KeycloakDatabase } from "./KeycloakDatabase";
 import { KeycloakService } from "./KeycloakService";
 import { KeycloakConfig } from "./KeycloakConfig";
+import { KeycloakUrl } from "./KeycloakUrl";
 
 export interface StackInputProps {
   hostname: string;
@@ -45,6 +46,11 @@ export class KeycloakStack extends cdk.Stack {
       subnetIds: vpc.publicSubnets.map((subnet) => subnet.subnetId),
       adminSecret: adminSecret,
       configDir: props.configDir,
+    });
+
+    new KeycloakUrl(this, "url", {
+      hostname: props.hostname,
+      alb: albService.loadBalancer,
     });
   }
 }
