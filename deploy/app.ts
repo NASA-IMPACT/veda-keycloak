@@ -7,7 +7,7 @@ import assert = require("assert");
 
 const {
   AWS_ACCOUNT_ID,
-  AWS_DEFAULT_REGION,
+  AWS_REGION,
   SSL_CERTIFICATE_ARN,
   HOSTNAME,
   STAGE = "dev",
@@ -27,7 +27,7 @@ new KeycloakStack(app, `VedaKeycloakStack-${STAGE}`, {
   // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
-  env: { account: AWS_ACCOUNT_ID, region: AWS_DEFAULT_REGION },
+  env: { account: AWS_ACCOUNT_ID, region: AWS_REGION },
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
   sslCertificateArn: SSL_CERTIFICATE_ARN,
   hostname: HOSTNAME,
