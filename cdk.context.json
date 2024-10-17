@@ -42,5 +42,9 @@
     "us-west-2b",
     "us-west-2c",
     "us-west-2d"
-  ]
+  ],
+  "hosted-zone:account=853558080719:domainName=delta-backend.xyz:region=us-west-2": {
+    "Id": "/hostedzone/Z061650539BO6YWF9XDMA",
+    "Name": "delta-backend.xyz."
+  }
 }
