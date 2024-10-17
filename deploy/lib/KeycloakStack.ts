@@ -1,5 +1,5 @@
 import * as cdk from "aws-cdk-lib";
-import { Vpc } from "aws-cdk-lib/aws-ec2";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { KeycloakDatabase } from "./KeycloakDatabase";
 import { KeycloakService } from "./KeycloakService";
 import { KeycloakConfig } from "./KeycloakConfig";
@@ -21,8 +21,8 @@ export class KeycloakStack extends cdk.Stack {
     super(scope, id, props);
 
     const vpc = props.vpcId
-      ? Vpc.fromLookup(this, "Vpc", { vpcId: props.vpcId })
-      : new Vpc(this, "vpc");
+      ? ec2.Vpc.fromLookup(this, "Vpc", { vpcId: props.vpcId })
+      : new ec2.Vpc(this, "vpc");
 
     const databaseName = "keycloak";
     const { database } = new KeycloakDatabase(this, "database", {

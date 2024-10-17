@@ -1,36 +1,27 @@
 import * as cdk from "aws-cdk-lib";
-import {
-  DatabaseInstance,
-  DatabaseInstanceEngine,
-  DatabaseInstanceProps,
-  PostgresEngineVersion,
-} from "aws-cdk-lib/aws-rds";
-import {
-  InstanceType,
-  InstanceClass,
-  InstanceSize,
-  IVpc,
-} from "aws-cdk-lib/aws-ec2";
+import * as rds from "aws-cdk-lib/aws-rds";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { Construct } from "constructs";
 
-export interface DatabaseProps extends Omit<DatabaseInstanceProps, "engine"> {
-  vpc: IVpc;
+export interface DatabaseProps
+  extends Omit<rds.DatabaseInstanceProps, "engine"> {
+  vpc: ec2.IVpc;
   databaseName: string;
 }
 
 export class KeycloakDatabase extends Construct {
-  database: DatabaseInstance;
+  database: rds.DatabaseInstance;
   constructor(scope: Construct, id: string, props: DatabaseProps) {
     super(scope, id);
 
-    this.database = new DatabaseInstance(this, "KeycloakPostgres", {
+    this.database = new rds.DatabaseInstance(this, "KeycloakPostgres", {
       instanceIdentifier: props.instanceIdentifier,
-      engine: DatabaseInstanceEngine.postgres({
-        version: PostgresEngineVersion.VER_16_4,
+      engine: rds.DatabaseInstanceEngine.postgres({
+        version: rds.PostgresEngineVersion.VER_16_4,
       }),
-      instanceType: InstanceType.of(
-        InstanceClass.BURSTABLE4_GRAVITON,
-        InstanceSize.MEDIUM
+      instanceType: ec2.InstanceType.of(
+        ec2.InstanceClass.BURSTABLE4_GRAVITON,
+        ec2.InstanceSize.MEDIUM
       ),
       removalPolicy: cdk.RemovalPolicy.DESTROY, // For dev environments
       ...props,

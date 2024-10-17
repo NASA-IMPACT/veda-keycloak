@@ -1,22 +1,22 @@
 import * as cdk from "aws-cdk-lib";
-import { ContainerImage, Secret as ecsSecret } from "aws-cdk-lib/aws-ecs";
-import { ApplicationLoadBalancedFargateService } from "aws-cdk-lib/aws-ecs-patterns";
-import { Secret, ISecret } from "aws-cdk-lib/aws-secretsmanager";
-import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
-import { Construct } from "constructs";
+import * as ecs from "aws-cdk-lib/aws-ecs";
+import * as ecsPatterns from "aws-cdk-lib/aws-ecs-patterns";
+import * as secretsManager from "aws-cdk-lib/aws-secretsmanager";
+import * as certificateManager from "aws-cdk-lib/aws-certificatemanager";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
+import * as rds from "aws-cdk-lib/aws-rds";
 import { StackInputProps } from "./KeycloakStack";
-import { IVpc } from "aws-cdk-lib/aws-ec2";
-import { DatabaseInstance } from "aws-cdk-lib/aws-rds";
+import { Construct } from "constructs";
 
 interface KeycloakServiceProps extends StackInputProps {
-  vpc: IVpc;
+  vpc: ec2.IVpc;
   databaseName: string;
-  databaseInstance: DatabaseInstance;
+  databaseInstance: rds.DatabaseInstance;
 }
 
 export class KeycloakService extends Construct {
-  albService: ApplicationLoadBalancedFargateService;
-  adminSecret: Secret;
+  albService: ecsPatterns.ApplicationLoadBalancedFargateService;
+  adminSecret: secretsManager.Secret;
 
   constructor(scope: Construct, id: string, props: KeycloakServiceProps) {
     super(scope, id);
@@ -25,7 +25,7 @@ export class KeycloakService extends Construct {
     if (!props.databaseInstance.secret) throw new Error("DB secret not found");
 
     // Secrets for Keycloak admin and DB password
-    this.adminSecret = new Secret(this, "admin-creds", {
+    this.adminSecret = new secretsManager.Secret(this, "admin-creds", {
       generateSecretString: {
         excludePunctuation: true,
         includeSpace: false,
@@ -36,13 +36,14 @@ export class KeycloakService extends Construct {
     });
 
     // Secret factories for ECS secrets
-    const ecsSecretFactory = (secret: ISecret) => (val: string) =>
-      ecsSecret.fromSecretsManager(secret, val);
+    const ecsSecretFactory =
+      (secret: secretsManager.ISecret) => (val: string) =>
+        ecs.Secret.fromSecretsManager(secret, val);
     const ecsDbSecret = ecsSecretFactory(props.databaseInstance.secret);
     const ecsAdminSecret = ecsSecretFactory(this.adminSecret);
 
     // SSL Certificate for the Load Balancer
-    const certificate = Certificate.fromCertificateArn(
+    const certificate = certificateManager.Certificate.fromCertificateArn(
       this,
       "SSLCertificate",
       props.sslCertificateArn
@@ -53,7 +54,7 @@ export class KeycloakService extends Construct {
     const healthManagementPort = 9000;
 
     // Fargate Service with ALB, SSL, and Health Check
-    this.albService = new ApplicationLoadBalancedFargateService(
+    this.albService = new ecsPatterns.ApplicationLoadBalancedFargateService(
       this,
       "service",
       {
@@ -69,7 +70,7 @@ export class KeycloakService extends Construct {
         taskImageOptions: {
           containerName: "keycloak",
           containerPort: appPort,
-          image: ContainerImage.fromRegistry(
+          image: ecs.ContainerImage.fromRegistry(
             "quay.io/keycloak/keycloak:26.0.0"
           ),
           entryPoint: ["/opt/keycloak/bin/kc.sh"],

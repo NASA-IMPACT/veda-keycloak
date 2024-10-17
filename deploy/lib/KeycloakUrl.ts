@@ -1,8 +1,8 @@
+import * as cdk from "aws-cdk-lib";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as route53Targets from "aws-cdk-lib/aws-route53-targets";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Construct } from "constructs";
-import { CfnOutput, Stack } from "aws-cdk-lib";
 
 interface KeycloakUrlProps {
   /**
@@ -44,15 +44,15 @@ export class KeycloakUrl extends Construct {
       ),
       deleteExisting: true,
       comment: `Alias record for Keycloak, created by ${
-        Stack.of(this).stackName
+        cdk.Stack.of(this).stackName
       }`,
     });
 
-    new CfnOutput(this, "Arecord", {
+    new cdk.CfnOutput(this, "Arecord", {
       key: "aRecord",
       value: record.domainName,
     });
-    new CfnOutput(this, "Url", {
+    new cdk.CfnOutput(this, "Url", {
       key: "Url",
       value: `https://${record.domainName}`,
     });

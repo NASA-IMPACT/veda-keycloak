@@ -1,22 +1,16 @@
-import { CustomResource, Duration } from "aws-cdk-lib";
-import { Platform } from "aws-cdk-lib/aws-ecr-assets";
-import {
-  ContainerImage,
-  FargateTaskDefinition,
-  ICluster,
-  LogDrivers,
-  Secret,
-} from "aws-cdk-lib/aws-ecs";
-import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
-import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
-import { Provider } from "aws-cdk-lib/custom-resources";
+import * as cdk from "aws-cdk-lib";
+import * as ecrAssets from "aws-cdk-lib/aws-ecr-assets";
+import * as ecs from "aws-cdk-lib/aws-ecs";
+import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as secretsManager from "aws-cdk-lib/aws-secretsmanager";
+import * as customResources from "aws-cdk-lib/custom-resources";
 import { Construct } from "constructs";
 
 interface KeycloakConfigConstructProps {
-  cluster: ICluster;
+  cluster: ecs.ICluster;
   securityGroupIds: string[];
   subnetIds: string[];
-  adminSecret: ISecret;
+  adminSecret: secretsManager.ISecret;
   hostname: string;
   configDir: string;
 }
@@ -29,13 +23,13 @@ export class KeycloakConfig extends Construct {
   ) {
     super(scope, id);
 
-    const configTaskDef = new FargateTaskDefinition(this, "ConfigTaskDef", {
+    const configTaskDef = new ecs.FargateTaskDefinition(this, "ConfigTaskDef", {
       cpu: 256,
       memoryLimitMiB: 512,
     });
 
-    const assetImage = ContainerImage.fromAsset(props.configDir, {
-      platform: Platform.LINUX_AMD64,
+    const assetImage = ecs.ContainerImage.fromAsset(props.configDir, {
+      platform: ecrAssets.Platform.LINUX_AMD64,
     });
 
     configTaskDef.addContainer("ConfigContainer", {
@@ -46,18 +40,21 @@ export class KeycloakConfig extends Construct {
         KEYCLOAK_AVAILABILITYCHECK_TIMEOUT: "120s",
         IMPORT_FILES_LOCATIONS: "/config/*",
       },
-      logging: LogDrivers.awsLogs({ streamPrefix: "KeycloakConfig" }),
+      logging: ecs.LogDrivers.awsLogs({ streamPrefix: "KeycloakConfig" }),
       secrets: {
-        KEYCLOAK_USER: Secret.fromSecretsManager(props.adminSecret, "username"),
-        KEYCLOAK_PASSWORD: Secret.fromSecretsManager(
+        KEYCLOAK_USER: ecs.Secret.fromSecretsManager(
+          props.adminSecret,
+          "username"
+        ),
+        KEYCLOAK_PASSWORD: ecs.Secret.fromSecretsManager(
           props.adminSecret,
           "password"
         ),
       },
     });
 
-    const runTaskLambda = new Function(this, "RunTaskLambda", {
-      code: Code.fromInline(`
+    const runTaskLambda = new lambda.Function(this, "RunTaskLambda", {
+      code: lambda.Code.fromInline(`
         const { ECSClient, RunTaskCommand } = require('@aws-sdk/client-ecs');
 
         const ecsClient = new ECSClient({});
@@ -87,17 +84,17 @@ export class KeycloakConfig extends Construct {
         };
       `),
       handler: "index.handler",
-      runtime: Runtime.NODEJS_LATEST,
-      timeout: Duration.minutes(5),
+      runtime: lambda.Runtime.NODEJS_LATEST,
+      timeout: cdk.Duration.minutes(5),
     });
 
     configTaskDef.grantRun(runTaskLambda);
 
-    const provider = new Provider(this, "Provider", {
+    const provider = new customResources.Provider(this, "Provider", {
       onEventHandler: runTaskLambda,
     });
 
-    new CustomResource(this, "TriggerConfigTask", {
+    new cdk.CustomResource(this, "TriggerConfigTask", {
       serviceToken: provider.serviceToken,
     });
   }
