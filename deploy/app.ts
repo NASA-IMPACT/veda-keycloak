@@ -10,6 +10,7 @@ const {
   AWS_DEFAULT_REGION,
   SSL_CERTIFICATE_ARN,
   HOSTNAME,
+  STAGE = "dev",
   KEYCLOAK_VERSION = "26.0.0",
 } = process.env;
 
@@ -17,7 +18,7 @@ assert(SSL_CERTIFICATE_ARN, "SSL_CERTIFICATE_ARN env var is required");
 assert(HOSTNAME, "HOSTNAME env var is required");
 
 const app = new cdk.App();
-new KeycloakStack(app, `VedaKeycloakStack-${process.env.STAGE || "dev"}`, {
+new KeycloakStack(app, `VedaKeycloakStack-${STAGE}`, {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
