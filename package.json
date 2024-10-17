@@ -2,7 +2,7 @@
   "name": "veda-keycloak",
   "version": "0.1.0",
   "bin": {
-    "veda-keycloak": "deploy/veda-keycloak.js"
+    "veda-keycloak": "deploy/app.js"
   },
   "scripts": {
     "build": "tsc",
