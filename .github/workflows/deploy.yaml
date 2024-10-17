@@ -1,0 +1,48 @@
+name: Deploy CDK
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: GitHubActionsCDKDeploy
+          role-duration-seconds: 900 # Adjust as necessary
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18 # Use the node version matching your project
+
+      - name: Install dependencies
+        run: |
+          npm install -g aws-cdk
+          npm ci  # Install project dependencies from package-lock.json
+
+      - name: Deploy CDK to dev environment
+        run: |
+          cdk deploy --require-approval never
+        env:
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+          SSL_CERTIFICATE_ARN: ${{ vars.SSL_CERTIFICATE_ARN }}
+          HOSTNAME: ${{ vars.HOSTNAME }}
+          STAGE: ${{ vars.STAGE }}
+          KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
