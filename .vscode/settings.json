@@ -1,0 +1,8 @@
+{
+  "yaml.schemas": {
+    ".vscode/schemas/kc-config-schema.yaml": [
+      "config/src/*.yaml",
+      "config/src/*.yml"
+    ]
+  }
+}
