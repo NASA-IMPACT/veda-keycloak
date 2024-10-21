@@ -1,0 +1,34 @@
+---
+enabled: true
+realm: master
+displayName: Default Master Realm
+identityProviders:
+  - alias: github
+    displayName: GitHub
+    providerId: github
+    enabled: true
+    updateProfileFirstLoginMode: on
+    trustEmail: false
+    storeToken: false
+    addReadTokenRoleOnCreate: false
+    authenticateByDefault: false
+    linkOnly: false
+    config:
+      clientId: $(env:GH_CLIENT_ID)
+      clientSecret: $(env:GH_CLIENT_SECRET)
+      defaultScope: read:org
+      caseSensitiveOriginalUsername: "false"
+identityProviderMappers:
+  - name: Github Organization Mapper
+    identityProviderAlias: github
+    identityProviderMapper: github-user-attribute-mapper
+    config:
+      syncMode: FORCE
+      userAttribute: gh_orgs
+      jsonField: organizations
+  - name: Auto admin
+    identityProviderAlias: github
+    identityProviderMapper: oidc-hardcoded-role-idp-mapper
+    config:
+      syncMode: FORCE
+      role: admin
