@@ -23,6 +23,10 @@ services:
       KEYCLOAK_AVAILABILITYCHECK_TIMEOUT: 120s
       IMPORT_FILES_LOCATIONS: /config/*
       IMPORT_CACHE_ENABLED: false
+      IMPORT_VARSUBSTITUTION_ENABLED: true
+    env_file:
+      - path: .env
+        required: false
     restart: "no"
     develop:
       watch:
