@@ -12,10 +12,12 @@ const {
   HOSTNAME,
   STAGE = "dev",
   KEYCLOAK_VERSION = "26.0.0",
+  GH_OAUTH_CLIENT_SECRET,
 } = process.env;
 
 assert(SSL_CERTIFICATE_ARN, "SSL_CERTIFICATE_ARN env var is required");
 assert(HOSTNAME, "HOSTNAME env var is required");
+assert(GH_OAUTH_CLIENT_SECRET, "GH_OAUTH_CLIENT_SECRET env var is required");
 
 const app = new cdk.App();
 new KeycloakStack(app, `VedaKeycloakStack-${STAGE}`, {
@@ -33,4 +35,5 @@ new KeycloakStack(app, `VedaKeycloakStack-${STAGE}`, {
   hostname: HOSTNAME,
   keycloakVersion: KEYCLOAK_VERSION,
   configDir: join(__dirname, "..", "config"),
+  ghOauthClientSecret: GH_OAUTH_CLIENT_SECRET,
 });

@@ -13,6 +13,7 @@ interface KeycloakConfigConstructProps {
   adminSecret: secretsManager.ISecret;
   hostname: string;
   configDir: string;
+  githubOauthClientSecret: string;
 }
 
 export class KeycloakConfig extends Construct {
@@ -32,6 +33,12 @@ export class KeycloakConfig extends Construct {
       platform: ecrAssets.Platform.LINUX_AMD64,
     });
 
+    const githubOauthClientSecret = secretsManager.Secret.fromSecretCompleteArn(
+      this,
+      "GithubClientSecret",
+      props.githubOauthClientSecret
+    );
+
     configTaskDef.addContainer("ConfigContainer", {
       image: assetImage,
       environment: {
@@ -49,6 +56,14 @@ export class KeycloakConfig extends Construct {
         KEYCLOAK_PASSWORD: ecs.Secret.fromSecretsManager(
           props.adminSecret,
           "password"
+        ),
+        GH_CLIENT_ID: ecs.Secret.fromSecretsManager(
+          githubOauthClientSecret,
+          "id"
+        ),
+        GH_CLIENT_SECRET: ecs.Secret.fromSecretsManager(
+          githubOauthClientSecret,
+          "secret"
         ),
       },
     });
