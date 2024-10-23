@@ -46,3 +46,4 @@ jobs:
           HOSTNAME: ${{ vars.HOSTNAME }}
           STAGE: ${{ vars.STAGE }}
           KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
+          GH_OAUTH_CLIENT_SECRET: ${{ vars.GH_OAUTH_CLIENT_SECRET }}
