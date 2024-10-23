@@ -1,13 +1,16 @@
 ---
 enabled: true
 realm: master
-displayName: Default Master Realm
+displayName: VEDA Master Realm
+displayNameHtml: VEDA Master Realm
+
+loginTheme: veda
+loginWithEmailAllowed: false
 
 identityProviders:
-
   # GitHub with Org Check
-  - alias: github-org-check  # NOTE: this alias appears in the redirect_uri for the auth flow, update Github OAuth settings accordingly
-    displayName: GitHub w/ Org Check
+  - alias: github-org-check # NOTE: this alias appears in the redirect_uri for the auth flow, update Github OAuth settings accordingly
+    displayName: GitHub [NASA-IMPACT]
     providerId: github-org
     enabled: true
     updateProfileFirstLoginMode: on
@@ -25,7 +28,6 @@ identityProviders:
       syncMode: FORCE
 
 identityProviderMappers:
-
   # If a user logs in with the github-org-check provider, they will be assigned the "admin" role
   - name: Auto admin
     identityProviderAlias: github-org-check
