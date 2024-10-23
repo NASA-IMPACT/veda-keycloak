@@ -39,10 +39,13 @@ public class GithubOrgIdentityProviderFactory extends AbstractIdentityProviderFa
 
     @Override
     public List<ProviderConfigProperty> getConfigProperties() {
-        return ProviderConfigurationBuilder.create().property()
-                .name("baseUrl").label("Base URL").helpText("Override the default Base URL for this identity provider.")
-                .type(ProviderConfigProperty.STRING_TYPE).add().property()
-                .name("apiUrl").label("API URL").helpText("Override the default API URL for this identity provider.")
-                .type(ProviderConfigProperty.STRING_TYPE).add().build();
+        return ProviderConfigurationBuilder.create()
+            .property()
+                .name("organization")
+                .label("Required GitHub Organization")
+                .helpText("GitHub organization to check for membership.")
+                .type(ProviderConfigProperty.STRING_TYPE)
+                .add()
+            .build();
     }
 }

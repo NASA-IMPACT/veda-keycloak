@@ -1,4 +1,4 @@
-ARG KEYCLOAK_VERSION="26.0.0"
+ARG KEYCLOAK_VERSION="25.0.0"
 
 # Stage 1: Build the custom GitHub identity provider
 FROM maven:latest AS builder

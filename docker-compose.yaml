@@ -1,7 +1,9 @@
 version: "3"
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:26.0
+    build:
+      context: ./keycloak
+      dockerfile: Dockerfile
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -11,6 +13,10 @@ services:
       - "8080:8080"
     command:
       - start-dev
+    develop:
+      watch:
+        - action: rebuild
+          path: ./keycloak
   keycloak-config-cli:
     build: ./config
     depends_on:

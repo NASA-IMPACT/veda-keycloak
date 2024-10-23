@@ -2,10 +2,13 @@
 enabled: true
 realm: master
 displayName: Default Master Realm
+
 identityProviders:
-  - alias: github
-    displayName: GitHub
-    providerId: github
+
+  # GitHub with Org Check
+  - alias: github-org-check  # NOTE: this alias appears in the redirect_uri for the auth flow, update Github OAuth settings accordingly
+    displayName: GitHub w/ Org Check
+    providerId: github-org
     enabled: true
     updateProfileFirstLoginMode: on
     trustEmail: false
@@ -16,18 +19,16 @@ identityProviders:
     config:
       clientId: $(env:GH_CLIENT_ID)
       clientSecret: $(env:GH_CLIENT_SECRET)
-      defaultScope: read:org
+      defaultScope: openid read:org user:email
+      organization: nasa-impact
       caseSensitiveOriginalUsername: "false"
-identityProviderMappers:
-  - name: Github Organization Mapper
-    identityProviderAlias: github
-    identityProviderMapper: github-user-attribute-mapper
-    config:
       syncMode: FORCE
-      userAttribute: gh_orgs
-      jsonField: organizations
+
+identityProviderMappers:
+
+  # If a user logs in with the github-org-check provider, they will be assigned the "admin" role
   - name: Auto admin
-    identityProviderAlias: github
+    identityProviderAlias: github-org-check
     identityProviderMapper: oidc-hardcoded-role-idp-mapper
     config:
       syncMode: FORCE

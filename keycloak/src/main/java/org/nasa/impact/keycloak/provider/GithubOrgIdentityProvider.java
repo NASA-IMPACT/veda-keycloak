@@ -1,95 +1,67 @@
 package org.nasa.impact.keycloak.provider;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import java.util.Iterator;
-import org.keycloak.broker.oidc.AbstractOAuth2IdentityProvider;
+import jakarta.ws.rs.core.Response;
+import java.io.IOException;
+import org.keycloak.models.KeycloakSession;
 import org.keycloak.broker.oidc.OAuth2IdentityProviderConfig;
-import org.keycloak.broker.oidc.mappers.AbstractJsonUserAttributeMapper;
 import org.keycloak.broker.provider.BrokeredIdentityContext;
 import org.keycloak.broker.provider.IdentityBrokerException;
 import org.keycloak.broker.provider.util.SimpleHttp;
-import org.keycloak.broker.social.SocialIdentityProvider;
+import org.keycloak.social.github.GitHubIdentityProvider;
 import org.keycloak.events.EventBuilder;
-import org.keycloak.models.KeycloakSession;
+
 
 /**
  * @author <a href="mailto:alukach@developmentseed.org">Anthony Lukach</a>
  */
-public class GithubOrgIdentityProvider extends AbstractOAuth2IdentityProvider implements SocialIdentityProvider {
+public class GithubOrgIdentityProvider extends GitHubIdentityProvider {
+    
+    private final String apiUrl;
+    private final String organization;
 
-	public static final String AUTH_URL = "https://github.com/login/oauth/authorize";
-	public static final String TOKEN_URL = "https://github.com/login/oauth/access_token";
-	public static final String PROFILE_URL = "https://api.github.com/user";
-	public static final String EMAIL_URL = "https://api.github.com/user/emails";
-	public static final String DEFAULT_SCOPE = "user:email";
+    private static final String DEFAULT_SCOPE = "user:email read:org";
 
-	public GithubOrgIdentityProvider(KeycloakSession session, OAuth2IdentityProviderConfig config) {
-		super(session, config);
-		config.setAuthorizationUrl(AUTH_URL);
-		config.setTokenUrl(TOKEN_URL);
-		config.setUserInfoUrl(PROFILE_URL);
+    public GithubOrgIdentityProvider(KeycloakSession session, OAuth2IdentityProviderConfig config) {
+        super(session, config);
+
+        organization = config.getConfig().get("organization");
+        apiUrl = super.getUrlFromConfig(config, super.API_URL_KEY, super.DEFAULT_API_URL);
+    }
+
+    @Override
+    protected BrokeredIdentityContext doGetFederatedIdentity(String accessToken) {
+        BrokeredIdentityContext user = super.doGetFederatedIdentity(accessToken);
+
+        // String organization = getConfig().get("organization");
+        if (organization == null || organization.isEmpty()) {
+            throw new IdentityBrokerException("User is not a member of the required organization.");
+        }
+        String username = user.getUsername();
+        boolean isMember = checkOrganizationMembership(accessToken, organization, username);
+        if (!isMember) {
+            logger.warn(String.format("User '%s' is NOT a member of the required organization '%s.", username, organization));
+            throw new IdentityBrokerException("User is not a member of the required organization.");
+        }
+
+        logger.warn(String.format("User '%s' is a member of the required organization '%s.", username, organization));
+        return user;
 	}
 
-	@Override
-	protected boolean supportsExternalExchange() {
-		return true;
-	}
-
-	@Override
-	protected String getProfileEndpointForValidation(EventBuilder event) {
-		return PROFILE_URL;
-	}
-
-	@Override
-	protected BrokeredIdentityContext extractIdentityFromProfile(EventBuilder event, JsonNode profile) {
-		BrokeredIdentityContext user = new BrokeredIdentityContext(getJsonProperty(profile, "id"), getConfig());
-
-		String username = getJsonProperty(profile, "login");
-		user.setUsername(username);
-		user.setName(getJsonProperty(profile, "name"));
-		user.setEmail(getJsonProperty(profile, "email"));
-		user.setIdp(this);
-
-		AbstractJsonUserAttributeMapper.storeUserProfileForMapper(user, profile, getConfig().getAlias());
-
-		return user;
-	}
-
-
-	@Override
-	protected BrokeredIdentityContext doGetFederatedIdentity(String accessToken) {
-		try {
-			JsonNode profile = SimpleHttp.doGet(PROFILE_URL, session).header("Authorization", "Bearer " + accessToken).asJson();
-
-			BrokeredIdentityContext user = extractIdentityFromProfile(null, profile);
-
-			if (user.getEmail() == null) {
-				user.setEmail(searchEmail(accessToken));
-			}
-
-			return user;
-		} catch (Exception e) {
-			throw new IdentityBrokerException("Could not obtain user profile from github.", e);
-		}
-	}
-
-	private String searchEmail(String accessToken) {
-		try {
-			ArrayNode emails = (ArrayNode) SimpleHttp.doGet(EMAIL_URL, session).header("Authorization", "Bearer " + accessToken).asJson();
-
-			Iterator<JsonNode> loop = emails.elements();
-			while (loop.hasNext()) {
-				JsonNode mail = loop.next();
-				if (mail.get("primary").asBoolean()) {
-					return getJsonProperty(mail, "email");
-				}
-			}
-		} catch (Exception e) {
-			throw new IdentityBrokerException("Could not obtain user email from github.", e);
-		}
-		throw new IdentityBrokerException("Primary email from github is not found.");
-	}
+    private boolean checkOrganizationMembership(String accessToken, String organization, String username) {
+        // https://docs.github.com/en/rest/orgs/members?apiVersion=2022-11-28#check-organization-membership-for-a-user
+        String orgUrl = apiUrl + String.format("/orgs/%s/members/%s", organization, username);
+        try {
+            SimpleHttp.Response response = SimpleHttp.doGet(orgUrl, session)
+                                .header("Authorization", "Bearer " + accessToken)
+                                .header("Accept", "application/json")
+                                .asResponse();
+            int statusCode = response.getStatus();
+            return statusCode == 204;
+        } catch (IOException e) {
+            throw new IdentityBrokerException("Could not verify organization membership", e);
+        }
+    }
 
 	@Override
 	protected String getDefaultScopes() {
