@@ -10,6 +10,7 @@ export interface StackInputProps {
   sslCertificateArn: string;
   keycloakVersion: string;
   configDir: string;
+  ghOauthClientSecret: string;
 }
 
 interface StackProps extends cdk.StackProps, StackInputProps {
@@ -45,6 +46,7 @@ export class KeycloakStack extends cdk.Stack {
       hostname: props.hostname,
       subnetIds: vpc.publicSubnets.map((subnet) => subnet.subnetId),
       adminSecret: adminSecret,
+      githubOauthClientSecret: props.ghOauthClientSecret,
       configDir: props.configDir,
     });
 
