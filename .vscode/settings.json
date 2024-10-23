@@ -1,6 +1,6 @@
 {
   "yaml.schemas": {
-    ".vscode/schemas/kc-config-schema.yaml": [
+    "https://jirutka.github.io/keycloak-json-schema/keycloak-realm-24.0.3.json": [
       "config/src/*.yaml",
       "config/src/*.yml"
     ]
