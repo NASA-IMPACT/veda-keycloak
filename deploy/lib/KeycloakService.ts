@@ -1,6 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ecsPatterns from "aws-cdk-lib/aws-ecs-patterns";
+import * as ecrAssets from "aws-cdk-lib/aws-ecr-assets";
 import * as secretsManager from "aws-cdk-lib/aws-secretsmanager";
 import * as certificateManager from "aws-cdk-lib/aws-certificatemanager";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
@@ -70,9 +71,9 @@ export class KeycloakService extends Construct {
         taskImageOptions: {
           containerName: "keycloak",
           containerPort: appPort,
-          image: ecs.ContainerImage.fromRegistry(
-            "quay.io/keycloak/keycloak:26.0.0"
-          ),
+          image: ecs.ContainerImage.fromAsset("./keycloak", {
+            platform: ecrAssets.Platform.LINUX_AMD64,
+          }),
           entryPoint: ["/opt/keycloak/bin/kc.sh"],
           command: ["start"],
           environment: {
