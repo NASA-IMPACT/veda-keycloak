@@ -46,6 +46,8 @@ export class KeycloakConfig extends Construct {
         KEYCLOAK_AVAILABILITYCHECK_ENABLED: "true",
         KEYCLOAK_AVAILABILITYCHECK_TIMEOUT: "120s",
         IMPORT_FILES_LOCATIONS: "/config/*",
+        IMPORT_CACHE_ENABLED: "false",
+        IMPORT_VARSUBSTITUTION_ENABLED: "true",
       },
       logging: ecs.LogDrivers.awsLogs({ streamPrefix: "KeycloakConfig" }),
       secrets: {
