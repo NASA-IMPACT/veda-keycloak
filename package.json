@@ -7,9 +7,13 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "apply-config": "node ./config/apply-config.mjs"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.680.0",
+    "@aws-sdk/client-ecs": "^3.679.0",
+    "@aws-sdk/client-lambda": "^3.680.0",
     "@types/node": "10.17.27",
     "ts-node": "^9.0.0",
     "typescript": "~3.9.7"

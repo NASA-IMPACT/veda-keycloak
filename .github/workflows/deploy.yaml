@@ -27,9 +27,10 @@ jobs:
           role-duration-seconds: 900 # Adjust as necessary
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18 # Use the node version matching your project
+          cache: 'npm'
 
       - name: Install dependencies
         run: |
@@ -38,7 +39,7 @@ jobs:
 
       - name: Deploy CDK to dev environment
         run: |
-          cdk deploy --require-approval never
+          cdk deploy --require-approval never --outputs-file outputs.json
         env:
           AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
@@ -47,3 +48,11 @@ jobs:
           KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
           SSL_CERTIFICATE_ARN: ${{ vars.SSL_CERTIFICATE_ARN }}
           STAGE: ${{ vars.STAGE }}
+
+      - name: Get ConfigLambdaArn from CloudFormation
+        id: get-lambda-arn
+        run: |
+          echo "CONFIG_LAMBDA_ARN=$(jq -r '."VedaKeycloakStack-${{ vars.STAGE }}".ConfigLambdaArn' outputs.json)" >> $GITHUB_ENV
+
+      - name: Run Apply Config
+        run: npm run apply-config $CONFIG_LAMBDA_ARN

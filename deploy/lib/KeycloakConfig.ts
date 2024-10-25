@@ -70,7 +70,7 @@ export class KeycloakConfig extends Construct {
       },
     });
 
-    const runTaskLambda = new lambda.Function(this, "RunTaskLambda", {
+    const applyConfigLambda = new lambda.Function(this, "ApplyConfigLambda", {
       code: lambda.Code.fromInline(`
         const { ECSClient, RunTaskCommand } = require('@aws-sdk/client-ecs');
 
@@ -93,7 +93,8 @@ export class KeycloakConfig extends Construct {
           try {
             const result = await ecsClient.send(new RunTaskCommand(params));
             console.log('ECS RunTask result:', result);
-            return { status: 'Task started' };
+            const { taskArn, clusterArn } = result.tasks[0];
+            return { taskArn, clusterArn };
           } catch (error) {
             console.error('Error running ECS task:', error);
             throw new Error('Failed to start ECS task');
@@ -105,14 +106,11 @@ export class KeycloakConfig extends Construct {
       timeout: cdk.Duration.minutes(5),
     });
 
-    configTaskDef.grantRun(runTaskLambda);
+    configTaskDef.grantRun(applyConfigLambda);
 
-    const provider = new customResources.Provider(this, "Provider", {
-      onEventHandler: runTaskLambda,
-    });
-
-    new cdk.CustomResource(this, "TriggerConfigTask", {
-      serviceToken: provider.serviceToken,
+    new cdk.CfnOutput(this, "ConfigLambdaArn", {
+      key: "ConfigLambdaArn",
+      value: applyConfigLambda.functionArn,
     });
   }
 }
