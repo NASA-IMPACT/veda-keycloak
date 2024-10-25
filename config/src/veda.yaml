@@ -1,31 +1,160 @@
 ---
 enabled: true
 realm: veda
+displayName: Applications
+displayNameHtml: VEDA Ecosystem
+
 clients:
-  - clientId: stac-api
-    name: stac-api
-    rootUrl: http://localhost:8080
-    baseUrl: /stac-api
+  - clientId: grafana
+    name: Grafana
+    rootUrl: https://d3art7u1htuei0.cloudfront.net
     enabled: true
     attributes: {}
     redirectUris:
-      - "http://localhost:8080/stac-api/*"
+      - https://d3art7u1htuei0.cloudfront.net/*
     webOrigins:
-      - "http://localhost:8080"
+      - https://d3art7u1htuei0.cloudfront.net
     protocol: openid-connect
     fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - grafana:admin
+      - grafana:editor
+      - grafana:viewer
+    publicClient: false
+
+  - clientId: stac-api
+    name: STAC API
+    rootUrl: https://example.com
+    enabled: true
+    attributes: {}
+    redirectUris:
+      - https://example.com/*
+    webOrigins:
+      - https://example.com
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+    
 roles:
   client:
+    grafana:
+      - name: Administrator
+        description: Grafana Administrator
+      - name: Editor
+        description: Grafana Editor
+      - name: Viewer
+        description: Grafana Viewer
     stac-api:
-      - name: stac:collection:create
-        description: Create a collection
-      - name: stac:collection:update
-        description: Update a collection
-      - name: stac:collection:delete
-        description: Delete a collection
-      - name: stac:item:create
-        description: Create a new item
-      - name: stac:item:update
-        description: Update an item
-      - name: stac:item:delete
-        description: Delete an item
+      - name: Administrator
+        description: STAC Administrator
+      - name: Editor
+        description: STAC Editor
+
+clientScopeMappings:
+  grafana:
+    - clientScope: grafana:admin
+      roles: 
+        - Administrator
+    - clientScope: grafana:editor
+      roles: 
+        - Editor
+    - clientScope: grafana:viewer
+      roles: 
+        - Viewer
+  
+  stac-api:
+    - clientScope: stac:collection:create
+      roles: 
+        - Administrator
+    - clientScope: stac:collection:delete
+      roles: 
+        - Administrator
+    - clientScope: stac:collection:update
+      roles: 
+        - Administrator
+        - Editor
+    - clientScope: stac:item:create
+      roles: 
+        - Administrator
+        - Editor
+    - clientScope: stac:item:update
+      roles: 
+        - Administrator
+        - Editor
+    - clientScope: stac:item:delete
+      roles: 
+        - Administrator
+        - Editor
+
+clientScopes:
+  # Grafana
+  - name: grafana:admin
+    description: Admin access to Grafana
+    protocol: openid-connect
+  - name: grafana:editor
+    description: Editor access to Grafana
+    protocol: openid-connect
+  - name: grafana:viewer
+    description: Viewer access to Grafana
+    protocol: openid-connect
+  
+  # STAC API
+  - name: stac:collection:create
+    description: Create a collection
+    protocol: openid-connect
+  - name: stac:collection:update
+    description: Update a collection
+    protocol: openid-connect
+  - name: stac:collection:delete
+    description: Delete a collection
+    protocol: openid-connect
+  - name: stac:item:create
+    description: Create a new item
+    protocol: openid-connect
+  - name: stac:item:update
+    description: Update an item
+    protocol: openid-connect
+  - name: stac:item:delete
+    description: Delete an item
+    protocol: openid-connect
+
+
+groups:
+  - name: System Administrators
+    clientRoles:
+      grafana:
+        - Administrator
+      stac-api:
+        - Administrator
+
+  - name: Developers
+    clientRoles:
+      grafana:
+        - Editor
+      stac-api:
+        - Administrator
+
+  - name: Data Editors
+    clientRoles:
+      grafana:
+        - Viewer
+      stac-api:
+        - Editor

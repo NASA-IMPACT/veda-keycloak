@@ -1,8 +1,8 @@
 ---
 enabled: true
 realm: master
-displayName: VEDA Master Realm
-displayNameHtml: VEDA Master Realm
+displayName: Admin
+displayNameHtml: VEDA Keycloak Admin
 
 loginTheme: veda
 loginWithEmailAllowed: false
