@@ -70,6 +70,7 @@ export class KeycloakConfig extends Construct {
       },
     });
 
+    // Helper to simplify triggering the ECS task
     const applyConfigLambda = new lambda.Function(this, "ApplyConfigLambda", {
       code: lambda.Code.fromInline(`
         const { ECSClient, RunTaskCommand } = require('@aws-sdk/client-ecs');

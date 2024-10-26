@@ -18,6 +18,8 @@ import {
 
 let exitCode = null;
 
+const ecs = new ECSClient({});
+
 main()
   .then((logs) => {
     console.log(`Task output:\n${"-".repeat(100)}`);
@@ -32,14 +34,13 @@ main()
 async function main() {
   const [, , lambdaArn] = process.argv;
   const { taskArn, clusterArn } = await invokeLambda(lambdaArn);
-  const ecs = new ECSClient({});
-  const task = await pollEcsTask(ecs, taskArn, clusterArn);
+  const task = await pollEcsTask(taskArn, clusterArn);
   exitCode = task.containers[0]?.exitCode ?? null;
   if (exitCode === null)
     throw new Error("Could not retrieve exit code from the ECS task.");
 
   const { logGroup, logStreamPrefix, region, containerName } =
-    await getLogConfig(ecs, task.taskDefinitionArn);
+    await getLogConfig(task.taskDefinitionArn);
   const taskId = taskArn.split("/").pop();
   const logStreamName = `${logStreamPrefix}/${containerName}/${taskId}`;
   return fetchCloudWatchLogs(logGroup, logStreamName, region);
@@ -57,7 +58,7 @@ async function invokeLambda(lambdaArn) {
   return JSON.parse(new TextDecoder().decode(response.Payload));
 }
 
-async function pollEcsTask(ecs, taskArn, clusterArn) {
+async function pollEcsTask(taskArn, clusterArn) {
   while (true) {
     const { tasks } = await ecs.send(
       new DescribeTasksCommand({ cluster: clusterArn, tasks: [taskArn] })
@@ -70,7 +71,7 @@ async function pollEcsTask(ecs, taskArn, clusterArn) {
   }
 }
 
-async function getLogConfig(ecs, taskDefinitionArn) {
+async function getLogConfig(taskDefinitionArn) {
   const { taskDefinition } = await ecs.send(
     new DescribeTaskDefinitionCommand({ taskDefinition: taskDefinitionArn })
   );
