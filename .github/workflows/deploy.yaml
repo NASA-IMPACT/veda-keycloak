@@ -47,9 +47,9 @@ jobs:
           KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
           SSL_CERTIFICATE_ARN: ${{ vars.SSL_CERTIFICATE_ARN }}
           STAGE: ${{ vars.STAGE }}
-          # OAuth2 client secret arns
-          GH_OAUTH_CLIENT_SECRET: ${{ vars.GH_OAUTH_CLIENT_SECRET }}
-          CILOGON_OAUTH_CLIENT_SECRET: ${{ vars.CILOGON_OAUTH_CLIENT_SECRET }}
+          # Imported Identity Provider secrets
+          IDP_SECRET_ARN_GH: ${{ vars.IDP_SECRET_ARN_GH }}
+          IDP_SECRET_ARN_CILOGON: ${{ vars.IDP_SECRET_ARN_CILOGON }}
 
       - name: Get ConfigLambdaArn from CloudFormation
         id: get-lambda-arn

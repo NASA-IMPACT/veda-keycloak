@@ -3,7 +3,6 @@ import * as ecrAssets from "aws-cdk-lib/aws-ecr-assets";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as secretsManager from "aws-cdk-lib/aws-secretsmanager";
-import * as customResources from "aws-cdk-lib/custom-resources";
 import { Construct } from "constructs";
 
 interface KeycloakConfigConstructProps {
