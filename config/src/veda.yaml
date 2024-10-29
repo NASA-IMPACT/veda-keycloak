@@ -52,7 +52,7 @@ clients:
       - stac:item:create
       - stac:item:update
       - stac:item:delete
-    
+
 roles:
   client:
     grafana:
@@ -71,36 +71,36 @@ roles:
 clientScopeMappings:
   grafana:
     - clientScope: grafana:admin
-      roles: 
+      roles:
         - Administrator
     - clientScope: grafana:editor
-      roles: 
+      roles:
         - Editor
     - clientScope: grafana:viewer
-      roles: 
+      roles:
         - Viewer
-  
+
   stac-api:
     - clientScope: stac:collection:create
-      roles: 
+      roles:
         - Administrator
     - clientScope: stac:collection:delete
-      roles: 
+      roles:
         - Administrator
     - clientScope: stac:collection:update
-      roles: 
+      roles:
         - Administrator
         - Editor
     - clientScope: stac:item:create
-      roles: 
+      roles:
         - Administrator
         - Editor
     - clientScope: stac:item:update
-      roles: 
+      roles:
         - Administrator
         - Editor
     - clientScope: stac:item:delete
-      roles: 
+      roles:
         - Administrator
         - Editor
 
@@ -115,7 +115,7 @@ clientScopes:
   - name: grafana:viewer
     description: Viewer access to Grafana
     protocol: openid-connect
-  
+
   # STAC API
   - name: stac:collection:create
     description: Create a collection
@@ -135,7 +135,6 @@ clientScopes:
   - name: stac:item:delete
     description: Delete an item
     protocol: openid-connect
-
 
 groups:
   - name: System Administrators
@@ -158,3 +157,30 @@ groups:
         - Viewer
       stac-api:
         - Editor
+
+identityProviders:
+  # CILogon
+  - alias: cilogon # NOTE: this alias appears in the redirect_uri for the auth flow, update Github OAuth settings accordingly
+    displayName: CILogon
+    providerId: oidc
+    enabled: true
+    updateProfileFirstLoginMode: on
+    trustEmail: false
+    storeToken: false
+    addReadTokenRoleOnCreate: false
+    authenticateByDefault: false
+    linkOnly: false
+    config:
+        userInfoUrl: "https://cilogon.org/oauth2/userinfo"
+        validateSignature: "true"
+        tokenUrl: "https://cilogon.org/oauth2/token"
+        jwksUrl: "https://cilogon.org/oauth2/certs"
+        issuer: "https://cilogon.org"
+        useJwksUrl: "true"
+        pkceEnabled: "false"
+        metadataDescriptorUrl: "https://cilogon.org/.well-known/openid-configuration"
+        authorizationUrl: "https://cilogon.org/authorize"
+        clientAuthMethod: "client_secret_post"
+        syncMode: "LEGACY"
+        clientId: $(env:CILOGON_CLIENT_ID)
+        clientSecret: $(env:CILOGON_CLIENT_SECRET)
