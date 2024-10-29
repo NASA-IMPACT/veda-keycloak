@@ -12,12 +12,19 @@ const {
   HOSTNAME,
   STAGE = "dev",
   KEYCLOAK_VERSION = "26.0.0",
-  GH_OAUTH_CLIENT_SECRET,
 } = process.env;
 
 assert(SSL_CERTIFICATE_ARN, "SSL_CERTIFICATE_ARN env var is required");
 assert(HOSTNAME, "HOSTNAME env var is required");
-assert(GH_OAUTH_CLIENT_SECRET, "GH_OAUTH_CLIENT_SECRET env var is required");
+
+const oAuthClientSecrets = getOauthSecrets();
+console.log(
+  `Found ${
+    Object.keys(oAuthClientSecrets).length
+  } OAuth client secrets for clients: ${Object.keys(oAuthClientSecrets).join(
+    ", "
+  )}`
+);
 
 const app = new cdk.App();
 new KeycloakStack(app, `VedaKeycloakStack-${STAGE}`, {
@@ -35,5 +42,17 @@ new KeycloakStack(app, `VedaKeycloakStack-${STAGE}`, {
   hostname: HOSTNAME,
   keycloakVersion: KEYCLOAK_VERSION,
   configDir: join(__dirname, "..", "config"),
-  ghOauthClientSecret: GH_OAUTH_CLIENT_SECRET,
+  oAuthClientSecrets,
 });
+
+/**
+ * Helper function to extract OAuth client secrets from the runtime environment
+ * @returns Record<string, string> - A map of OAuth client IDs to the ARN of their secrets
+ */
+function getOauthSecrets(): Record<string, string> {
+  const oauthSecretSuffix = "_OAUTH_CLIENT_SECRET";
+  const clientSecrets = Object.entries(process.env)
+    .filter(([k, v]) => k.endsWith(oauthSecretSuffix))
+    .map(([k, v]) => [k.split(oauthSecretSuffix)[0], v]);
+  return Object.fromEntries(clientSecrets);
+}

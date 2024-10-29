@@ -13,7 +13,7 @@ interface KeycloakConfigConstructProps {
   adminSecret: secretsManager.ISecret;
   hostname: string;
   configDir: string;
-  githubOauthClientSecret: string;
+  oAuthClientSecrets: Record<string, string>;
 }
 
 export class KeycloakConfig extends Construct {
@@ -33,10 +33,22 @@ export class KeycloakConfig extends Construct {
       platform: ecrAssets.Platform.LINUX_AMD64,
     });
 
-    const githubOauthClientSecret = secretsManager.Secret.fromSecretCompleteArn(
-      this,
-      "GithubClientSecret",
-      props.githubOauthClientSecret
+    const clientSecrets = Object.fromEntries(
+      Object.entries(props.oAuthClientSecrets)
+        .map(([clientSlug, secretArn]): [string, secretsManager.ISecret] => [
+          clientSlug,
+          secretsManager.Secret.fromSecretCompleteArn(
+            this,
+            `${clientSlug}-client-secret`,
+            secretArn
+          ),
+        ])
+        .flatMap(([clientSlug, secret]) =>
+          ["id", "secret"].map((key) => [
+            `${clientSlug}_client_${key}`.toUpperCase(),
+            ecs.Secret.fromSecretsManager(secret, key),
+          ])
+        )
     );
 
     configTaskDef.addContainer("ConfigContainer", {
@@ -59,14 +71,8 @@ export class KeycloakConfig extends Construct {
           props.adminSecret,
           "password"
         ),
-        GH_CLIENT_ID: ecs.Secret.fromSecretsManager(
-          githubOauthClientSecret,
-          "id"
-        ),
-        GH_CLIENT_SECRET: ecs.Secret.fromSecretsManager(
-          githubOauthClientSecret,
-          "secret"
-        ),
+        // Inject the client ID and secret for any OAuth clients
+        ...clientSecrets,
       },
     });
 

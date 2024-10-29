@@ -43,11 +43,13 @@ jobs:
         env:
           AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
-          GH_OAUTH_CLIENT_SECRET: ${{ vars.GH_OAUTH_CLIENT_SECRET }}
           HOSTNAME: ${{ vars.HOSTNAME }}
           KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
           SSL_CERTIFICATE_ARN: ${{ vars.SSL_CERTIFICATE_ARN }}
           STAGE: ${{ vars.STAGE }}
+          # OAuth2 client secret arns
+          GH_OAUTH_CLIENT_SECRET: ${{ vars.GH_OAUTH_CLIENT_SECRET }}
+          CILOGON_OAUTH_CLIENT_SECRET: ${{ vars.CILOGON_OAUTH_CLIENT_SECRET }}
 
       - name: Get ConfigLambdaArn from CloudFormation
         id: get-lambda-arn
