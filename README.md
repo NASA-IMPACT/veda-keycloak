@@ -4,9 +4,13 @@ An experimental Keycloak deployment for the VEDA project.
 
 ## Development
 
-* `config/src` - Configuration YAML files.
-* `keycloak/providers` - Custom Service Provider Interfaces.
-* `keycloak/themes` - Custom Keycloak themes.
+- `config/src` - Configuration YAML files.
+- `keycloak/providers` - Custom Service Provider Interfaces.
+- `keycloak/themes` - Custom Keycloak themes.
+
+### Architecture
+
+![Architecture Diagram](./.docs/architecture.excalidraw.svg)
 
 ### Configuration
 
