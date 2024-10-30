@@ -23,6 +23,125 @@ Configuration is stored within `config/src` in YAML files for each Keycloak real
 > [!IMPORTANT]
 > At each deployment, the keycloak-config-cli will likely overwrite changes made outside of the configuration stored within this repository for a given realm.
 
+#### Creating Clients
+
+Creating a client application within Keycloak is done by editing the config YAML for the realm.
+
+##### Public Client
+
+A minimum example of a public client (ie a client that only runs within the frontend, such as single page application):
+
+```yaml
+clients:
+  - clientId: grafana
+    name: Grafana
+    publicClient: true
+    rootUrl: https://example.com
+    redirectUris:
+      - https://example.com/*
+    webOrigins:
+      - https://example.com
+    protocol: openid-connect
+    fullScopeAllowed: true
+```
+
+##### Private Client
+
+For a private client (ie a client that runs within the frontend, such as single page application), a secret will automatically be created and injected into the configuration runtime environemt at time of deployment. This secret will be made avaiable at an environment variable of `$SLUG_CLIENT_SECRET` where `$SLUG` represents a slugify version of the `clientId` value (e.g. a client with an id of `stac-api` will have a secret available at `STAC_API_CLIENT_SECRET`).
+
+A minimum example of a private client (note `publicClient: false` and `secret`):
+
+```yaml
+clients:
+  - clientId: grafana
+    name: Grafana
+    publicClient: false
+    secret: $(env:GRAFANA_CLIENT_SECRET)
+    rootUrl: https://example.com
+    redirectUris:
+      - https://example.com/*
+    webOrigins:
+      - https://example.com
+    protocol: openid-connect
+    fullScopeAllowed: true
+```
+
+##### Scopes, Roles, and Groups
+
+Clients will typically have associated Scopes, Roles, and Groups.
+
+- Scopes can be thought of as individual permissions used by a client.
+- Roles are collections of permissions that enable a typical function (e.g. system administration)
+- Groups are collections of users that we want to grant with roles.
+
+An exmaple:
+
+```yaml
+clients:
+  - clientId: grafana
+    # ... omitted for brevity
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - grafana:admin
+      - grafana:editor
+      - grafana:viewer
+
+roles:
+  client:
+    grafana:
+      - name: Administrator
+        description: Grafana Administrator
+      - name: Editor
+        description: Grafana Editor
+      - name: Viewer
+        description: Grafana Viewer
+
+clientScopeMappings:
+  grafana:
+    - clientScope: grafana:admin
+      roles:
+        - Administrator
+    - clientScope: grafana:editor
+      roles:
+        - Editor
+    - clientScope: grafana:viewer
+      roles:
+        - Viewer
+
+clientScopes:
+  - name: grafana:admin
+    description: Admin access to Grafana
+    protocol: openid-connect
+  - name: grafana:editor
+    description: Editor access to Grafana
+    protocol: openid-connect
+  - name: grafana:viewer
+    description: Viewer access to Grafana
+    protocol: openid-connect
+
+groups:
+  - name: System Administrators
+    clientRoles:
+      grafana:
+        - Administrator
+
+  - name: Developers
+    clientRoles:
+      grafana:
+        - Editor
+
+  - name: Data Editors
+    clientRoles:
+      grafana:
+        - Viewer
+```
+
 #### Identity Provider OAuth Clients
 
 When a third party service operates as an Identity Provider (IdP, e.g. CILogon or GitHub) for Keycloak, we must register that IdP within the Keycloak configuration. This involves registering the IdP's OAuth client ID and client secret within Keycloak's configuration (along with additional information about the OAuth endpoints used within the login process).
