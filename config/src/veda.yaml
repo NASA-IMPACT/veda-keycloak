@@ -4,13 +4,79 @@ realm: veda
 displayName: Applications
 displayNameHtml: VEDA Ecosystem
 
-clients: []
+clients:
+  - clientId: grafana
+    name: Grafana
+    rootUrl: https://d3art7u1htuei0.cloudfront.net
+    secret: $(env:GRAFANA_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - https://d3art7u1htuei0.cloudfront.net/*
+    webOrigins:
+      - https://d3art7u1htuei0.cloudfront.net
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - grafana:admin
+      - grafana:editor
+      - grafana:viewer
 
-roles: {}
+roles:
+  client:
+    grafana:
+      - name: Administrator
+        description: Grafana Administrator
+      - name: Editor
+        description: Grafana Editor
+      - name: Viewer
+        description: Grafana Viewer
 
-clientScopeMappings: {}
+clientScopeMappings:
+  grafana:
+    - clientScope: grafana:admin
+      roles:
+        - Administrator
+    - clientScope: grafana:editor
+      roles:
+        - Editor
+    - clientScope: grafana:viewer
+      roles:
+        - Viewer
 
-groups: []
+clientScopes:
+  # Grafana
+  - name: grafana:admin
+    description: Admin access to Grafana
+    protocol: openid-connect
+  - name: grafana:editor
+    description: Editor access to Grafana
+    protocol: openid-connect
+  - name: grafana:viewer
+    description: Viewer access to Grafana
+    protocol: openid-connect
+
+groups:
+  - name: System Administrators
+    clientRoles:
+      grafana:
+        - Administrator
+
+  - name: Developers
+    clientRoles:
+      grafana:
+        - Editor
+
+  - name: Data Editors
+    clientRoles:
+      grafana:
+        - Viewer
 
 identityProviders:
   # CILogon
