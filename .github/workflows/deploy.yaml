@@ -13,6 +13,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: dev
+    concurrency:
+      group: dev_env
+      cancel-in-progress: false
 
     steps:
       - name: Checkout the repository
