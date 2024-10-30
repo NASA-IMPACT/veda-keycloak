@@ -1,9 +1,7 @@
 version: "3"
 services:
   keycloak:
-    build:
-      context: ./keycloak
-      dockerfile: Dockerfile
+    build: ./keycloak
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -19,6 +17,8 @@ services:
           path: ./keycloak
   keycloak-config-cli:
     build: ./config
+    volumes:
+      - ./config/src:/config
     depends_on:
       - keycloak
     environment:
