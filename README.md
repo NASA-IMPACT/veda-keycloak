@@ -18,16 +18,20 @@ We currently make use of the [keycloak-config-cli](https://github.com/adorsys/ke
 
 > `keycloak-config-cli` is a Keycloak utility to ensure the desired configuration state for a realm based on a JSON/YAML file. The format of the JSON/YAML file based on the export realm format.
 
+Configuration is stored within `config/src` in YAML files for each Keycloak realm managed.
+
 > [!IMPORTANT]
 > At each deployment, the keycloak-config-cli will likely overwrite changes made outside of the configuration stored within this repository for a given realm.
 
-#### OAuth Clients
+#### Identity Provider OAuth Clients
+
+When a third party service operates as an Identity Provider (IdP, e.g. CILogon or GitHub) for Keycloak, we must register that IdP within the Keycloak configuration. This involves registering the IdP's OAuth client ID and client secret within Keycloak's configuration (along with additional information about the OAuth endpoints used within the login process).
 
 At time of deployment, environment variables starting with `IDP_SECRET_ARN_` will be treated as ARNs to Secrets stored within AWS Secrets Manager. These secrets should be JSON objects containing both an `id` and `secret` key. These values will be injected into the docker instance running the Keycloak Config CLI, making them avaiable under `{CLIENTID}_CLIENT_ID` and `{CLIENTID}_CLIENT_SECRET` environment variables, allowing for their usage within a Keycloak configuration YAML file.
 
 <details>
 
-<summary>Example of injecting an OAuth2 Client Secret</summary>
+<summary>Example of injecting an IdP OAuth2 Client Secret</summary>
 
 For this example, let's imagine we're attempting to insert the Client ID and Client Secret for a Github Identity Provider. To achieve this, we would take the following steps:
 
@@ -85,7 +89,6 @@ For this example, let's imagine we're attempting to insert the Client ID and Cli
    ```
 
 </details>
-
 
 ### Service Provider Interfaces
 
