@@ -10,7 +10,8 @@ export interface StackInputProps {
   sslCertificateArn: string;
   keycloakVersion: string;
   configDir: string;
-  oAuthClientSecrets: Record<string, string>;
+  idpOauthClientSecrets: Record<string, string>;
+  createdOauthClients: string[];
 }
 
 interface StackProps extends cdk.StackProps, StackInputProps {
@@ -46,8 +47,9 @@ export class KeycloakStack extends cdk.Stack {
       hostname: props.hostname,
       subnetIds: vpc.publicSubnets.map((subnet) => subnet.subnetId),
       adminSecret: adminSecret,
-      oAuthClientSecrets: props.oAuthClientSecrets,
       configDir: props.configDir,
+      idpOauthClientSecrets: props.idpOauthClientSecrets,
+      createdOauthClients: props.createdOauthClients,
     });
 
     new KeycloakUrl(this, "url", {

@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
-import { KeycloakStack } from "./lib/KeycloakStack";
 import { join } from "path";
-import assert = require("assert");
+import * as assert from "assert";
+import { KeycloakStack } from "./lib/KeycloakStack";
+import { getOauthSecrets } from "./lib/utils";
 
 const {
   AWS_ACCOUNT_ID,
@@ -17,11 +18,9 @@ const {
 assert(SSL_CERTIFICATE_ARN, "SSL_CERTIFICATE_ARN env var is required");
 assert(HOSTNAME, "HOSTNAME env var is required");
 
-const oAuthClientSecrets = getOauthSecrets();
+const idpOauthClientSecrets = getOauthSecrets();
 console.log(
-  `Found ${
-    Object.keys(oAuthClientSecrets).length
-  } OAuth client secrets for clients: ${Object.keys(oAuthClientSecrets).join(
+  `Found IdP client secrets for ${Object.keys(idpOauthClientSecrets).join(
     ", "
   )}`
 );
@@ -42,17 +41,6 @@ new KeycloakStack(app, `VedaKeycloakStack-${STAGE}`, {
   hostname: HOSTNAME,
   keycloakVersion: KEYCLOAK_VERSION,
   configDir: join(__dirname, "..", "config"),
-  oAuthClientSecrets,
+  idpOauthClientSecrets,
+  createdOauthClients: ["grafana"],
 });
-
-/**
- * Helper function to extract OAuth client secrets from the runtime environment
- * @returns Record<string, string> - A map of OAuth client IDs to the ARN of their secrets
- */
-function getOauthSecrets(): Record<string, string> {
-  const oauthSecretPrefix = "IDP_SECRET_ARN_";
-  const clientSecrets = Object.entries(process.env)
-    .filter(([k, v]) => k.startsWith(oauthSecretPrefix))
-    .map(([k, v]) => [k.split(oauthSecretPrefix)[1], v]);
-  return Object.fromEntries(clientSecrets);
-}

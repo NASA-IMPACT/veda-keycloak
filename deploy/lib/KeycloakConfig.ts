@@ -12,8 +12,11 @@ interface KeycloakConfigConstructProps {
   adminSecret: secretsManager.ISecret;
   hostname: string;
   configDir: string;
-  oAuthClientSecrets: Record<string, string>;
+  idpOauthClientSecrets: Record<string, string>;
+  createdOauthClients: string[];
 }
+
+type clientSecretTuple = Array<[string, secretsManager.ISecret]>;
 
 export class KeycloakConfig extends Construct {
   constructor(
@@ -32,22 +35,42 @@ export class KeycloakConfig extends Construct {
       platform: ecrAssets.Platform.LINUX_AMD64,
     });
 
-    const clientSecrets = Object.fromEntries(
-      Object.entries(props.oAuthClientSecrets)
-        .map(([clientSlug, secretArn]): [string, secretsManager.ISecret] => [
-          clientSlug,
-          secretsManager.Secret.fromSecretCompleteArn(
-            this,
-            `${clientSlug}-client-secret`,
-            secretArn
-          ),
-        ])
-        .flatMap(([clientSlug, secret]) =>
+    // Create a client secret for each private client
+    const createdClientSecrets: clientSecretTuple =
+      props.createdOauthClients.map((clientSlug) => [
+        clientSlug,
+        new secretsManager.Secret(this, `${clientSlug}-client-secret`, {
+          generateSecretString: {
+            excludePunctuation: true,
+            includeSpace: false,
+            secretStringTemplate: JSON.stringify({ id: clientSlug }),
+            generateStringKey: "secret",
+            passwordLength: 16,
+          },
+        }),
+      ]);
+
+    // Import the client secrets for each public clients
+    const importedClientSecrets: clientSecretTuple = Object.entries(
+      props.idpOauthClientSecrets
+    ).map(([clientSlug, secretArn]): [string, secretsManager.ISecret] => [
+      clientSlug,
+      secretsManager.Secret.fromSecretCompleteArn(
+        this,
+        `${clientSlug}-client-secret`,
+        secretArn
+      ),
+    ]);
+
+    // Create env vars from secrets for each client, e.g. GRAFANA_CLIENT_ID, GRAFANA_CLIENT_SECRET
+    const taskClientSecrets = Object.fromEntries(
+      [...createdClientSecrets, ...importedClientSecrets].flatMap(
+        ([clientSlug, secret]) =>
           ["id", "secret"].map((key) => [
-            `${clientSlug}_client_${key}`.toUpperCase(),
+            `${clientSlug}_CLIENT_${key}`.toUpperCase(),
             ecs.Secret.fromSecretsManager(secret, key),
           ])
-        )
+      )
     );
 
     configTaskDef.addContainer("ConfigContainer", {
@@ -71,7 +94,7 @@ export class KeycloakConfig extends Construct {
           "password"
         ),
         // Inject the client ID and secret for any OAuth clients
-        ...clientSecrets,
+        ...taskClientSecrets,
       },
     });
 
