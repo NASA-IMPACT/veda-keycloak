@@ -11,7 +11,7 @@ export interface StackInputProps {
   keycloakVersion: string;
   configDir: string;
   idpOauthClientSecrets: Record<string, string>;
-  createdOauthClients: string[];
+  privateOauthClients: string[];
 }
 
 interface StackProps extends cdk.StackProps, StackInputProps {
@@ -49,7 +49,7 @@ export class KeycloakStack extends cdk.Stack {
       adminSecret: adminSecret,
       configDir: props.configDir,
       idpOauthClientSecrets: props.idpOauthClientSecrets,
-      createdOauthClients: props.createdOauthClients,
+      privateOauthClients: props.privateOauthClients,
     });
 
     new KeycloakUrl(this, "url", {

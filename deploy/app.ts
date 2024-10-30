@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 import "source-map-support/register";
-import * as cdk from "aws-cdk-lib";
 import { join } from "path";
 import * as assert from "assert";
+import * as cdk from "aws-cdk-lib";
 import { KeycloakStack } from "./lib/KeycloakStack";
-import { getOauthSecrets } from "./lib/utils";
+import {
+  getOauthSecrets,
+  getPrivateClientIds,
+  arrayStringify,
+} from "./lib/utils";
 
 const {
   AWS_ACCOUNT_ID,
@@ -13,17 +17,29 @@ const {
   HOSTNAME,
   STAGE = "dev",
   KEYCLOAK_VERSION = "26.0.0",
+  CONFIG_DIR = join(__dirname, "..", "config"),
 } = process.env;
 
 assert(SSL_CERTIFICATE_ARN, "SSL_CERTIFICATE_ARN env var is required");
 assert(HOSTNAME, "HOSTNAME env var is required");
 
 const idpOauthClientSecrets = getOauthSecrets();
-console.log(
-  `Found IdP client secrets for ${Object.keys(idpOauthClientSecrets).join(
-    ", "
-  )}`
-);
+Object.keys(idpOauthClientSecrets).length
+  ? console.log(
+      `Found IdP client secrets in environment:\n${arrayStringify(
+        Object.keys(idpOauthClientSecrets)
+      )}`
+    )
+  : console.warn("No IdP client secrets found in the environment");
+
+const privateOauthClients = getPrivateClientIds(join(CONFIG_DIR, "src"));
+privateOauthClients.length
+  ? console.log(
+      `Found client IDs in ${CONFIG_DIR}:\n${arrayStringify(
+        privateOauthClients
+      )}`
+    )
+  : console.warn(`No client IDs found in ${CONFIG_DIR}`);
 
 const app = new cdk.App();
 new KeycloakStack(app, `VedaKeycloakStack-${STAGE}`, {
@@ -40,7 +56,7 @@ new KeycloakStack(app, `VedaKeycloakStack-${STAGE}`, {
   sslCertificateArn: SSL_CERTIFICATE_ARN,
   hostname: HOSTNAME,
   keycloakVersion: KEYCLOAK_VERSION,
-  configDir: join(__dirname, "..", "config"),
+  configDir: CONFIG_DIR,
   idpOauthClientSecrets,
-  createdOauthClients: ["grafana"],
+  privateOauthClients,
 });

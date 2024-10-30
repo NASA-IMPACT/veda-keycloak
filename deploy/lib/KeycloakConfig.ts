@@ -13,7 +13,7 @@ interface KeycloakConfigConstructProps {
   hostname: string;
   configDir: string;
   idpOauthClientSecrets: Record<string, string>;
-  createdOauthClients: string[];
+  privateOauthClients: string[];
 }
 
 type clientSecretTuple = Array<[string, secretsManager.ISecret]>;
@@ -37,7 +37,7 @@ export class KeycloakConfig extends Construct {
 
     // Create a client secret for each private client
     const createdClientSecrets: clientSecretTuple =
-      props.createdOauthClients.map((clientSlug) => [
+      props.privateOauthClients.map((clientSlug) => [
         clientSlug,
         // WARNING: Changing the secret name or id will cause a new secret to be created
         new secretsManager.Secret(this, `${clientSlug}-client-secret`, {
