@@ -39,7 +39,9 @@ export class KeycloakConfig extends Construct {
     const createdClientSecrets: clientSecretTuple =
       props.createdOauthClients.map((clientSlug) => [
         clientSlug,
+        // WARNING: Changing the secret name or id will cause a new secret to be created
         new secretsManager.Secret(this, `${clientSlug}-client-secret`, {
+          secretName: `${cdk.Stack.of(this).stackName}-client-${clientSlug}`,
           generateSecretString: {
             excludePunctuation: true,
             includeSpace: false,
