@@ -26,6 +26,14 @@ identityProviders:
       organization: nasa-impact
       caseSensitiveOriginalUsername: "false"
       syncMode: FORCE
+  - alias: keycloak-oidc
+    displayName: CILogon
+    providerId: cilogon
+    enabled: true
+    config:
+      clientId: $(env:CILOGON_CLIENT_ID)
+      clientSecret: $(env:CILOGON_CLIENT_SECRET)
+      defaultScope: openid profile email org.cilogon.userinfo
 
 identityProviderMappers:
   # If a user logs in with the github-org-check provider, they will be assigned the "admin" role

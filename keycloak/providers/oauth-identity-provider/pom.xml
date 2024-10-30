@@ -4,7 +4,7 @@
                              https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.nasa.impact.keycloak</groupId>
-    <artifactId>github-org-identity-provider</artifactId>
+    <artifactId>oauth-identity-provider</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 

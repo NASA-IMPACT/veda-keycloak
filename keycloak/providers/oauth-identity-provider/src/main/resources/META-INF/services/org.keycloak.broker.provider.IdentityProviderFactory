@@ -1,1 +1,2 @@
 org.nasa.impact.keycloak.provider.GithubOrgIdentityProviderFactory
+org.nasa.impact.keycloak.provider.CILogonIdentityProviderFactory
