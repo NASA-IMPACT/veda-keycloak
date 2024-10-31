@@ -48,9 +48,9 @@ export class KeycloakConfig extends Construct {
             includeSpace: false,
             secretStringTemplate: JSON.stringify({
               id: clientSlug,
-              auth_url: `${props.hostname}/realms/${realm}/protocol/openid-connect/auth",`,
-              token_url: `${props.hostname}/realms/${realm}/protocol/openid-connect/token",`,
-              userinfo_url: `${props.hostname}/realms/${realm}/protocol/openid-connect/userinfo",`,
+              auth_url: `${props.hostname}/realms/${realm}/protocol/openid-connect/auth`,
+              token_url: `${props.hostname}/realms/${realm}/protocol/openid-connect/token`,
+              userinfo_url: `${props.hostname}/realms/${realm}/protocol/openid-connect/userinfo`,
             }),
             generateStringKey: "secret",
             passwordLength: 16,
