@@ -39,7 +39,8 @@ export class KeycloakConfig extends Construct {
     const createdClientSecrets: clientSecretTuple =
       props.privateOauthClients.map(({ id: clientSlug, realm }) => [
         clientSlug,
-        // WARNING: Changing the secret name or id will cause a new secret to be created
+        // WARNING: Changing this construct (name, id, template) will cause new client
+        // secrets to be generated!
         new secretsManager.Secret(this, `${clientSlug}-client-secret`, {
           secretName: `${cdk.Stack.of(this).stackName}-client-${clientSlug}`,
           generateSecretString: {
