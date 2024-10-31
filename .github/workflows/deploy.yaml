@@ -57,7 +57,7 @@ jobs:
       - name: Get ConfigLambdaArn from CloudFormation
         id: get-lambda-arn
         run: |
-          echo "CONFIG_LAMBDA_ARN=$(jq -r '."VedaKeycloakStack-${{ vars.STAGE }}".ConfigLambdaArn' outputs.json)" >> $GITHUB_ENV
+          echo "CONFIG_LAMBDA_ARN=$(jq -r '."veda-keycloak-${{ vars.STAGE }}".ConfigLambdaArn' outputs.json)" >> $GITHUB_ENV
 
       - name: Run Apply Config
         run: npm run apply-config $CONFIG_LAMBDA_ARN
