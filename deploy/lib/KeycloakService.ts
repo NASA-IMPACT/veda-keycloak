@@ -13,6 +13,7 @@ interface KeycloakServiceProps extends StackInputProps {
   vpc: ec2.IVpc;
   databaseName: string;
   databaseInstance: rds.DatabaseInstance;
+  version: string;
 }
 
 export class KeycloakService extends Construct {
@@ -91,8 +92,15 @@ export class KeycloakService extends Construct {
             KC_DB_URL_PORT: ecsDbSecret("port"),
 
             // Admin
-            KEYCLOAK_ADMIN: ecsAdminSecret("username"),
-            KEYCLOAK_ADMIN_PASSWORD: ecsAdminSecret("password"),
+            ...(parseInt(props.version.split(".")[0]) >= 26
+              ? {
+                  KEYCLOAK_ADMIN: ecsAdminSecret("username"),
+                  KEYCLOAK_ADMIN_PASSWORD: ecsAdminSecret("password"),
+                }
+              : {
+                  KC_BOOTSTRAP_ADMIN_USERNAME: ecsAdminSecret("username"),
+                  KC_BOOTSTRAP_ADMIN_PASSWORD: ecsAdminSecret("password"),
+                }),
           },
         },
       }

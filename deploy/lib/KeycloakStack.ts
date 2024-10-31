@@ -36,6 +36,7 @@ export class KeycloakStack extends cdk.Stack {
       vpc,
       databaseName,
       databaseInstance: database,
+      version: props.keycloakVersion,
       ...props,
     });
 
