@@ -36,7 +36,7 @@ const privateOauthClients = getPrivateClientIds(join(CONFIG_DIR, "src"));
 privateOauthClients.length
   ? console.log(
       `Found client IDs in ${CONFIG_DIR}:\n${arrayStringify(
-        privateOauthClients
+        privateOauthClients.map(({ id }) => id)
       )}`
     )
   : console.warn(`No client IDs found in ${CONFIG_DIR}`);

@@ -13,7 +13,7 @@ interface KeycloakConfigConstructProps {
   hostname: string;
   configDir: string;
   idpOauthClientSecrets: Record<string, string>;
-  privateOauthClients: string[];
+  privateOauthClients: Array<{ id: string; realm: string }>;
 }
 
 type clientSecretTuple = Array<[string, secretsManager.ISecret]>;
@@ -37,7 +37,7 @@ export class KeycloakConfig extends Construct {
 
     // Create a client secret for each private client
     const createdClientSecrets: clientSecretTuple =
-      props.privateOauthClients.map((clientSlug) => [
+      props.privateOauthClients.map(({ id: clientSlug, realm }) => [
         clientSlug,
         // WARNING: Changing the secret name or id will cause a new secret to be created
         new secretsManager.Secret(this, `${clientSlug}-client-secret`, {
@@ -45,7 +45,12 @@ export class KeycloakConfig extends Construct {
           generateSecretString: {
             excludePunctuation: true,
             includeSpace: false,
-            secretStringTemplate: JSON.stringify({ id: clientSlug }),
+            secretStringTemplate: JSON.stringify({
+              id: clientSlug,
+              auth_url: `${props.hostname}/realms/${realm}/protocol/openid-connect/auth",`,
+              token_url: `${props.hostname}/realms/${realm}/protocol/openid-connect/token",`,
+              userinfo_url: `${props.hostname}/realms/${realm}/protocol/openid-connect/userinfo",`,
+            }),
             generateStringKey: "secret",
             passwordLength: 16,
           },

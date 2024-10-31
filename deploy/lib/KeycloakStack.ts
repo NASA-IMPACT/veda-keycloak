@@ -11,7 +11,7 @@ export interface StackInputProps {
   keycloakVersion: string;
   configDir: string;
   idpOauthClientSecrets: Record<string, string>;
-  privateOauthClients: string[];
+  privateOauthClients: Array<{ id: string; realm: string }>;
 }
 
 interface StackProps extends cdk.StackProps, StackInputProps {

@@ -20,8 +20,10 @@ export function getOauthSecrets(): Record<string, string> {
  * @param configDir Path to the directory containing the YAML files
  * @returns
  */
-export function getPrivateClientIds(configDir: string): string[] {
-  const clientIds: string[] = [];
+export function getPrivateClientIds(
+  configDir: string
+): { realm: string; id: string }[] {
+  const clientIds: { realm: string; id: string }[] = [];
 
   // Read files in the directory
   const files = fs
@@ -35,6 +37,7 @@ export function getPrivateClientIds(configDir: string): string[] {
 
       // Parse YAML
       const data = yaml.load(fileContents) as {
+        realm: string;
         clients?: Array<{ clientId: string; secret?: string }>;
       };
 
@@ -45,7 +48,7 @@ export function getPrivateClientIds(configDir: string): string[] {
           .filter((client) => client.secret)
           .forEach((client) => {
             if (client.clientId) {
-              clientIds.push(client.clientId);
+              clientIds.push({ id: client.clientId, realm: data.realm });
             } else {
               console.warn(
                 `Missing clientId for client ${JSON.stringify(
@@ -60,7 +63,7 @@ export function getPrivateClientIds(configDir: string): string[] {
     }
   }
 
-  clientIds.forEach(validateClientId);
+  clientIds.forEach((client) => validateClientId(client.id));
 
   return clientIds;
 }
