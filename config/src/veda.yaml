@@ -7,14 +7,14 @@ displayNameHtml: VEDA Ecosystem
 clients:
   - clientId: grafana
     name: Grafana
-    rootUrl: https://d3art7u1htuei0.cloudfront.net
+    rootUrl: https://grafana-keycloak.delta-backend.xyz
     secret: $(env:GRAFANA_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - https://d3art7u1htuei0.cloudfront.net/*
+      - https://grafana-keycloak.delta-backend.xyz/*
     webOrigins:
-      - https://d3art7u1htuei0.cloudfront.net
+      - https://grafana-keycloak.delta-backend.xyz
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
