@@ -91,8 +91,8 @@ export class KeycloakService extends Construct {
             KC_DB_URL_PORT: ecsDbSecret("port"),
 
             // Admin
-            KC_BOOTSTRAP_ADMIN_USERNAME: ecsAdminSecret("username"),
-            KC_BOOTSTRAP_ADMIN_PASSWORD: ecsAdminSecret("password"),
+            KEYCLOAK_ADMIN: ecsAdminSecret("username"),
+            KEYCLOAK_ADMIN_PASSWORD: ecsAdminSecret("password"),
           },
         },
       }
