@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -33,7 +34,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18 # Use the node version matching your project
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: |
