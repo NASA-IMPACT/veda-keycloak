@@ -17,8 +17,6 @@ services:
           path: ./keycloak
   keycloak-config-cli:
     build: ./config
-    volumes:
-      - ./config/src:/config
     depends_on:
       - keycloak
     environment:
