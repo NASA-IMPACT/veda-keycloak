@@ -58,12 +58,6 @@ authenticationFlows:
         priority: 20
         autheticatorFlow: false
         userSetupAllowed: false
-      - authenticator: identity-provider-redirector
-        authenticatorFlow: false
-        requirement: ALTERNATIVE
-        priority: 25
-        autheticatorFlow: false
-        userSetupAllowed: false
       - authenticatorFlow: true
         requirement: ALTERNATIVE
         priority: 30
