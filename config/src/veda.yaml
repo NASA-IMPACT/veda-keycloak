@@ -145,6 +145,13 @@ authenticationFlows:
         priority: 20
         autheticatorFlow: false
         userSetupAllowed: false
+      - authenticatorConfig: check-idp
+        authenticator: conditional-user-attribute
+        authenticatorFlow: false
+        requirement: DISABLED
+        priority: 1
+        autheticatorFlow: false
+        userSetupAllowed: false
       - authenticatorFlow: true
         requirement: CONDITIONAL
         priority: 21
@@ -170,6 +177,10 @@ authenticationFlows:
         autheticatorFlow: false
         userSetupAllowed: false
 authenticatorConfig:
+  - alias: check-idp
+    config:
+      attribute_expected_value: Google  # Permitted IDPs
+      attribute_name: idp_display_name
   - alias: cilogon
     config:
       defaultProvider: cilogon
