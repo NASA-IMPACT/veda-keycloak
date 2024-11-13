@@ -148,7 +148,7 @@ authenticationFlows:
       - authenticatorConfig: check-idp
         authenticator: conditional-user-attribute
         authenticatorFlow: false
-        requirement: DISABLED
+        requirement: REQUIRED
         priority: 1
         autheticatorFlow: false
         userSetupAllowed: false
