@@ -179,7 +179,7 @@ authenticationFlows:
 authenticatorConfig:
   - alias: check-idp
     config:
-      attribute_expected_value: Google  # Permitted IDPs
+      attribute_expected_value: Google##GitHub  # Permitted IDPs
       attribute_name: idp_display_name
   - alias: cilogon
     config:
