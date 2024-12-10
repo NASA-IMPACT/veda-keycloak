@@ -3,18 +3,24 @@ services:
   keycloak:
     build: ./keycloak
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KEYCLOAK_LOGLEVEL: INFO
       ROOT_LOGLEVEL: INFO
     ports:
       - 8080:8080
     command:
-      - start-dev
+      - start
+      - --optimized
+      - --http-enabled
+      - 'true'
+      - --hostname-strict
+      - 'false'
     develop:
       watch:
         - action: rebuild
           path: ./keycloak
+
   keycloak-config-cli:
     build: ./config
     depends_on:
