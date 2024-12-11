@@ -23,33 +23,44 @@ Configuration is stored within `config/src` in YAML files for each Keycloak real
 > [!IMPORTANT]
 > At each deployment, the keycloak-config-cli will likely overwrite changes made outside of the configuration stored within this repository for a given realm.
 
-#### Creating Clients
+## How To
 
-Creating a client application within Keycloak is done by editing the config YAML for the realm.
+Details step by step instructions on how to perform various tasks.
 
-##### Public Client
+### Add a new client
 
-A minimum example of a public client (ie a client that only runs within the frontend, such as single page application):
+Since this KeyCloak uses the configuration as code pattern, we can use all the tooling available for collaborating on code (primarily, Pull Requests, Code Review and Continuous Integration) to collaborate on configuration!
 
-```yaml
-clients:
-  - clientId: grafana
-    name: Grafana
-    publicClient: true
-    rootUrl: https://example.com
-    redirectUris:
-      - https://example.com/*
-    webOrigins:
-      - https://example.com
-    protocol: openid-connect
-    fullScopeAllowed: true
-```
+The folks who want a client created are in the best position to have all the information about the client (such as its name, root URL, callback URLs, etc). They create a pull request with this information to start this process.
 
-##### Private Client
+The file `config/src/veda.yaml` has all the config for the VEDA Keycloak instance. In the future, if we support multiple keycloak instances, each would have its own file.
 
-For a private client (ie a client that runs within the frontend, such as single page application), a secret will automatically be created and injected into the configuration runtime environemt at time of deployment. This secret will be made avaiable at an environment variable of `$SLUG_CLIENT_SECRET` where `$SLUG` represents a slugify version of the `clientId` value (e.g. a client with an id of `stac-api` will have a secret available at `STAC_API_CLIENT_SECRET`).
+New clients go under the `config` key. The following steps should help you fill out
+the config.
 
-A minimum example of a private client (note `publicClient: false` and `secret`):
+#### 1. Determine the type of client you need
+
+OAuth2 offers [two types of clients](https://oauth.net/2/client-types/) and KeyCloak supports both.
+
+##### Confidential Client
+
+The most common type of client is a [confidential client](https://oauth.net/2/client-types/), that can keep a shared
+client secret secret. Most web applications fall under this category, and we expect this to be the most used kind of client
+among VEDA services.
+
+For each confidential client, the client secret will be automatically securely generated and stored in
+[AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html). This secret can be be used directly
+by the client either by directly mounting it from AWS Secrets Manager, or by the service admins copy pasting it as necessary. By
+using AWS Secrets Manager as the 'source of truth' for client secrets, we are able to keep the entire config for each client
+in this repository, making self service possible and debugging easy.
+
+This secret will be made avaiable at an environment variable of
+`$SLUG_CLIENT_SECRET` where `$SLUG` represents a slugify version of the
+`clientId` value (e.g. a client with an id of `stac-api` will have a secret
+available at `STAC_API_CLIENT_SECRET`). The config will need to refer to this secret from
+the env var correctly, as seen in this example.
+
+A minimum example of a confidential client (note `publicClient: false` and `secret`):
 
 ```yaml
 clients:
@@ -66,7 +77,26 @@ clients:
     fullScopeAllowed: true
 ```
 
-##### Scopes, Roles, and Groups
+##### Public Client
+
+A [public client](https://oauth.net/2/client-types/) is usually a browser single page application (SPA) or mobile app
+that can not keep a client secret actually secret. A minimal example of setting up such a client is:
+
+```yaml
+clients:
+  - clientId: grafana
+    name: Grafana
+    publicClient: true
+    rootUrl: https://example.com
+    redirectUris:
+      - https://example.com/*
+    webOrigins:
+      - https://example.com
+    protocol: openid-connect
+    fullScopeAllowed: true
+```
+
+#### 2. Specify Scopes, Roles, and Groups
 
 Clients will typically have associated Scopes, Roles, and Groups.
 
@@ -74,7 +104,10 @@ Clients will typically have associated Scopes, Roles, and Groups.
 - Roles are collections of permissions that enable a typical function (e.g. system administration)
 - Groups are collections of users that we want to grant with roles.
 
-An exmaple:
+You don't have to specify this in your initial PR to create the client - this can
+be filled in later as you know more about your application's needs.
+
+An example:
 
 ```yaml
 clients:
@@ -142,7 +175,26 @@ groups:
         - Viewer
 ```
 
-#### Identity Provider OAuth Clients
+#### 3. Make the Pull Request & get it merged
+
+Once you have even an outline of your config set up, make a pull request with your
+change! It'll be reviewed by the folks maintaining the keycloak instance, and there may
+be a collaborative back and forth to get the config in shape. If you have used GitHub
+for code review before, this would be the exact same workflow! There would also be a clear
+trail left of choices made in the form of git commits and github comments.
+
+Eventually, your PR would get merged! Congratulations! The automation in this repository
+would now have created the client, and it's ready to be used.
+
+#### 4. Use the client secret
+
+If you're using a confidential client, you will now need access to the client secret. There
+are two ways to do this:
+
+1. If you're running on the same AWS account as this keycloak instance, you can directly read the secret from AWS Secrets Manager
+2. If you'd prefer to not do that, the client secret will be shared from the AWS Secrets Manager instance with you out of band.
+
+### Change configuration of Identity Provider OAuth Clients (such as CILogon or GitHub)
 
 When a third party service operates as an Identity Provider (IdP, e.g. CILogon or GitHub) for Keycloak, we must register that IdP within the Keycloak configuration. This involves registering the IdP's OAuth client ID and client secret within Keycloak's configuration (along with additional information about the OAuth endpoints used within the login process).
 
@@ -209,17 +261,18 @@ For this example, let's imagine we're attempting to insert the Client ID and Cli
 
 </details>
 
-### Service Provider Interfaces
+### Further customization with Service Provider Interfaces
 
-Beyond configuration, customization of Keycloak (e.g. a custom Identity Providers) may require development of custom Service Provider Interfaces (SPIs).
+Beyond configuration, customization of Keycloak (e.g. a custom Identity Providers) may require development of custom Service Provider Interfaces (SPIs). These are well supported and documented [Java interfaces](https://www.keycloak.org/docs/latest/server_development/#_providers) and [Javascript interfaces](https://www.keycloak.org/docs/latest/server_development/#_script_providers) that allow direct control over the entire authentication and authorization process.
 
-> [!TIP]
-> See the Service Provider Interfaces section in the [Server Developer Guide](https://www.keycloak.org/docs/latest/server_development/#_providers) for more details about how to create custom themes.
+*If* our needs get complicated enough that we need to use more than config, this is the upstream supported path available to us.
 
-### Themes
+To prove this is possible, see the `keycloak/providers/` directory in this
+repository.
 
-> [!TIP]
-> See the theme section in the [Server Developer Guide](https://www.keycloak.org/docs/latest/server_development/#_themes) for more details about how to create custom themes.
+### Look and Feel customization with Themes
+
+If we want to customize the look and feek of Keycloak, that is possible via [themes](https://www.keycloak.org/docs/latest/server_development/#_themes)
 
 ## Useful commands
 
