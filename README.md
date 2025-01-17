@@ -74,7 +74,7 @@ Clients will typically have associated Scopes, Roles, and Groups.
 - Roles are collections of permissions that enable a typical function (e.g. system administration)
 - Groups are collections of users that we want to grant with roles.
 
-An exmaple:
+An example of a client with associated scopes, roles, & groups:
 
 ```yaml
 clients:
