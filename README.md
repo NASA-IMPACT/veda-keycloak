@@ -4,7 +4,7 @@ An experimental Keycloak deployment for the VEDA project.
 
 ## Development
 
-- `config/src` - Configuration YAML files.
+- `keycloak-config-cli/config` - Configuration YAML files.
 - `keycloak/providers` - Custom Service Provider Interfaces.
 - `keycloak/themes` - Custom Keycloak themes.
 
@@ -18,7 +18,7 @@ We currently make use of the [keycloak-config-cli](https://github.com/adorsys/ke
 
 > `keycloak-config-cli` is a Keycloak utility to ensure the desired configuration state for a realm based on a JSON/YAML file. The format of the JSON/YAML file based on the export realm format.
 
-Configuration is stored within `config/src` in YAML files for each Keycloak realm managed.
+Configuration is stored within `keycloak-config-cli/config` in YAML files for each Keycloak realm managed.
 
 > [!IMPORTANT]
 > At each deployment, the keycloak-config-cli will likely overwrite changes made outside of the configuration stored within this repository for a given realm.
@@ -235,7 +235,7 @@ For this example, let's imagine we're attempting to insert the Client ID and Cli
    +     IDP_SECRET_ARN_GH: ${{ vars.IDP_SECRET_ARN_GH }}
    ```
 
-1. The `id` and `secret` will now be available when configuring Keycloak. We can add a secrtion like the following to make use of these variables with `config/src/master.yaml`:
+1. The `id` and `secret` will now be available when configuring Keycloak. We can add a secrtion like the following to make use of these variables with `keycloak-config-cli/config/master.yaml`:
 
    ```yaml
    identityProviders:

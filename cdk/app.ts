@@ -16,13 +16,20 @@ const {
   SSL_CERTIFICATE_ARN,
   HOSTNAME,
   STAGE = "dev",
-  KEYCLOAK_VERSION = "26.0.0",
-  CONFIG_DIR = join(__dirname, "..", "config"),
-} = process.env;
+  KEYCLOAK_VERSION = "26.0.5",
+  KEYCLOAK_CONFIG_CLI_VERSION = "latest-26",
+  CONFIG_DIR = join(__dirname, "..", "keycloak-config-cli"),
+} = Object.fromEntries(
+  // NOTE: In our GH Actions workflow,some env vars may be set as empty strings when the
+  // deployment environment's underlying variables are unset, so we filter them out to
+  // allow default values to be used.
+  Object.entries(process.env).filter(([k, v]) => v !== "")
+);
 
 assert(SSL_CERTIFICATE_ARN, "SSL_CERTIFICATE_ARN env var is required");
 assert(HOSTNAME, "HOSTNAME env var is required");
 
+console.log(`Extracting ARNs of IdP secrets from environment...`);
 const idpOauthClientSecrets = getOauthSecrets();
 Object.keys(idpOauthClientSecrets).length
   ? console.log(
@@ -32,7 +39,8 @@ Object.keys(idpOauthClientSecrets).length
     )
   : console.warn("No IdP client secrets found in the environment");
 
-const privateOauthClients = getPrivateClientIds(join(CONFIG_DIR, "src"));
+console.log(`Extracting OAuth client IDs from keycloak configuration...`);
+const privateOauthClients = getPrivateClientIds(join(CONFIG_DIR, "config"));
 privateOauthClients.length
   ? console.log(
       `Found client IDs in ${CONFIG_DIR}:\n${arrayStringify(
@@ -56,6 +64,7 @@ new KeycloakStack(app, `veda-keycloak-${STAGE}`, {
   sslCertificateArn: SSL_CERTIFICATE_ARN,
   hostname: HOSTNAME,
   keycloakVersion: KEYCLOAK_VERSION,
+  keycloakConfigCliVersion: KEYCLOAK_CONFIG_CLI_VERSION,
   configDir: CONFIG_DIR,
   idpOauthClientSecrets,
   privateOauthClients,

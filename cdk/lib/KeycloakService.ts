@@ -74,6 +74,9 @@ export class KeycloakService extends Construct {
           containerPort: appPort,
           image: ecs.ContainerImage.fromAsset("./keycloak", {
             platform: ecrAssets.Platform.LINUX_AMD64,
+            buildArgs: {
+              KEYCLOAK_VERSION: props.version,
+            },
           }),
           entryPoint: ["/opt/keycloak/bin/kc.sh"],
           command: ["start"],
