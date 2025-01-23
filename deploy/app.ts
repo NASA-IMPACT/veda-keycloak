@@ -23,6 +23,7 @@ const {
 assert(SSL_CERTIFICATE_ARN, "SSL_CERTIFICATE_ARN env var is required");
 assert(HOSTNAME, "HOSTNAME env var is required");
 
+console.log(`Extracting ARNs of IdP secrets from environment...`);
 const idpOauthClientSecrets = getOauthSecrets();
 Object.keys(idpOauthClientSecrets).length
   ? console.log(
@@ -32,6 +33,7 @@ Object.keys(idpOauthClientSecrets).length
     )
   : console.warn("No IdP client secrets found in the environment");
 
+console.log(`Extracting OAuth client IDs from keycloak configuration...`);
 const privateOauthClients = getPrivateClientIds(join(CONFIG_DIR, "src"));
 privateOauthClients.length
   ? console.log(
