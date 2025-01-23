@@ -35,8 +35,7 @@ The folks who want a client created are in the best position to have all the inf
 
 The file `config/src/veda.yaml` has all the config for the VEDA Keycloak instance. In the future, if we support multiple keycloak instances, each would have its own file.
 
-New clients go under the `config` key. The following steps should help you fill out
-the config.
+New clients go under the `config` key. The following steps should help you fill out the config.
 
 #### 1. Determine the type of client you need
 
@@ -44,21 +43,11 @@ OAuth2 offers [two types of clients](https://oauth.net/2/client-types/) and KeyC
 
 ##### Confidential Client
 
-The most common type of client is a [confidential client](https://oauth.net/2/client-types/), that can keep a shared
-client secret secret. Most web applications fall under this category, and we expect this to be the most used kind of client
-among VEDA services.
+The most common type of client is a [confidential client](https://oauth.net/2/client-types/), that can keep a shared client secret secret. Most web applications fall under this category, and we expect this to be the most used kind of client among VEDA services.
 
-For each confidential client, the client secret will be automatically securely generated and stored in
-[AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html). This secret can be be used directly
-by the client either by directly mounting it from AWS Secrets Manager, or by the service admins copy pasting it as necessary. By
-using AWS Secrets Manager as the 'source of truth' for client secrets, we are able to keep the entire config for each client
-in this repository, making self service possible and debugging easy.
+For each confidential client, the client secret will be automatically securely generated and stored in [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html). This secret can be be used directly by the client either by directly mounting it from AWS Secrets Manager, or by the service admins copy pasting it as necessary. By using AWS Secrets Manager as the 'source of truth' for client secrets, we are able to keep the entire config for each client in this repository, making self service possible and debugging easy.
 
-This secret will be made avaiable at an environment variable of
-`$SLUG_CLIENT_SECRET` where `$SLUG` represents a slugify version of the
-`clientId` value (e.g. a client with an id of `stac-api` will have a secret
-available at `STAC_API_CLIENT_SECRET`). The config will need to refer to this secret from
-the env var correctly, as seen in this example.
+This secret will be made avaiable at an environment variable of `$SLUG_CLIENT_SECRET` where `$SLUG` represents a slugify version of the `clientId` value (e.g. a client with an id of `stac-api` will have a secret available at `STAC_API_CLIENT_SECRET`). The config will need to refer to this secret from the env var correctly, as seen in this example.
 
 A minimum example of a confidential client (note `publicClient: false` and `secret`):
 
@@ -79,8 +68,7 @@ clients:
 
 ##### Public Client
 
-A [public client](https://oauth.net/2/client-types/) is usually a browser single page application (SPA) or mobile app
-that can not keep a client secret actually secret. A minimal example of setting up such a client is:
+A [public client](https://oauth.net/2/client-types/) is usually a browser single page application (SPA) or mobile app that can not keep a client secret actually secret. A minimal example of setting up such a client is:
 
 ```yaml
 clients:
@@ -104,8 +92,7 @@ Clients will typically have associated Scopes, Roles, and Groups.
 - Roles are collections of permissions that enable a typical function (e.g. system administration)
 - Groups are collections of users that we want to grant with roles.
 
-You don't have to specify this in your initial PR to create the client - this can
-be filled in later as you know more about your application's needs.
+You don't have to specify this in your initial PR to create the client - this can be filled in later as you know more about your application's needs.
 
 An example:
 
@@ -177,19 +164,13 @@ groups:
 
 #### 3. Make the Pull Request & get it merged
 
-Once you have even an outline of your config set up, make a pull request with your
-change! It'll be reviewed by the folks maintaining the keycloak instance, and there may
-be a collaborative back and forth to get the config in shape. If you have used GitHub
-for code review before, this would be the exact same workflow! There would also be a clear
-trail left of choices made in the form of git commits and github comments.
+Once you have even an outline of your config set up, make a pull request with your change! It'll be reviewed by the folks maintaining the keycloak instance, and there may be a collaborative back and forth to get the config in shape. If you have used GitHub for code review before, this would be the exact same workflow! There would also be a clear trail left of choices made in the form of git commits and github comments.
 
-Eventually, your PR would get merged! Congratulations! The automation in this repository
-would now have created the client, and it's ready to be used.
+Eventually, your PR would get merged! Congratulations! The automation in this repository would now have created the client, and it's ready to be used.
 
 #### 4. Use the client secret
 
-If you're using a confidential client, you will now need access to the client secret. There
-are two ways to do this:
+If you're using a confidential client, you will now need access to the client secret. There are two ways to do this:
 
 1. If you're running on the same AWS account as this keycloak instance, you can directly read the secret from AWS Secrets Manager
 2. If you'd prefer to not do that, the client secret will be shared from the AWS Secrets Manager instance with you out of band.
@@ -267,8 +248,7 @@ Beyond configuration, customization of Keycloak (e.g. a custom Identity Provider
 
 *If* our needs get complicated enough that we need to use more than config, this is the upstream supported path available to us.
 
-To prove this is possible, see the `keycloak/providers/` directory in this
-repository.
+To prove this is possible, see the `keycloak/providers/` directory in this repository.
 
 ### Look and Feel customization with Themes
 
