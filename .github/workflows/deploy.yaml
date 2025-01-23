@@ -1,22 +1,27 @@
-name: Deploy CDK
+name: 🚀 Deploy & Configure Service
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        description: "Environment to deploy to"
+        type: string
 
 permissions:
-  id-token: write
+  id-token: write  # Required for OIDC authentication w/ AWS
   contents: read
+
+concurrency:
+  group: ${{ inputs.environment }}
+  cancel-in-progress: false
+
+run-name: Deploy to ${{ inputs.environment }} environment by @${{ github.actor }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: dev
-    concurrency:
-      group: dev_env
-      cancel-in-progress: false
+    environment: ${{ inputs.environment }}
 
     steps:
       - name: Checkout the repository
@@ -51,7 +56,7 @@ jobs:
           KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
           KEYCLOAK_CONFIG_CLI_VERSION: ${{ vars.KEYCLOAK_CONFIG_CLI_VERSION }}
           SSL_CERTIFICATE_ARN: ${{ vars.SSL_CERTIFICATE_ARN }}
-          STAGE: ${{ vars.STAGE }}
+          STAGE: ${{ inputs.environment }}
           # Imported Identity Provider secrets
           IDP_SECRET_ARN_GH: ${{ vars.IDP_SECRET_ARN_GH }}
           IDP_SECRET_ARN_CILOGON: ${{ vars.IDP_SECRET_ARN_CILOGON }}
@@ -59,7 +64,7 @@ jobs:
       - name: Get ConfigLambdaArn from CloudFormation
         id: get-lambda-arn
         run: |
-          echo "CONFIG_LAMBDA_ARN=$(jq -r '."veda-keycloak-${{ vars.STAGE }}".ConfigLambdaArn' outputs.json)" >> $GITHUB_ENV
+          echo "CONFIG_LAMBDA_ARN=$(jq -r '."veda-keycloak-${{ inputs.environment }}".ConfigLambdaArn' outputs.json)" >> $GITHUB_ENV
 
       - name: Run Apply Config
         run: npm run apply-config $CONFIG_LAMBDA_ARN

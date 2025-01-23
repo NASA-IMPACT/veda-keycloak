@@ -1,0 +1,22 @@
+name: CICD
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types:
+      - created
+
+jobs:
+  deploy-dev:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      environment: dev
+
+  deploy-prod:
+    if: github.event_name == 'release'
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      environment: prod
