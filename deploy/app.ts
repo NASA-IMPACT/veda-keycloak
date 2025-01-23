@@ -19,7 +19,12 @@ const {
   KEYCLOAK_VERSION = "26.0.5",
   KEYCLOAK_CONFIG_CLI_VERSION = "latest-26",
   CONFIG_DIR = join(__dirname, "..", "config"),
-} = process.env;
+} = Object.fromEntries(
+  // NOTE: In our GH Actions workflow,some env vars may be set as empty strings when the
+  // deployment environment's underlying variables are unset, so we filter them out to
+  // allow default values to be used.
+  Object.entries(process.env).filter(([k, v]) => v !== "")
+);
 
 assert(SSL_CERTIFICATE_ARN, "SSL_CERTIFICATE_ARN env var is required");
 assert(HOSTNAME, "HOSTNAME env var is required");
