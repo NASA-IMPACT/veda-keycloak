@@ -33,7 +33,7 @@ Since this KeyCloak uses the configuration as code pattern, we can use all the t
 
 The folks who want a client created are in the best position to have all the information about the client (such as its name, root URL, callback URLs, etc). They create a pull request with this information to start this process.
 
-The file `config/src/veda.yaml` has all the config for the VEDA Keycloak instance. In the future, if we support multiple keycloak instances, each would have its own file.
+The file `keycloak-config-cli/config/veda.yaml` has all the config for the VEDA Keycloak instance. In the future, if we support multiple keycloak instances, each would have its own file.
 
 New clients go under the `config` key. The following steps should help you fill out the config.
 
