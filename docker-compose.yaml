@@ -47,7 +47,7 @@ services:
     develop:
       watch:
         - action: sync+restart
-          path: ./config/src
+          path: ./keycloak-config-cli/config
           target: /config
   grafana:
     profiles:

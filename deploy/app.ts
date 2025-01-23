@@ -18,7 +18,7 @@ const {
   STAGE = "dev",
   KEYCLOAK_VERSION = "26.0.5",
   KEYCLOAK_CONFIG_CLI_VERSION = "latest-26",
-  CONFIG_DIR = join(__dirname, "..", "config"),
+  CONFIG_DIR = join(__dirname, "..", "keycloak-config-cli"),
 } = Object.fromEntries(
   // NOTE: In our GH Actions workflow,some env vars may be set as empty strings when the
   // deployment environment's underlying variables are unset, so we filter them out to
@@ -40,7 +40,7 @@ Object.keys(idpOauthClientSecrets).length
   : console.warn("No IdP client secrets found in the environment");
 
 console.log(`Extracting OAuth client IDs from keycloak configuration...`);
-const privateOauthClients = getPrivateClientIds(join(CONFIG_DIR, "src"));
+const privateOauthClients = getPrivateClientIds(join(CONFIG_DIR, "config"));
 privateOauthClients.length
   ? console.log(
       `Found client IDs in ${CONFIG_DIR}:\n${arrayStringify(
