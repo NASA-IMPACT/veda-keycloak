@@ -1,4 +1,4 @@
-ARG KEYCLOAK_VERSION="26.0.5"
+ARG KEYCLOAK_VERSION
 
 # Stage 1: Build the custom Service Provider Interfaces
 FROM maven:latest AS builder

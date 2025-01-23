@@ -16,7 +16,7 @@ const {
   SSL_CERTIFICATE_ARN,
   HOSTNAME,
   STAGE = "dev",
-  KEYCLOAK_VERSION = "26.0.0",
+  KEYCLOAK_VERSION = "26.0.5",
   CONFIG_DIR = join(__dirname, "..", "config"),
 } = process.env;
 
