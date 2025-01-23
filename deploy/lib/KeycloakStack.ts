@@ -9,6 +9,7 @@ export interface StackInputProps {
   hostname: string;
   sslCertificateArn: string;
   keycloakVersion: string;
+  keycloakConfigCliVersion: string;
   configDir: string;
   idpOauthClientSecrets: Record<string, string>;
   privateOauthClients: Array<{ id: string; realm: string }>;
@@ -51,6 +52,7 @@ export class KeycloakStack extends cdk.Stack {
       configDir: props.configDir,
       idpOauthClientSecrets: props.idpOauthClientSecrets,
       privateOauthClients: props.privateOauthClients,
+      version: props.keycloakConfigCliVersion,
     });
 
     new KeycloakUrl(this, "url", {

@@ -14,6 +14,7 @@ interface KeycloakConfigConstructProps {
   configDir: string;
   idpOauthClientSecrets: Record<string, string>;
   privateOauthClients: Array<{ id: string; realm: string }>;
+  version: string;
 }
 
 type clientSecretTuple = Array<[string, secretsManager.ISecret]>;
@@ -25,15 +26,6 @@ export class KeycloakConfig extends Construct {
     props: KeycloakConfigConstructProps
   ) {
     super(scope, id);
-
-    const configTaskDef = new ecs.FargateTaskDefinition(this, "ConfigTaskDef", {
-      cpu: 256,
-      memoryLimitMiB: 512,
-    });
-
-    const assetImage = ecs.ContainerImage.fromAsset(props.configDir, {
-      platform: ecrAssets.Platform.LINUX_AMD64,
-    });
 
     // Create a client secret for each private client
     const createdClientSecrets: clientSecretTuple =
@@ -81,8 +73,17 @@ export class KeycloakConfig extends Construct {
       )
     );
 
+    const configTaskDef = new ecs.FargateTaskDefinition(this, "ConfigTaskDef", {
+      cpu: 256,
+      memoryLimitMiB: 512,
+    });
     configTaskDef.addContainer("ConfigContainer", {
-      image: assetImage,
+      image: ecs.ContainerImage.fromAsset(props.configDir, {
+        platform: ecrAssets.Platform.LINUX_AMD64,
+        buildArgs: {
+          KEYCLOAK_CONFIG_CLI_VERSION: props.version,
+        },
+      }),
       environment: {
         KEYCLOAK_URL: props.hostname,
         KEYCLOAK_AVAILABILITYCHECK_ENABLED: "true",

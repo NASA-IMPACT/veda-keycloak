@@ -17,6 +17,7 @@ const {
   HOSTNAME,
   STAGE = "dev",
   KEYCLOAK_VERSION = "26.0.5",
+  KEYCLOAK_CONFIG_CLI_VERSION = "latest-26",
   CONFIG_DIR = join(__dirname, "..", "config"),
 } = process.env;
 
@@ -58,6 +59,7 @@ new KeycloakStack(app, `veda-keycloak-${STAGE}`, {
   sslCertificateArn: SSL_CERTIFICATE_ARN,
   hostname: HOSTNAME,
   keycloakVersion: KEYCLOAK_VERSION,
+  keycloakConfigCliVersion: KEYCLOAK_CONFIG_CLI_VERSION,
   configDir: CONFIG_DIR,
   idpOauthClientSecrets,
   privateOauthClients,
