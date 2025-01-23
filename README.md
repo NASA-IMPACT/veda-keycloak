@@ -29,7 +29,7 @@ Details step by step instructions on how to perform various tasks.
 
 ### Add a new client
 
-Since this KeyCloak uses the configuration as code pattern, we can use all the tooling available for collaborating on code (primarily, Pull Requests, Code Review and Continuous Integration) to collaborate on configuration!
+Since this Keycloak uses the configuration as code pattern, we can use all the tooling available for collaborating on code (primarily, Pull Requests, Code Review and Continuous Integration) to collaborate on configuration!
 
 The folks who want a client created are in the best position to have all the information about the client (such as its name, root URL, callback URLs, etc). They create a pull request with this information to start this process.
 
@@ -39,7 +39,7 @@ New clients go under the `config` key. The following steps should help you fill 
 
 #### 1. Determine the type of client you need
 
-OAuth2 offers [two types of clients](https://oauth.net/2/client-types/) and KeyCloak supports both.
+OAuth2 offers [two types of clients](https://oauth.net/2/client-types/) and Keycloak supports both.
 
 ##### Confidential Client
 
