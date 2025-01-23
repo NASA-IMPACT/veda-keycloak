@@ -49,6 +49,7 @@ jobs:
           AWS_REGION: ${{ vars.AWS_REGION }}
           HOSTNAME: ${{ vars.HOSTNAME }}
           KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
+          KEYCLOAK_CONFIG_CLI_VERSION: ${{ vars.KEYCLOAK_CONFIG_CLI_VERSION }}
           SSL_CERTIFICATE_ARN: ${{ vars.SSL_CERTIFICATE_ARN }}
           STAGE: ${{ vars.STAGE }}
           # Imported Identity Provider secrets
