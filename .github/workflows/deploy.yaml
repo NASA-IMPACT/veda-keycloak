@@ -53,6 +53,7 @@ jobs:
           AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
           CDK_BOOTSTRAP_QUALIFIER: ${{ vars.CDK_BOOTSTRAP_QUALIFIER }}
+          VPC_ID: ${{ vars.VPC_ID }}
           PERMISSIONS_BOUNDARY_ARN: ${{ vars.PERMISSIONS_BOUNDARY_ARN }}
           HOSTNAME: ${{ vars.HOSTNAME }}
           KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
