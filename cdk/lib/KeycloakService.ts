@@ -6,10 +6,10 @@ import * as secretsManager from "aws-cdk-lib/aws-secretsmanager";
 import * as certificateManager from "aws-cdk-lib/aws-certificatemanager";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as rds from "aws-cdk-lib/aws-rds";
-import { StackInputProps } from "./KeycloakStack";
+import { StackProps } from "./KeycloakStack";
 import { Construct } from "constructs";
 
-interface KeycloakServiceProps extends StackInputProps {
+interface KeycloakServiceProps extends StackProps {
   vpc: ec2.IVpc;
   databaseName: string;
   databaseInstance: rds.DatabaseInstance;

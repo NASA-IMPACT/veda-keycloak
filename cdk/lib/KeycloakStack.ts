@@ -5,7 +5,7 @@ import { KeycloakService } from "./KeycloakService";
 import { KeycloakConfig } from "./KeycloakConfig";
 import { KeycloakUrl } from "./KeycloakUrl";
 
-export interface StackInputProps {
+export interface StackProps extends cdk.StackProps {
   hostname: string;
   sslCertificateArn: string;
   keycloakVersion: string;
@@ -13,9 +13,6 @@ export interface StackInputProps {
   configDir: string;
   idpOauthClientSecrets: Record<string, string>;
   privateOauthClients: Array<{ id: string; realm: string }>;
-}
-
-interface StackProps extends cdk.StackProps, StackInputProps {
   vpcId?: string;
 }
 

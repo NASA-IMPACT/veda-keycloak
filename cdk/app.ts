@@ -13,6 +13,7 @@ import {
 const {
   AWS_ACCOUNT_ID,
   AWS_REGION,
+  VPC_ID,
   CDK_BOOTSTRAP_QUALIFIER,
   SSL_CERTIFICATE_ARN,
   HOSTNAME,
@@ -62,6 +63,7 @@ new KeycloakStack(app, `veda-keycloak-${STAGE}`, {
    * want to deploy the stack to. */
   env: { account: AWS_ACCOUNT_ID, region: AWS_REGION },
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+  vpcId: VPC_ID,
   sslCertificateArn: SSL_CERTIFICATE_ARN,
   hostname: HOSTNAME,
   keycloakVersion: KEYCLOAK_VERSION,
