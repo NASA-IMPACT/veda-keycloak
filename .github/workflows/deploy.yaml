@@ -1,4 +1,4 @@
-name: 🚀 Deploy & Configure Service
+name: Deploy & Configure Service
 
 on:
   workflow_call:
@@ -9,7 +9,7 @@ on:
         type: string
 
 permissions:
-  id-token: write  # Required for OIDC authentication w/ AWS
+  id-token: write # Required for OIDC authentication w/ AWS
   contents: read
 
 concurrency:

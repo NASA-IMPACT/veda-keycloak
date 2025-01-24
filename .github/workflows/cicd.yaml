@@ -10,12 +10,14 @@ on:
 
 jobs:
   deploy-dev:
+    name: 🚀 Deploy to dev environment
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     uses: ./.github/workflows/deploy.yaml
     with:
       environment: dev
 
   deploy-prod:
+    name: 🚀 Deploy to prod environment
     if: github.event_name == 'release'
     uses: ./.github/workflows/deploy.yaml
     with:
