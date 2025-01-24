@@ -13,8 +13,9 @@ import {
 const {
   AWS_ACCOUNT_ID,
   AWS_REGION,
-  VPC_ID,
   CDK_BOOTSTRAP_QUALIFIER,
+  VPC_ID,
+  PERMISSIONS_BOUNDARY_ARN,
   SSL_CERTIFICATE_ARN,
   HOSTNAME,
   STAGE = "dev",
@@ -73,5 +74,8 @@ new KeycloakStack(app, `veda-keycloak-${STAGE}`, {
   privateOauthClients,
   synthesizer: CDK_BOOTSTRAP_QUALIFIER
     ? new cdk.DefaultStackSynthesizer({ qualifier: CDK_BOOTSTRAP_QUALIFIER })
+    : undefined,
+  permissionsBoundary: PERMISSIONS_BOUNDARY_ARN
+    ? cdk.PermissionsBoundary.fromArn(PERMISSIONS_BOUNDARY_ARN)
     : undefined,
 });
