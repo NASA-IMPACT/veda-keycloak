@@ -13,6 +13,7 @@ import {
 const {
   AWS_ACCOUNT_ID,
   AWS_REGION,
+  CDK_BOOTSTRAP_QUALIFIER,
   SSL_CERTIFICATE_ARN,
   HOSTNAME,
   STAGE = "dev",
@@ -68,4 +69,7 @@ new KeycloakStack(app, `veda-keycloak-${STAGE}`, {
   configDir: CONFIG_DIR,
   idpOauthClientSecrets,
   privateOauthClients,
+  synthesizer: CDK_BOOTSTRAP_QUALIFIER
+    ? new cdk.DefaultStackSynthesizer({ qualifier: CDK_BOOTSTRAP_QUALIFIER })
+    : undefined,
 });
