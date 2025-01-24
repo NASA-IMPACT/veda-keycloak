@@ -5,6 +5,7 @@ import * as ecrAssets from "aws-cdk-lib/aws-ecr-assets";
 import * as secretsManager from "aws-cdk-lib/aws-secretsmanager";
 import * as certificateManager from "aws-cdk-lib/aws-certificatemanager";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
+import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as rds from "aws-cdk-lib/aws-rds";
 import { StackProps } from "./KeycloakStack";
 import { Construct } from "constructs";
@@ -55,12 +56,30 @@ export class KeycloakService extends Construct {
     const appPort = 8080;
     const healthManagementPort = 9000;
 
+    // Production has a public NAT Gateway subnet, which causes the
+    // default load balancer creation to fail with too many subnets
+    // being selected per AZ. We create our own load balancer to
+    // allow us to select subnets and avoid the issue.
+    const loadBalancer = new elbv2.ApplicationLoadBalancer(
+      this,
+      "LoadBalancer",
+      {
+        vpc: props.vpc,
+        internetFacing: true,
+        vpcSubnets: {
+          subnetType: ec2.SubnetType.PUBLIC,
+          onePerAz: true,
+        },
+      }
+    );
+
     // Fargate Service with ALB, SSL, and Health Check
     this.albService = new ecsPatterns.ApplicationLoadBalancedFargateService(
       this,
       "service",
       {
         vpc: props.vpc,
+        loadBalancer,
         desiredCount: 1,
         publicLoadBalancer: true,
         listenerPort: 443,
