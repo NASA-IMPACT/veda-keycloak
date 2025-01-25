@@ -62,7 +62,7 @@ export class KeycloakService extends Construct {
     // allow us to select subnets and avoid the issue.
     const loadBalancer = new elbv2.ApplicationLoadBalancer(
       this,
-      "load-balancer",
+      "LoadBalancer",
       {
         vpc: props.vpc,
         internetFacing: true,
