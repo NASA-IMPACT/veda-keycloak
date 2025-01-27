@@ -3,7 +3,7 @@
  * and fetches the logs from CloudWatch Logs.
  *
  * This script is triggered via the CI/CD pipeline to apply the configuration changes to
- * the ECS after an updated ECS task with a new configuration is deploy. It should NOT 
+ * the ECS after an updated ECS task with a new configuration is deploy. It should NOT
  * be run locally.
  *
  * Usage: npm run apply-config <lambdaArn>
@@ -38,10 +38,19 @@ main()
 async function main() {
   const [, , lambdaArn] = process.argv;
   const { taskArn, clusterArn } = await invokeLambda(lambdaArn);
-  const task = await pollEcsTask(taskArn, clusterArn);
-  exitCode = task.containers[0]?.exitCode ?? null;
-  if (exitCode === null)
-    throw new Error("Could not retrieve exit code from the ECS task.");
+
+  let task;
+  let attempts = 0;
+  while (true) {
+    attempts++;
+    task = await pollEcsTask(taskArn, clusterArn);
+    exitCode = task.containers[0]?.exitCode ?? null;
+    console.log(`Task exit code: ${exitCode}`);
+    if (exitCode !== null) break;
+    else if (attempts >= 3)
+      throw new Error("Could not retrieve exit code from the ECS task.");
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
 
   const { logGroup, logStreamPrefix, region, containerName } =
     await getLogConfig(task.taskDefinitionArn);
