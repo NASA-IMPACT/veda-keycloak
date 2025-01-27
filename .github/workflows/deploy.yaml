@@ -33,7 +33,7 @@ jobs:
           role-to-assume: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
           role-session-name: GitHubActionsCDKDeploy
-          role-duration-seconds: 900 # Adjust as necessary
+          role-duration-seconds: 3600
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
