@@ -19,6 +19,7 @@ public class GithubOrgIdentityProvider extends GitHubIdentityProvider {
     
     private final String apiUrl;
     private final String organization;
+    private final String team;
 
     private static final String DEFAULT_SCOPE = "user:email read:org";
 
@@ -26,6 +27,7 @@ public class GithubOrgIdentityProvider extends GitHubIdentityProvider {
         super(session, config);
 
         organization = config.getConfig().get("organization");
+        team = config.getConfig().get("team");
         apiUrl = super.getUrlFromConfig(config, super.API_URL_KEY, super.DEFAULT_API_URL);
     }
 
@@ -38,13 +40,21 @@ public class GithubOrgIdentityProvider extends GitHubIdentityProvider {
             throw new IdentityBrokerException("User is not a member of the required organization.");
         }
         String username = user.getUsername();
-        boolean isMember = checkOrganizationMembership(accessToken, organization, username);
-        if (!isMember) {
+        boolean isOrgMember = checkOrganizationMembership(accessToken, organization, username);
+        if (!isOrgMember) {
             logger.warn(String.format("User '%s' is NOT a member of the required organization '%s.", username, organization));
             throw new IdentityBrokerException("User is not a member of the required organization.");
         }
 
-        logger.warn(String.format("User '%s' is a member of the required organization '%s.", username, organization));
+        if (team != null && !team.isEmpty()) {
+            boolean isTeamMember = checkTeamMembership(accessToken, organization, team, username);
+            if (!isTeamMember) {
+                logger.warn(String.format("User '%s' is NOT a member of the required team '%s' in organization '%s'.", username, team, organization));
+                throw new IdentityBrokerException("User is not a member of the required team.");
+            }
+        }
+
+        logger.info(String.format("User '%s' is a member of the required organization '%s` and team `%s'", username, organization, team));
         return user;
 	}
 
@@ -60,6 +70,20 @@ public class GithubOrgIdentityProvider extends GitHubIdentityProvider {
             return statusCode == 204;
         } catch (IOException e) {
             throw new IdentityBrokerException("Could not verify organization membership", e);
+        }
+    }
+
+    private boolean checkTeamMembership(String accessToken, String organization, String team, String username) {
+        String teamMembershipUrl = apiUrl + String.format("/orgs/%s/teams/%s/memberships/%s", organization, team, username);
+        try {
+            SimpleHttp.Response response = SimpleHttp.doGet(teamMembershipUrl, session)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .header("Accept", "application/vnd.github+json")
+                    .asResponse();
+            int statusCode = response.getStatus();
+            return statusCode == 200;
+        } catch (IOException e) {
+            throw new IdentityBrokerException("Could not verify team membership", e);
         }
     }
 
