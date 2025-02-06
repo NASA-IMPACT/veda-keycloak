@@ -46,6 +46,12 @@ public class GithubOrgIdentityProviderFactory extends AbstractIdentityProviderFa
                 .helpText("GitHub organization to check for membership.")
                 .type(ProviderConfigProperty.STRING_TYPE)
                 .add()
+            .property()
+                .name("team")
+                .label("Required GitHub Team")
+                .helpText("GitHub team to check for membership within the organization.")
+                .type(ProviderConfigProperty.STRING_TYPE)
+                .add()
             .build();
     }
 }
