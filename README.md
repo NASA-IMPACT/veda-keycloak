@@ -49,7 +49,7 @@ clients:
 
 For a private client (ie a client that runs within the frontend, such as single page application), a secret will automatically be created and injected into the configuration runtime environemt at time of deployment. This secret will be made available when configuring Keycloak via an environment variable `$SLUG_CLIENT_SECRET`, where `$SLUG` represents a slugify version of the `clientId` value (e.g. a client with an id of `stac-api` will have a secret available at `STAC_API_CLIENT_SECRET`).
 
-The generate client secret will be stored in AWS Secrets Manager in the same account & region as the deployment. The name of this secret will follow the following convention: `veda-keycloak-$stage-client-$clientId` (eg a Grafana client in the production deployment will generate the following secret: `veda-keycloak-prod-client-grafana`).  The generated secret contains the following information:
+The generated client secret will be stored in AWS Secrets Manager in the same account & region as the deployment. The name of this secret will follow the following convention: `veda-keycloak-$stage-client-$clientId` (eg a Grafana client in the production deployment will generate the following secret: `veda-keycloak-prod-client-grafana`).  The generated secret contains the following information:
 
 * `id`: OAuth Client ID
 * `secret`: OAuth Client Secret
