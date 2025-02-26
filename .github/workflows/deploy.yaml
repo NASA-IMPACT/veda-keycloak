@@ -12,7 +12,7 @@ on:
       environment:
         required: true
         description: "Environment to deploy to"
-        type: string
+        type: environment
 
 permissions:
   id-token: write # Required for OIDC authentication w/ AWS
