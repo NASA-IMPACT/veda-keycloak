@@ -7,6 +7,12 @@ on:
         required: true
         description: "Environment to deploy to"
         type: string
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        description: "Environment to deploy to"
+        type: string
 
 permissions:
   id-token: write # Required for OIDC authentication w/ AWS
