@@ -6,7 +6,7 @@
  * an updated ECS task with a new configuration is deploy. It most-likely should NOT be
  * run locally.
  *
- * Usage: npm run apply-config <lambdaArn>
+ * Usage: npm run apply-config <lambdaArn> <configEnvironmentJson>
  */
 
 import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
@@ -37,8 +37,8 @@ main()
   .finally(() => process.exit(exitCode));
 
 async function main() {
-  const [, , lambdaArn] = process.argv;
-  const { taskArn, clusterArn } = await invokeLambda(lambdaArn);
+  const [, , lambdaArn, configEnvJson = "{}"] = process.argv;
+  const { taskArn, clusterArn } = await invokeLambda(lambdaArn, configEnvJson);
 
   let task;
   let attempts = 0;
@@ -60,13 +60,15 @@ async function main() {
   return fetchCloudWatchLogs(logGroup, logStreamName, region);
 }
 
-async function invokeLambda(lambdaArn) {
+async function invokeLambda(lambdaArn, envJson) {
   const lambda = new LambdaClient({});
+  console.log("Calling Lambda function:", lambdaArn);
+  console.log("Providing function payload:", envJson);
   const response = await lambda.send(
     new InvokeCommand({
       FunctionName: lambdaArn,
       InvocationType: "RequestResponse",
-      Payload: new TextEncoder().encode(process.env.CONFIG_VARS),
+      Payload: new TextEncoder().encode(envJson),
     })
   );
   return JSON.parse(new TextDecoder().decode(response.Payload));
