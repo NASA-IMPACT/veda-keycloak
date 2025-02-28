@@ -65,7 +65,7 @@ async function invokeLambda(lambdaArn) {
     new InvokeCommand({
       FunctionName: lambdaArn,
       InvocationType: "RequestResponse",
-      Payload: new TextEncoder().encode(JSON.stringify({})),
+      Payload: new TextEncoder().encode(process.env.CONFIG_VARS),
     })
   );
   return JSON.parse(new TextDecoder().decode(response.Payload));

@@ -69,8 +69,6 @@ jobs:
           # Imported Identity Provider secrets
           IDP_SECRET_ARN_GH: ${{ vars.IDP_SECRET_ARN_GH }}
           IDP_SECRET_ARN_CILOGON: ${{ vars.IDP_SECRET_ARN_CILOGON }}
-          # Imported Keycloak config values
-          GRAFANA_CLIENT_URL: ${{ vars.GRAFANA_CLIENT_URL }}
 
       - name: Get ConfigLambdaArn from CloudFormation
         id: get-lambda-arn
@@ -79,3 +77,5 @@ jobs:
 
       - name: Run Apply Config
         run: npm run apply-config $CONFIG_LAMBDA_ARN
+        env:
+          CONFIG_VARS: ${{ toJSON(vars) }}

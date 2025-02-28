@@ -19,6 +19,9 @@ interface KeycloakConfigConstructProps {
 
 type clientSecretTuple = Array<[string, secretsManager.ISecret]>;
 
+/**
+ * Responsible for creating infrastructure to apply configuration to a Keycloak instance.
+ */
 export class KeycloakConfig extends Construct {
   constructor(
     scope: Construct,
@@ -77,7 +80,9 @@ export class KeycloakConfig extends Construct {
       cpu: 256,
       memoryLimitMiB: 512,
     });
+    const containerName = "ConfigContainer";
     configTaskDef.addContainer("ConfigContainer", {
+      containerName,
       image: ecs.ContainerImage.fromAsset(props.configDir, {
         platform: ecrAssets.Platform.LINUX_AMD64,
         buildArgs: {
@@ -119,6 +124,14 @@ export class KeycloakConfig extends Construct {
             cluster: '${props.cluster.clusterName}',
             taskDefinition: '${configTaskDef.taskDefinitionArn}',
             launchType: 'FARGATE',
+            overrides: {
+              containerOverrides: [
+                {
+                  name: ${JSON.stringify(containerName)},
+                  environment: event,
+                },
+              ],
+            },
             networkConfiguration: {
               awsvpcConfiguration: {
                 subnets: ${JSON.stringify(props.subnetIds)},
