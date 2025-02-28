@@ -25,7 +25,7 @@ clients:
       - basic
       - email
     protocolMappers:
-      # We ensure that user's client roles are injected into the userinfo so that Grafana 
+      # We ensure that user's client roles are injected into the userinfo so that Grafana
       # can retrieve them via the `role_attribute_path` JMES expression.
       - name: client-roles-claim
         protocol: openid-connect
@@ -40,8 +40,8 @@ clients:
           claim.name: roles
           jsonType.label: String
           multivalued: "true"
-          usermodel.clientRoleMapping.clientId: grafana  # Filter-out non-Grafana roles
-          usermodel.clientRoleMapping.rolePrefix:
+          usermodel.clientRoleMapping.clientId: grafana # Filter-out non-Grafana roles
+          usermodel.clientRoleMapping.rolePrefix: ""
 
 roles:
   client:

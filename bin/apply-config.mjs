@@ -2,9 +2,9 @@
  * This script calls the applyConfig Lambda function, waits for the ECS task to complete,
  * and fetches the logs from CloudWatch Logs.
  *
- * This script is triggered via the CI/CD pipeline to apply the configuration changes to
- * the ECS after an updated ECS task with a new configuration is deploy. It should NOT
- * be run locally.
+ * It is run in the CI/CD pipeline to apply the configuration changes to the ECS after
+ * an updated ECS task with a new configuration is deploy. It most-likely should NOT be
+ * run locally.
  *
  * Usage: npm run apply-config <lambdaArn>
  */
