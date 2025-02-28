@@ -24,49 +24,42 @@ clients:
       - roles
       - basic
       - email
-      - grafana:admin
-      - grafana:editor
-      - grafana:viewer
+    protocolMappers:
+      # We ensure that user's client roles are injected into the userinfo so that Grafana 
+      # can retrieve them via the `role_attribute_path` JMES expression.
+      - name: client-roles-claim
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "false"
+          lightweight.claim: "false"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+
+          claim.name: roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: grafana  # Filter-out non-Grafana roles
+          usermodel.clientRoleMapping.rolePrefix:
 
 roles:
   client:
     grafana:
-      - name: Administrator
-        description: Grafana Administrator
+      - name: GrafanaAdmin
+        description: Has full instance-wide permissions to manage all organizations, users, and global settings.
+      - name: Admin
+        description: Manages an organization's settings, users, dashboards, and data sources within that specific organization.
       - name: Editor
-        description: Grafana Editor
+        description: Can create, edit, and delete dashboards and data sources in an organization but cannot modify organization or user settings.
       - name: Viewer
-        description: Grafana Viewer
-
-clientScopeMappings:
-  grafana:
-    - clientScope: grafana:admin
-      roles:
-        - Administrator
-    - clientScope: grafana:editor
-      roles:
-        - Editor
-    - clientScope: grafana:viewer
-      roles:
-        - Viewer
-
-clientScopes:
-  # Grafana
-  - name: grafana:admin
-    description: Admin access to Grafana
-    protocol: openid-connect
-  - name: grafana:editor
-    description: Editor access to Grafana
-    protocol: openid-connect
-  - name: grafana:viewer
-    description: Viewer access to Grafana
-    protocol: openid-connect
+        description: Can only view dashboards and panels without the ability to create or modify content.
 
 groups:
   - name: System Administrators
     clientRoles:
       grafana:
-        - Administrator
+        - GrafanaAdmin
 
   - name: Developers
     clientRoles:
