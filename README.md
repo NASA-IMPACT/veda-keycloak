@@ -95,7 +95,7 @@ clients:
 ```
 
 > [!IMPORTANT]  
-> In the above example, we need to ensure that `GRAFANA_CLIENT_URL` is set in the Github Actions deployment environment to properly pass in values from the Github Environment at time of deployment/configuration.
+> For the above example, we also must ensure that Github Actions configuration step is updated to pass the `GRAFANA_CLIENT_URL` from Github Actions deployment environment into the step's environment (ie `env` statement).
 
 </details>
 
