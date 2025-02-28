@@ -1,6 +1,6 @@
 {
   "yaml.schemas": {
-    "https://jirutka.github.io/keycloak-json-schema/keycloak-realm-24.0.3.json": [
+    "https://jirutka.github.io/keycloak-json-schema/keycloak-realm-26.json": [
       "keycloak-config-cli/config/*.yaml",
       "keycloak-config-cli/config/*.yml"
     ]
