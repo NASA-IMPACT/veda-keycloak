@@ -30,7 +30,8 @@ main()
     logs.forEach((l) => console.log(l));
   })
   .catch((error) => {
-    console.error(`Error: ${error}`);
+    console.error("Error:", error);
+    console.error("Stack trace:", error.stack);
     exitCode = 1;
   })
   .finally(() => process.exit(exitCode));
@@ -65,7 +66,7 @@ async function invokeLambda(lambdaArn) {
     new InvokeCommand({
       FunctionName: lambdaArn,
       InvocationType: "RequestResponse",
-      Payload: new TextEncoder().encode(JSON.stringify({})),
+      Payload: new TextEncoder().encode(process.env.CONFIG_VARS),
     })
   );
   return JSON.parse(new TextDecoder().decode(response.Payload));

@@ -75,7 +75,10 @@ jobs:
         run: |
           echo "CONFIG_LAMBDA_ARN=$(jq -r '."veda-keycloak-${{ inputs.environment }}".ConfigLambdaArn' outputs.json)" >> $GITHUB_ENV
 
-      - name: Run Apply Config
+      - name: Process environment variables
+        id: process-env-vars
+        run: |
+          echo "CONFIG_VARS=$(echo '${{ toJSON(vars) }}' | jq -c .)" >> $GITHUB_ENV
+
+      - name: Apply Config
         run: npm run apply-config $CONFIG_LAMBDA_ARN
-        env:
-          GRAFANA_CLIENT_URL: ${{ vars.GRAFANA_CLIENT_URL }}
