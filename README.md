@@ -74,6 +74,31 @@ clients:
     fullScopeAllowed: true
 ```
 
+<details>
+
+<summary>Consider also using an environment variable for URLs for greater flexibility</summary>
+
+
+```yaml
+clients:
+  - clientId: grafana
+    name: Grafana
+    publicClient: false
+    secret: $(env:GRAFANA_CLIENT_SECRET)
+    rootUrl: $(env:GRAFANA_CLIENT_URL)$
+    redirectUris:
+      - $(env:GRAFANA_CLIENT_URL)$/*
+    webOrigins:
+      - $(env:GRAFANA_CLIENT_URL)$
+    protocol: openid-connect
+    fullScopeAllowed: true
+```
+
+> [!IMPORTANT]  
+> In the above example, we need to ensure that `GRAFANA_CLIENT_URL` is set in the Github Actions deployment environment to properly pass in values from the Github Environment at time of deployment/configuration.
+
+</details>
+
 ##### Scopes, Roles, and Groups
 
 Clients will typically have associated Scopes, Roles, and Groups.
