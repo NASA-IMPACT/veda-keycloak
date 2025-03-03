@@ -41,20 +41,21 @@ jobs:
           role-session-name: GitHubActionsCDKDeploy
           role-duration-seconds: 3600
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
         with:
-          node-version: 18 # Use the node version matching your project
-          cache: "npm"
+          python-version: "3.13"
+
+      - uses: astral-sh/setup-uv@v1
+        with:
+          version: "latest"
 
       - name: Install dependencies
-        run: |
-          npm install -g aws-cdk
-          npm ci  # Install project dependencies from package-lock.json
+        run: uv sync -p 3.13
 
       - name: Deploy CDK to dev environment
         run: |
-          cdk deploy --require-approval never --outputs-file outputs.json
+          npx cdk deploy --require-approval never --outputs-file outputs.json
         env:
           AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
@@ -76,4 +77,4 @@ jobs:
           echo "CONFIG_LAMBDA_ARN=$(jq -r '."veda-keycloak-${{ inputs.environment }}".ConfigLambdaArn' outputs.json)" >> $GITHUB_ENV
 
       - name: Apply Config
-        run: npm run apply-config $CONFIG_LAMBDA_ARN $(echo '${{ toJSON(vars) }}' | jq -c .)
+        run: uv run bin/apply-config.py $CONFIG_LAMBDA_ARN $(echo '${{ toJSON(vars) }}' | jq -c .)
