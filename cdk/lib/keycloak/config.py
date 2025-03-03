@@ -1,6 +1,10 @@
+import json
+import textwrap
+
 from aws_cdk import (
     Duration,
     CfnOutput,
+    Stack,
     aws_ecr_assets as ecr_assets,
     aws_ecs as ecs,
     aws_lambda as _lambda,
@@ -39,17 +43,20 @@ class KeycloakConfig(Construct):
             secret = secretsmanager.Secret(
                 self,
                 f"{client_slug}-client-secret",
-                secret_name=f"{self.node.try_get_context('stackName') or ''}-client-{client_slug}",
+                # WARNING: Changing this construct (name, id, template) will cause new client
+                # secrets to be generated!
+                secret_name=f"{Stack.of(self).stack_name}-client-{client_slug}",
                 generate_secret_string=secretsmanager.SecretStringGenerator(
                     exclude_punctuation=True,
                     include_space=False,
-                    secret_string_template=(
-                        f"{{"
-                        f'"id": "{client_slug}",'
-                        f'"auth_url": "{hostname}/realms/{realm}/protocol/openid-connect/auth",'
-                        f'"token_url": "{hostname}/realms/{realm}/protocol/openid-connect/token",'
-                        f'"userinfo_url": "{hostname}/realms/{realm}/protocol/openid-connect/userinfo"'
-                        f"}}"
+                    secret_string_template=json.dumps(
+                        {
+                            "id": client_slug,
+                            "auth_url": f"{hostname}/realms/{realm}/protocol/openid-connect/auth",
+                            "token_url": f"{hostname}/realms/{realm}/protocol/openid-connect/token",
+                            "userinfo_url": f"{hostname}/realms/{realm}/protocol/openid-connect/userinfo",
+                        },
+                        separators=(",", ":"),
                     ),
                     generate_string_key="secret",
                     password_length=16,
@@ -57,7 +64,7 @@ class KeycloakConfig(Construct):
             )
             created_client_secrets.append((client_slug, secret))
 
-        # Import the client secrets for existing/public clients
+        # Import the client secrets for each public clients
         imported_client_secrets = []
         for client_slug, secret_arn in idp_oauth_client_secrets.items():
             imported_secret = secretsmanager.Secret.from_secret_complete_arn(
@@ -65,7 +72,7 @@ class KeycloakConfig(Construct):
             )
             imported_client_secrets.append((client_slug, imported_secret))
 
-        # Combine newly created and imported secrets, then construct ECS secrets
+        # Create env vars from secrets for each client, e.g. GRAFANA_CLIENT_ID, GRAFANA_CLIENT_SECRET
         task_client_secrets = {}
         for client_slug, secret in created_client_secrets + imported_client_secrets:
             for key in ["id", "secret"]:
@@ -75,11 +82,9 @@ class KeycloakConfig(Construct):
                     secret, key
                 )
 
-        # Create the Fargate task definition for applying Keycloak configuration
         config_task_def = ecs.FargateTaskDefinition(
             self, "ConfigTaskDef", cpu=256, memory_limit_mib=512
         )
-
         container_name = "ConfigContainer"
         config_task_def.add_container(
             container_name,
@@ -109,70 +114,60 @@ class KeycloakConfig(Construct):
             },
         )
 
-        # Lambda to trigger ECS RunTask
+        # Helper to simplify triggering the ECS task
+        code = f"""
+            const {{ ECSClient, RunTaskCommand }} = require('@aws-sdk/client-ecs');
+
+            const ecsClient = new ECSClient({{}});
+
+            exports.handler = async function(event) {{
+                console.log('Received event:', event);
+                const params = {{
+                    cluster: "{cluster.cluster_name}",
+                    taskDefinition: "{config_task_def.task_definition_arn}",
+                    launchType: 'FARGATE',
+                    overrides: {{
+                        containerOverrides: [
+                            {{
+                                name: "{container_name}",
+                                environment: Object.entries(event).map(([name, value]) => ({{
+                                name,
+                                value: String(value),
+                                }})),
+                            }},
+                        ],
+                    }},
+                    networkConfiguration: {{
+                        awsvpcConfiguration: {{
+                            subnets: {json.dumps(subnet_ids)},
+                            securityGroups: {json.dumps(security_group_ids)},
+                            assignPublicIp: 'ENABLED',
+                        }},
+                    }},
+                }};
+
+                try {{
+                    const result = await ecsClient.send(new RunTaskCommand(params));
+                    console.log('ECS RunTask result:', result);
+                    const {{ taskArn, clusterArn }} = result.tasks[0];
+                    return {{ taskArn, clusterArn }};
+                }} catch (error) {{
+                    console.error('Error running ECS task:', error);
+                    throw new Error('Failed to start ECS task');
+                }}
+            }};
+        """
         apply_config_lambda = _lambda.Function(
             self,
             "ApplyConfigLambda",
-            code=_lambda.Code.from_inline(
-                """
-                const { ECSClient, RunTaskCommand } = require('@aws-sdk/client-ecs');
-
-                const ecsClient = new ECSClient({});
-
-                exports.handler = async function(event) {
-                  console.log('Received event:', event);
-                  const params = {
-                    cluster: '%s',
-                    taskDefinition: '%s',
-                    launchType: 'FARGATE',
-                    overrides: {
-                      containerOverrides: [
-                        {
-                          name: '%s',
-                          environment: Object.entries(event).map(([name, value]) => ({
-                            name,
-                            value: String(value),
-                          })),
-                        },
-                      ],
-                    },
-                    networkConfiguration: {
-                      awsvpcConfiguration: {
-                        subnets: %s,
-                        securityGroups: %s,
-                        assignPublicIp: 'ENABLED',
-                      },
-                    },
-                  };
-
-                  try {
-                    const result = await ecsClient.send(new RunTaskCommand(params));
-                    console.log('ECS RunTask result:', result);
-                    const { taskArn, clusterArn } = result.tasks[0];
-                    return { taskArn, clusterArn };
-                  } catch (error) {
-                    console.error('Error running ECS task:', error);
-                    throw new Error('Failed to start ECS task');
-                  }
-                };
-                """
-                % (
-                    cluster.cluster_name,
-                    config_task_def.task_definition_arn,
-                    container_name,
-                    str(subnet_ids),
-                    str(security_group_ids),
-                )
-            ),
+            code=_lambda.Code.from_inline(textwrap.dedent(code).strip()),
             handler="index.handler",
-            runtime=_lambda.Runtime.NODEJS_18_X,  # or NODEJS_LATEST if using a newer CDK
+            runtime=_lambda.Runtime.NODEJS_LATEST,
             timeout=Duration.minutes(5),
         )
 
-        # Grant the Lambda permission to run the ECS task
         config_task_def.grant_run(apply_config_lambda)
 
-        # Output the Lambda ARN
         CfnOutput(
             self,
             "ConfigLambdaArn",

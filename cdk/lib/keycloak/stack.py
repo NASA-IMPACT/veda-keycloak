@@ -33,7 +33,7 @@ class KeycloakStack(Stack):
         vpc = (
             ec2.Vpc.from_lookup(self, "Vpc", vpc_id=vpc_id)
             if vpc_id
-            else ec2.Vpc(self, "Vpc")
+            else ec2.Vpc(self, "vpc")
         )
 
         kc_db = KeycloakDatabase(
