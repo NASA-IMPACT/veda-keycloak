@@ -1,5 +1,5 @@
 #!/usr/bin/env -S uv run --script
-
+import os
 import logging
 
 from aws_cdk import (
@@ -14,8 +14,8 @@ from lib.settings import Settings
 
 logging.basicConfig(level=logging.INFO)
 
-
-settings = Settings()
+env_file = os.environ.get("ENV_FILE", ".env")
+settings = Settings(_env_file=env_file)
 
 logging.info("Extracting ARNs of IdP secrets from environment...")
 idp_oauth_client_secrets = get_oauth_secrets()
