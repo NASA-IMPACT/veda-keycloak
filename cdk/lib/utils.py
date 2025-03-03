@@ -62,14 +62,6 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
     return client_ids
 
 
-def array_stringify(arr: list[str]) -> str:
-    """
-    Converts a list of strings into a string with each item on its own line,
-    prefixed by '- ' and indented by a tab.
-    """
-    return "\n".join(f"\t- {item}" for item in arr)
-
-
 def validate_client_id(client_id: str) -> None:
     """
     Raises ValueError if the clientId does not match the /^[a-zA-Z0-9-]+$/ pattern.

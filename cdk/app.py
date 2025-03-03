@@ -9,10 +9,12 @@ from aws_cdk import (
 )
 
 from lib.keycloak import KeycloakStack
-from lib.utils import get_oauth_secrets, get_private_client_ids, array_stringify
+from lib.utils import get_oauth_secrets, get_private_client_ids
 from lib.settings import Settings
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 env_file = os.environ.get("ENV_FILE", ".env")
 settings = Settings(_env_file=env_file)
@@ -21,8 +23,8 @@ logging.info("Extracting ARNs of IdP secrets from environment...")
 idp_oauth_client_secrets = get_oauth_secrets()
 if idp_oauth_client_secrets:
     logging.info(
-        "Found IdP client secrets in environment:\n%s",
-        array_stringify(list(idp_oauth_client_secrets.keys())),
+        "Found IdP client secrets in environment: %s",
+        ", ".join(idp_oauth_client_secrets.keys()),
     )
 else:
     logging.warning("No IdP client secrets found in the environment.")
@@ -31,9 +33,9 @@ logging.info("Extracting OAuth client IDs from Keycloak configuration...")
 private_oauth_clients = get_private_client_ids(settings.keycloak_config_cli_config_dir)
 if private_oauth_clients:
     logging.info(
-        "Found client IDs in %s:\n%s",
+        "Found client IDs in %s: %s",
         settings.keycloak_config_cli_config_dir,
-        array_stringify([client["id"] for client in private_oauth_clients]),
+        ", ".join(client["id"] for client in private_oauth_clients),
     )
 else:
     logging.warning(
