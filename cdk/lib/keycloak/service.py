@@ -13,6 +13,9 @@ from aws_cdk import (
 
 
 class KeycloakService(Construct):
+    """
+    Responsible for creating infrastructure to deploy a Keycloak instance.
+    """
 
     albService: ecs_patterns.ApplicationLoadBalancedFargateService
     adminSecret: secretsmanager.Secret

@@ -10,6 +10,9 @@ from constructs import Construct
 
 
 class KeycloakConfig(Construct):
+    """
+    Responsible for creating infrastructure to apply configuration to a Keycloak instance.
+    """
     def __init__(
         self,
         scope: Construct,
