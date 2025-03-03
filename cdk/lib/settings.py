@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import DirectoryPath
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     keycloak_config_cli_version: str = "latest-26"
     keycloak_config_cli_app_dir: DirectoryPath = DirectoryPath("keycloak-config-cli")
 
+    model_config = SettingsConfigDict(extra="ignore")
+
     @property
     def is_production(self) -> bool:
         return self.stage == "prod"
@@ -24,3 +26,6 @@ class Settings(BaseSettings):
     @property
     def keycloak_config_cli_config_dir(self):
         return self.keycloak_config_cli_app_dir / "config"
+
+
+import os
