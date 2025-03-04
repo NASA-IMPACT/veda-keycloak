@@ -166,7 +166,7 @@ def fetch_cloudwatch_logs(log_group, log_stream_name, region):
             logGroupName=log_group,
             logStreamName=log_stream_name,
             startFromHead=True,
-            nextToken=next_token,
+            **({"nextToken": next_token} if next_token else {}),
         )
 
         events = response.get("events", [])
