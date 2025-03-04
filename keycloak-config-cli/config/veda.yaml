@@ -77,7 +77,53 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: STACEditor
         description: Can create and update STAC collections and items
-        
+
+clientScopeMappings:
+  stac:
+    - clientScope: stac:item:create
+      roles:
+        - STACAdmin
+        - STACEditor
+    - clientScope: stac:item:update
+      roles:
+        - STACAdmin
+        - STACEditor
+    - clientScope: stac:item:delete
+      roles:
+        - STACAdmin
+        - STACEditor
+    - clientScope: stac:collection:create
+      roles:
+        - STACAdmin
+        - STACEditor
+    - clientScope: stac:collection:update
+      roles:
+        - STACAdmin
+        - STACEditor
+    - clientScope: stac:collection:delete
+      roles:
+        - STACAdmin
+
+clientScopes:
+  - name: stac:item:create
+    description: Create STAC items
+    protocol: openid-connect
+  - name: stac:item:update
+    description: Update STAC items
+    protocol: openid-connect
+  - name: stac:item:delete
+    description: Delete STAC items
+    protocol: openid-connect
+  - name: stac:collection:create
+    description: Create STAC collections
+    protocol: openid-connect
+  - name: stac:collection:update
+    description: Update STAC collections
+    protocol: openid-connect
+  - name: stac:collection:delete
+    description: Delete STAC collections
+    protocol: openid-connect
+
 groups:
   - name: System Administrators
     clientRoles:
