@@ -42,7 +42,25 @@ clients:
           multivalued: "true"
           usermodel.clientRoleMapping.clientId: grafana # Filter-out non-Grafana roles
           usermodel.clientRoleMapping.rolePrefix: ""
-
+  - clientId: stac
+    name: STAC Catalog
+    rootUrl: $(env:STAC_CLIENT_URL)
+    secret: $(env:STAC_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - $(env:STAC_CLIENT_URL)/*
+    webOrigins:
+      - $(env:STAC_CLIENT_URL)
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
 roles:
   client:
     grafana:
@@ -54,22 +72,33 @@ roles:
         description: Can create, edit, and delete dashboards and data sources in an organization but cannot modify organization or user settings.
       - name: Viewer
         description: Can only view dashboards and panels without the ability to create or modify content.
-
+    stac:
+      - name: STACAdmin
+        description: Can create, update and delete STAC collections and items
+      - name: STACEditor
+        description: Can create and update STAC collections and items
+        
 groups:
   - name: System Administrators
     clientRoles:
       grafana:
         - GrafanaAdmin
+      stac:
+        - STACAdmin
 
   - name: Developers
     clientRoles:
       grafana:
         - Editor
+      stac:
+        - STACAdmin
 
   - name: Data Editors
     clientRoles:
       grafana:
         - Viewer
+      stac:
+        - STACEditor
 
 identityProviders:
   # CILogon
