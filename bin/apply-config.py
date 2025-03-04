@@ -18,22 +18,12 @@ import traceback
 import boto3
 
 
-def main():
+def main(lambda_arn: str, config_env_json: str):
     # Default exit code is None, which we'll interpret as 0 if no errors occur.
     exit_code = None
 
     try:
-        # Parse command-line arguments
-        if len(sys.argv) < 2:
-            print("Usage: python apply_config.py <lambdaArn> [configEnvironmentJson]")
-            return 1  # Non-zero exit if insufficient args
-
-        lambda_arn = sys.argv[1]
-        config_env_json = sys.argv[2] if len(sys.argv) > 2 else "{}"
-
         # 1) Invoke the Lambda function
-        print(f"Calling Lambda function: {lambda_arn}")
-        print(f"Providing function payload: {config_env_json}")
         response_payload = invoke_lambda(lambda_arn, config_env_json)
 
         # Response should contain { "taskArn": "...", "clusterArn": "..." }
@@ -194,4 +184,15 @@ def fetch_cloudwatch_logs(log_group, log_stream_name, region):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # Parse command-line arguments
+    if len(sys.argv) < 2:
+        print("Usage: python apply_config.py <lambdaArn> [configEnvironmentJson]")
+        sys.exit(1)
+
+    lambda_arn = sys.argv[1]
+    assert lambda_arn, f"Must provide valid Lambda ARN, got {lambda_arn=}"
+    config_env_json = sys.argv[2] if len(sys.argv) > 2 else "{}"
+
+    print(f"{lambda_arn=}")
+    print(f"{config_env_json=}")
+    sys.exit(main(lambda_arn, config_env_json))
