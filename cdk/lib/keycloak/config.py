@@ -171,5 +171,6 @@ class KeycloakConfig(Construct):
         CfnOutput(
             self,
             "ConfigLambdaArn",
+            key="ConfigLambdaArn",
             value=apply_config_lambda.function_arn,
         )
