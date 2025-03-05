@@ -61,6 +61,13 @@ clients:
       - roles
       - basic
       - email
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+
 roles:
   client:
     grafana:
@@ -73,36 +80,36 @@ roles:
       - name: Viewer
         description: Can only view dashboards and panels without the ability to create or modify content.
     stac:
-      - name: STACAdmin
+      - name: Admin
         description: Can create, update and delete STAC collections and items
-      - name: STACEditor
+      - name: Editor
         description: Can create and update STAC collections and items
 
 clientScopeMappings:
   stac:
     - clientScope: stac:item:create
       roles:
-        - STACAdmin
-        - STACEditor
+        - Admin
+        - Editor
     - clientScope: stac:item:update
       roles:
-        - STACAdmin
-        - STACEditor
+        - Admin
+        - Editor
     - clientScope: stac:item:delete
       roles:
-        - STACAdmin
-        - STACEditor
+        - Admin
+        - Editor
     - clientScope: stac:collection:create
       roles:
-        - STACAdmin
-        - STACEditor
+        - Admin
+        - Editor
     - clientScope: stac:collection:update
       roles:
-        - STACAdmin
-        - STACEditor
+        - Admin
+        - Editor
     - clientScope: stac:collection:delete
       roles:
-        - STACAdmin
+        - Admin
 
 clientScopes:
   - name: stac:item:create
@@ -130,21 +137,21 @@ groups:
       grafana:
         - GrafanaAdmin
       stac:
-        - STACAdmin
+        - Admin
 
   - name: Developers
     clientRoles:
       grafana:
         - Editor
       stac:
-        - STACAdmin
+        - Admin
 
   - name: Data Editors
     clientRoles:
       grafana:
         - Viewer
       stac:
-        - STACEditor
+        - Editor
 
 identityProviders:
   # CILogon
