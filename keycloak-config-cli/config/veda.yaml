@@ -42,6 +42,31 @@ clients:
           multivalued: "true"
           usermodel.clientRoleMapping.clientId: grafana # Filter-out non-Grafana roles
           usermodel.clientRoleMapping.rolePrefix: ""
+  - clientId: stac
+    name: STAC Catalog
+    rootUrl: $(env:STAC_CLIENT_URL)
+    secret: $(env:STAC_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - $(env:STAC_CLIENT_URL)/*
+    webOrigins:
+      - $(env:STAC_CLIENT_URL)
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
 
 roles:
   client:
@@ -54,22 +79,79 @@ roles:
         description: Can create, edit, and delete dashboards and data sources in an organization but cannot modify organization or user settings.
       - name: Viewer
         description: Can only view dashboards and panels without the ability to create or modify content.
+    stac:
+      - name: Admin
+        description: Can create, update and delete STAC collections and items
+      - name: Editor
+        description: Can create and update STAC collections and items
+
+clientScopeMappings:
+  stac:
+    - clientScope: stac:item:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:delete
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:delete
+      roles:
+        - Admin
+
+clientScopes:
+  - name: stac:item:create
+    description: Create STAC items
+    protocol: openid-connect
+  - name: stac:item:update
+    description: Update STAC items
+    protocol: openid-connect
+  - name: stac:item:delete
+    description: Delete STAC items
+    protocol: openid-connect
+  - name: stac:collection:create
+    description: Create STAC collections
+    protocol: openid-connect
+  - name: stac:collection:update
+    description: Update STAC collections
+    protocol: openid-connect
+  - name: stac:collection:delete
+    description: Delete STAC collections
+    protocol: openid-connect
 
 groups:
   - name: System Administrators
     clientRoles:
       grafana:
         - GrafanaAdmin
+      stac:
+        - Admin
 
   - name: Developers
     clientRoles:
       grafana:
         - Editor
+      stac:
+        - Admin
 
   - name: Data Editors
     clientRoles:
       grafana:
         - Viewer
+      stac:
+        - Editor
 
 identityProviders:
   # CILogon
