@@ -53,7 +53,8 @@ def main(lambda_arn: str, config_env_json: str):
                 break
 
             if attempts >= 3:
-                raise RuntimeError("Could not retrieve exit code from the ECS task.")
+                print("Could not retrieve exit code from the ECS task. Moving on...")
+                break
 
             # Wait briefly before re-checking
             time.sleep(0.5)
