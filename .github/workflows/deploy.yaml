@@ -46,9 +46,7 @@ jobs:
         with:
           python-version: "3.13"
 
-      - uses: astral-sh/setup-uv@v1
-        with:
-          version: "latest"
+      - uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
         run: uv sync -p 3.13
