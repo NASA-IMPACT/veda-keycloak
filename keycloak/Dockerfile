@@ -1,4 +1,3 @@
-ARG KEYCLOAK_VERSION
 
 # Stage 1: Build the custom Service Provider Interfaces
 FROM maven:latest AS builder
@@ -10,4 +9,4 @@ RUN ./build_and_collect_jars.sh
 FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} AS keycloak
 COPY --from=builder /workspace/.jars/*.jar /opt/keycloak/providers/
 COPY themes /opt/keycloak/themes
-RUN /opt/keycloak/bin/kc.sh build
+RUN /opt/keycloak/bin/kc.sh build --features=health --optimized
