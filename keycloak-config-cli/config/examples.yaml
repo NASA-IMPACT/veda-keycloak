@@ -1,0 +1,25 @@
+---
+enabled: $(env:ENABLE_EXAMPLES:-false)
+realm: examples
+displayName: Example Applications
+displayNameHtml: Example Applications
+
+clients:
+  - clientId: eoapi-example
+    name: Example Client using eoapi-auth-utils
+    rootUrl: http://localhost:8001
+    publicClient: true
+    attributes: {}
+    redirectUris:
+      - http://localhost:8001/*
+    webOrigins:
+      - http://localhost:8001
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email

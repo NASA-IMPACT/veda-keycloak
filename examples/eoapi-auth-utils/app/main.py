@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from eoapi.auth_utils import OpenIdConnectAuth
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
+from tenacity import Retrying, stop_after_attempt, wait_exponential
 
 
 class AuthSettings:
@@ -48,10 +49,15 @@ def root():
 
 
 if settings.openid_configuration_url:
-    oidc_auth = OpenIdConnectAuth(
-        openid_configuration_url=settings.openid_configuration_url,
-        openid_configuration_internal_url=settings.openid_configuration_internal_url,
-    )
+    # NOTE: In a docker-compose environment, the keycloak service may not be ready when the app starts.
+    for attempt in Retrying(
+        stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, max=5)
+    ):
+        with attempt:
+            oidc_auth = OpenIdConnectAuth(
+                openid_configuration_url=settings.openid_configuration_url,
+                openid_configuration_internal_url=settings.openid_configuration_internal_url,
+            )
 
     # Implement your custom app-specific auth logic here...
     restricted_routes = {
