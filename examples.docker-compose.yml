@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  # server-side-client:
+  #   build: ./server-side-client
+  #   ports:
+  #     - "8000:8001"
+  #   environment:
+  #     - KEYCLOAK_URL=http://localhost:8080
+  #     - KEYCLOAK_REALM=examples
+  #     - KEYCLOAK_CLIENT_ID=example-client
+  #     - KEYCLOAK_CLIENT_SECRET=your-client-secret
+  #     - APP_HOST=http://localhost:8001
+  #   volumes:
+  #     - ./server-side-client/app:/app/app
+  #   restart: unless-stopped
+
+  eoapi-example:
+    build: ./examples/eoapi-auth-utils
+    ports:
+      - "8001:8001"
+    environment:
+      - KEYCLOAK_URL=http://localhost:8080
+      - KEYCLOAK_REALM=examples
+    depends_on:
+      - keycloak
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./examples/eoapi-auth-utils/app
+          target: /app/app
+    restart: unless-stopped
