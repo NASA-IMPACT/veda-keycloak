@@ -74,9 +74,7 @@ clients:
     publicClient: false
     attributes: {}
     redirectUris:
-      -  https://staging.hub.maap.2i2c.cloud/*
-    webOrigins:
-      -  https://staging.hub.maap.2i2c.cloud
+      -  https://staging.hub.maap.2i2c.cloud/hub/oauth_callback
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
