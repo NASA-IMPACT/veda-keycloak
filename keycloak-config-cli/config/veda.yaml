@@ -116,8 +116,8 @@ roles:
         description: Access to extra large instances (~29.7GB RAM)
       - name: CPU:XXL
         description: Access to extra extra large instances (~60.6GB RAM)
-      - name: CPU:XXL
-        description: Access to extra extra large instances (~121GB RAM)
+      - name: CPU:XXXL
+        description: Access to extra extra extra large instances (~121GB RAM)
       - name: GPU:T4
         description: Access to T4 GPU instances (1 T4 GPU)
 
