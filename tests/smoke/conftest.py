@@ -1,24 +1,24 @@
-import configparser
 import os
 import pytest
-from pathlib import Path
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-def pytest_addoption(parser):
-    parser.addoption("--env", action="store", default="local", help="Environment to run tests against")
+class Settings(BaseSettings):
+    hostname: str = os.getenv("HOSTNAME", "http://localhost:8080")
+
+    model_config = SettingsConfigDict(
+        env_file=".env",  # Load from .env if available (only if HOSTNAME is not set)
+        extra="ignore"
+    )
 
 
 @pytest.fixture(scope='session')
-def config(pytestconfig):
-    env = pytestconfig.getoption("--env")
-    config_file = Path(__file__).parent / "config" / f"settings_{env}.ini"
+def settings():
+    """Returns an instance of Settings"""
+    return Settings()
 
-    if not os.path.exists(config_file):
-        raise FileNotFoundError(f"Config file '{config_file}' not found!")
 
-    parser = configparser.ConfigParser()
-    parser.read(config_file)
-
-    print(f"Loaded config from {config_file}: {dict(parser.items('server'))}")
-
-    return parser
+@pytest.fixture(scope='session')
+def base_url(settings):
+    """Extracts base_url from settings"""
+    return settings.hostname

@@ -10,42 +10,19 @@
    git clone git@github.com:NASA-IMPACT/veda-keycloak.git
    ```
 
-   Navigate to the project test directory:
+   Navigate to the project directory:
 
    ```bash
-   cd veda-keycloak/tests
+   cd veda-keycloak
    ```
 
-2. **Create and Activate a Virtual Environment**
+2. **Install Dependencies**
 
-   It's recommended to use a virtual environment to manage dependencies. Create and activate one using the following
-   commands:
-
-    - On **macOS/Linux**:
-
-      ```bash
-      python3 -m venv venv
-      source venv/bin/activate
-      ```
-
-    - On **Windows**:
-
-      ```bash
-      python -m venv venv
-      .\venv\Scripts\activate
-      ```
-
-3. **Install Dependencies**
-
-   With the virtual environment active, install the required Python packages:
+   Using uv, install the required dependencies:
 
    ```bash
-   pip install -r requirements.txt
+   uv sync
    ```
-
-4. **Configure the Test Settings**
-
-   Ensure that the `config/settings_<env>.ini` file exists and is correctly set up.
 
 ## Running the Tests
 
@@ -54,7 +31,7 @@
    Execute all tests using `pytest`:
 
    ```bash
-   pytest
+   uv run pytest
    ```
 
    This command will discover and run all test files matching the pattern `test_*.py` or `*_test.py` within the current
@@ -66,7 +43,7 @@
    To execute tests in a particular test file:
 
    ```bash
-   pytest smoke/test_health_check.py --env=prod
+   uv run pytest tests/smoke/test_health_check.py
    ```
 
 3. **Run a Specific Test Function**
@@ -74,7 +51,7 @@
    To run a specific test function within a test file:
 
    ```bash
-   pytest smoke/test_health_check.py::test_keycloak_health_check --env=local
+   uv run pytest tests/smoke/test_health_check.py::test_keycloak_health_check
    ```
 
 ## Additional Pytest Options
@@ -82,17 +59,17 @@
 - **Verbose Output**: For more detailed output, add the `-v` flag:
 
   ```bash
-  pytest -v
+  uv run pytest -v
   ```
 
 - **Stop After First Failure**: To halt the test run after the first failure, use the `-x` option:
 
   ```bash
-  pytest -x
+  uv run pytest -x
   ```
 
 - **Show Local Variables on Failure**: To display local variables in tracebacks, include the `-l` flag:
 
   ```bash
-  pytest -l
+  uv run pytest -l
   ```

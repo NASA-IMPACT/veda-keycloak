@@ -11,7 +11,7 @@ services:
       - 8080:8080
     command:
       - start
-      - --health-enabled=true
+      - --optimized
       - --http-enabled
       - 'true'
       - --hostname-strict
@@ -22,7 +22,7 @@ services:
           path: ./keycloak
 
   keycloak-config-cli:
-    build: ./config
+    build: ./keycloak-config-cli
     depends_on:
       - keycloak
     environment:
