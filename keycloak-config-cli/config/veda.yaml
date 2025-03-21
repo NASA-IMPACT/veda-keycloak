@@ -66,6 +66,21 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+  - clientId: jupyterhub-maap
+    name: MAAP JupyterHub
+    # Staging JupyterHub is at https://staging.hub.maap.2i2c.cloud/
+    # Prod JupyterHub is at https://hub.maap.2i2c.cloud/
+    rootUrl: $(env:JUPYTERHUB_MAAP_URL)
+    secret: $(env:JUPYTERHUB_MAAP_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      -  $(env:JUPYTERHUB_MAAP_URL)/hub/oauth_callback
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - basic
+      - profile
 
 roles:
   client:
@@ -83,8 +98,60 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+    jupyterhub-maap:
+      - name: Admin
+        description: Can use the JupyterHub Admin Panel
+      - name: StagingAccess
+        description: Can access staging JupyterHubs
+      - name: CPU:XS
+        description: Access to extra small instances (~1.9GB RAM)
+      - name: CPU:S
+        description: Access to small instances (~3.7GB RAM)
+      - name: CPU:M
+        description: Access to medium instances (~7.4GB RAM)
+      - name: CPU:L
+        description: Access to large instances (~14.8GB RAM)
+      - name: CPU:XL
+        description: Access to extra large instances (~29.7GB RAM)
+      - name: CPU:XXL
+        description: Access to extra extra large instances (~60.6GB RAM)
+      - name: CPU:XXXL
+        description: Access to extra extra extra large instances (~121GB RAM)
+      - name: GPU:T4
+        description: Access to T4 GPU instances (1 T4 GPU)
 
 clientScopeMappings:
+  jupyterhub-maap:
+    - clientScope: jupyterhub:admin
+      roles:
+        - Admin
+    - clientScope: jupyterhub:cpu:xs
+      roles:
+        - CPU:XS
+    - clientScope: jupyterhub:cpu:s
+      roles:
+        - CPU:S
+    - clientScope: jupyterhub:cpu:m
+      roles:
+        - CPU:M
+    - clientScope: jupyterhub:cpu:l
+      roles:
+        - CPU:L
+    - clientScope: jupyterhub:cpu:xl
+      roles:
+        - CPU:XL
+    - clientScope: jupyterhub:cpu:xxl
+      roles:
+        - CPU:XXL
+    - clientScope: jupyterhub:cpu:xxxl
+      roles:
+        - CPU:XXXL
+    - clientScope: jupyterhub:gpu:t4
+      roles:
+        - GPU:T4
+    - clientScope: jupyterhub:staging
+      roles:
+        - StagingAccess
   stac:
     - clientScope: stac:item:create
       roles:
@@ -129,6 +196,36 @@ clientScopes:
   - name: stac:collection:delete
     description: Delete STAC collections
     protocol: openid-connect
+  - name: jupyterhub:admin
+    description: Access JupyterHub Admin Interface
+    protocol: openid-connect
+  - name: jupyterhub:cpu:xs
+    description: Access to extra small instances (~1.9GB RAM)
+    protocol: openid-connect
+  - name: jupyterhub:cpu:s
+    description: Access to small instances (~3.7GB RAM)
+    protocol: openid-connect
+  - name: jupyterhub:cpu:m
+    description: Access to medium instances (~7.4GB RAM)
+    protocol: openid-connect
+  - name: jupyterhub:cpu:l
+    description: Access to large instances (~14.8GB RAM)
+    protocol: openid-connect
+  - name: jupyterhub:cpu:xl
+    description: Access to extra large instances (~29.7GB RAM)
+    protocol: openid-connect
+  - name: jupyterhub:cpu:xxl
+    description: Access to extra extra large instances (~60.6GB RAM)
+    protocol: openid-connect
+  - name: jupyterhub:cpu:xxxl
+    description: Access to extra extra large instances (~121GB RAM)
+    protocol: openid-connect
+  - name: jupyterhub:gpu:t4
+    description: Access to T4 GPU instances (1 T4 GPU)
+    protocol: openid-connect
+  - name: jupyterhub:staging
+    description: Access to staging JupyterHub instances
+    protocol: openid-connect
 
 groups:
   - name: System Administrators
@@ -151,6 +248,29 @@ groups:
         - Viewer
       stac:
         - Editor
+
+  - name: JupyterHub MAAP Admin
+    clientRoles:
+      jupyterhub-maap-staging:
+        - Admin
+        - StagingAccess
+
+  - name: JupyterHub MAAP User
+    clientRoles:
+      jupyterhub-maap-staging:
+        - CPU:XS
+        - CPU:S
+        - CPU:M
+        - CPU:L
+        - CPU:XL
+        - CPU:XXL
+        - CPU:XXL
+        - CPU:XXXL
+
+  - name: JupyterHub MAAP GPU User
+    clientRoles:
+      jupyterhub-maap-staging:
+        - GPU:T4
 
 identityProviders:
   # CILogon
