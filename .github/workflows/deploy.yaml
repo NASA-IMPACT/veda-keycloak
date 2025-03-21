@@ -27,7 +27,9 @@ run-name: Deploy to ${{ inputs.environment }} environment by @${{ github.actor }
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: 
+      name: ${{ inputs.environment }}
+      url: ${{ vars.HOSTNAME }}
 
     steps:
       - name: Checkout the repository
