@@ -67,14 +67,16 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
-  - clientId: jupyterhub-maap-staging
-    name: MAAP JupyterHub (Staging)
-    rootUrl: https://staging.hub.maap.2i2c.cloud/
-    secret: $(env:JUPYTERHUB_MAAP_STAGING_CLIENT_SECRET)
+  - clientId: jupyterhub-maap
+    name: MAAP JupyterHub
+    # Staging JupyterHub is at https://staging.hub.maap.2i2c.cloud/
+    # Prod JupyterHub is at https://hub.maap.2i2c.cloud/
+    rootUrl: $(env:JUPYTERHUB_MAAP_URL)
+    secret: $(env:JUPYTERHUB_MAAP_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      -  https://staging.hub.maap.2i2c.cloud/hub/oauth_callback
+      -  $(env:JUPYTERHUB_MAAP_URL)/hub/oauth_callback
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -97,7 +99,7 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
-    jupyterhub-maap-staging:
+    jupyterhub-maap:
       - name: Admin
         description: Can use the JupyterHub Admin Panel
       - name: StagingAccess
@@ -120,7 +122,7 @@ roles:
         description: Access to T4 GPU instances (1 T4 GPU)
 
 clientScopeMappings:
-  jupyterhub-maap-staging:
+  jupyterhub-maap:
     - clientScope: jupyterhub:admin
       roles:
         - Admin
