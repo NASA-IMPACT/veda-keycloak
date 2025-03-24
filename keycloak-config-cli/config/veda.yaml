@@ -45,8 +45,7 @@ clients:
   - clientId: stac
     name: STAC Catalog
     rootUrl: $(env:STAC_CLIENT_URL)
-    secret: $(env:STAC_CLIENT_SECRET)
-    publicClient: false
+    publicClient: true
     attributes: {}
     redirectUris:
       - $(env:STAC_CLIENT_URL)/*
