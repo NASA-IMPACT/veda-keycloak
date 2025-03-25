@@ -251,13 +251,13 @@ groups:
 
   - name: JupyterHub MAAP Admin
     clientRoles:
-      jupyterhub-maap-staging:
+      jupyterhub-maap:
         - Admin
         - StagingAccess
 
   - name: JupyterHub MAAP User
     clientRoles:
-      jupyterhub-maap-staging:
+      jupyterhub-maap:
         - CPU:XS
         - CPU:S
         - CPU:M
@@ -269,7 +269,7 @@ groups:
 
   - name: JupyterHub MAAP GPU User
     clientRoles:
-      jupyterhub-maap-staging:
+      jupyterhub-maap:
         - GPU:T4
 
 identityProviders:
