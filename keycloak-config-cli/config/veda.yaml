@@ -81,6 +81,17 @@ clients:
     defaultClientScopes:
       - basic
       - profile
+    optionalClientScopes:
+      - jupyterhub:admin
+      - jupyterhub:cpu:xs
+      - jupyterhub:cpu:s
+      - jupyterhub:cpu:m
+      - jupyterhub:cpu:l
+      - jupyterhub:cpu:xl
+      - jupyterhub:cpu:xxl
+      - jupyterhub:cpu:xxxl
+      - jupyterhub:gpu:t4
+      - jupyterhub:staging
 
 roles:
   client:
