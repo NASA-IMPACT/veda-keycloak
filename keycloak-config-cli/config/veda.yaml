@@ -81,7 +81,6 @@ clients:
     defaultClientScopes:
       - basic
       - profile
-    optionalClientScopes:
       - jupyterhub:admin
       - jupyterhub:cpu:xs
       - jupyterhub:cpu:s
@@ -91,7 +90,6 @@ clients:
       - jupyterhub:cpu:xxl
       - jupyterhub:cpu:xxxl
       - jupyterhub:gpu:t4
-      - jupyterhub:staging
 
 roles:
   client:
@@ -112,8 +110,6 @@ roles:
     jupyterhub-maap:
       - name: Admin
         description: Can use the JupyterHub Admin Panel
-      - name: StagingAccess
-        description: Can access staging JupyterHubs
       - name: CPU:XS
         description: Access to extra small instances (~1.9GB RAM)
       - name: CPU:S
@@ -160,9 +156,6 @@ clientScopeMappings:
     - clientScope: jupyterhub:gpu:t4
       roles:
         - GPU:T4
-    - clientScope: jupyterhub:staging
-      roles:
-        - StagingAccess
   stac:
     - clientScope: stac:item:create
       roles:
@@ -234,9 +227,6 @@ clientScopes:
   - name: jupyterhub:gpu:t4
     description: Access to T4 GPU instances (1 T4 GPU)
     protocol: openid-connect
-  - name: jupyterhub:staging
-    description: Access to staging JupyterHub instances
-    protocol: openid-connect
 
 groups:
   - name: System Administrators
@@ -264,7 +254,6 @@ groups:
     clientRoles:
       jupyterhub-maap:
         - Admin
-        - StagingAccess
 
   - name: JupyterHub MAAP User
     clientRoles:
