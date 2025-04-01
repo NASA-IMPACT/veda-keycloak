@@ -175,6 +175,9 @@ groups:
         - Viewer
 ```
 
+> [!NOTE]
+> To associate a client scope with a client, the scope must be referenced in either the `defaultClientScopes` or `optionalClientScopes` properties of the client.
+
 #### Identity Provider OAuth Clients
 
 When a third party service operates as an Identity Provider (IdP, e.g. CILogon or GitHub) for Keycloak, we must register that IdP within the Keycloak configuration. This involves registering the IdP's OAuth client ID and client secret within Keycloak's configuration (along with additional information about the OAuth endpoints used within the login process).
