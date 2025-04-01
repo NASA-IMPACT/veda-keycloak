@@ -29,17 +29,18 @@ if idp_oauth_client_secrets:
 else:
     logging.warning("No IdP client secrets found in the environment.")
 
-logging.info("Extracting OAuth client IDs from Keycloak configuration...")
+logging.info("Extracting OAuth private client IDs from Keycloak configuration...")
 private_oauth_clients = get_private_client_ids(settings.keycloak_config_cli_config_dir)
 if private_oauth_clients:
     logging.info(
-        "Found client IDs in %s: %s",
+        "Found %s private client IDs in %s: %s",
+        len(private_oauth_clients),
         settings.keycloak_config_cli_config_dir,
         ", ".join(client["id"] for client in private_oauth_clients),
     )
 else:
     logging.warning(
-        "No client IDs found in %s",
+        "No private client IDs found in %s",
         settings.keycloak_config_cli_config_dir,
     )
 

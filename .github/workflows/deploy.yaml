@@ -27,7 +27,9 @@ run-name: Deploy to ${{ inputs.environment }} environment by @${{ github.actor }
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: 
+      name: ${{ inputs.environment }}
+      url: ${{ vars.HOSTNAME }}
 
     steps:
       - name: Checkout the repository
@@ -46,9 +48,7 @@ jobs:
         with:
           python-version: "3.13"
 
-      - uses: astral-sh/setup-uv@v1
-        with:
-          version: "latest"
+      - uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
         run: uv sync -p 3.13

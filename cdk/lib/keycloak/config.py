@@ -17,6 +17,7 @@ class KeycloakConfig(Construct):
     """
     Responsible for creating infrastructure to apply configuration to a Keycloak instance.
     """
+
     def __init__(
         self,
         scope: Construct,
@@ -77,7 +78,7 @@ class KeycloakConfig(Construct):
         for client_slug, secret in created_client_secrets + imported_client_secrets:
             for key in ["id", "secret"]:
                 # Example: GRAFANA_CLIENT_ID or GRAFANA_CLIENT_SECRET
-                env_var = f"{client_slug}_CLIENT_{key}".upper()
+                env_var = f"{client_slug.replace('-', '_')}_CLIENT_{key}".upper()
                 task_client_secrets[env_var] = ecs.Secret.from_secrets_manager(
                     secret, key
                 )
