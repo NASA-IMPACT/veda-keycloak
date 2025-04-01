@@ -42,6 +42,7 @@ clients:
           multivalued: "true"
           usermodel.clientRoleMapping.clientId: grafana # Filter-out non-Grafana roles
           usermodel.clientRoleMapping.rolePrefix: ""
+
   - clientId: stac
     name: STAC Catalog
     rootUrl: $(env:STAC_CLIENT_URL)
@@ -66,6 +67,7 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+
   - clientId: jupyterhub-maap
     name: MAAP JupyterHub
     # Staging JupyterHub is at https://staging.hub.maap.2i2c.cloud/
@@ -90,6 +92,7 @@ clients:
       - jupyterhub:cpu:xxl
       - jupyterhub:cpu:xxxl
       - jupyterhub:gpu:t4
+
   - clientId: jupyterhub-disasters
     name: Disasters JupyterHub
     # Staging JupyterHub is at https://staging.hub.disasters.2i2c.cloud/
@@ -103,6 +106,7 @@ clients:
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes: *jupyterhub-default-client-scopes
+
 roles:
   client:
     grafana:
