@@ -22,7 +22,7 @@ services:
           path: ./keycloak
 
   keycloak-config-cli:
-    build: ./config
+    build: ./keycloak-config-cli
     depends_on:
       - keycloak
     environment:

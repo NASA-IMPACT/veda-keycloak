@@ -8,6 +8,7 @@ RUN ./build_and_collect_jars.sh
 
 # Stage 2: Build Keycloak with the SPIs and themes
 FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} AS keycloak
+ENV KC_HEALTH_ENABLED=true
 COPY --from=builder /workspace/.jars/*.jar /opt/keycloak/providers/
 COPY themes /opt/keycloak/themes
 RUN /opt/keycloak/bin/kc.sh build
