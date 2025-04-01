@@ -78,7 +78,7 @@ clients:
       -  $(env:JUPYTERHUB_MAAP_CLIENT_URL)/hub/oauth_callback
     protocol: openid-connect
     fullScopeAllowed: true
-    defaultClientScopes:
+    defaultClientScopes: &jupyterhub-default-client-scopes
       - basic
       - profile
       - jupyterhub:admin
@@ -90,7 +90,19 @@ clients:
       - jupyterhub:cpu:xxl
       - jupyterhub:cpu:xxxl
       - jupyterhub:gpu:t4
-
+  - clientId: jupyterhub-disasters
+    name: Disasters JupyterHub
+    # Staging JupyterHub is at https://staging.hub.disasters.2i2c.cloud/
+    # Prod JupyterHub is at https://hub.disasters.2i2c.cloud/
+    rootUrl: $(env:JUPYTERHUB_DISASTERS_CLIENT_URL)
+    secret: $(env:JUPYTERHUB_DISASTERS_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      -  $(env:JUPYTERHUB_DISASTERS_CLIENT_URL)/hub/oauth_callback
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes: *jupyterhub-default-client-scopes
 roles:
   client:
     grafana:
@@ -107,7 +119,7 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
-    jupyterhub-maap:
+    jupyterhub-maap: &jupyterhub-roles
       - name: Admin
         description: Can use the JupyterHub Admin Panel
       - name: CPU:XS
@@ -126,9 +138,10 @@ roles:
         description: Access to extra extra extra large instances (~121GB RAM)
       - name: GPU:T4
         description: Access to T4 GPU instances (1 T4 GPU)
+    jupyterhub-disasters: *jupyterhub-roles
 
 clientScopeMappings:
-  jupyterhub-maap:
+  jupyterhub-maap: &jupyterhub-client-scope-mappings
     - clientScope: jupyterhub:admin
       roles:
         - Admin
@@ -156,6 +169,7 @@ clientScopeMappings:
     - clientScope: jupyterhub:gpu:t4
       roles:
         - GPU:T4
+  jupyterhub-disasters: *jupyterhub-client-scope-mappings
   stac:
     - clientScope: stac:item:create
       roles:
@@ -270,6 +284,28 @@ groups:
   - name: JupyterHub MAAP GPU User
     clientRoles:
       jupyterhub-maap:
+        - GPU:T4
+
+  - name: JupyterHub Disasters Admin
+    clientRoles:
+      jupyterhub-disasters:
+        - Admin
+
+  - name: JupyterHub Disasters User
+    clientRoles:
+      jupyterhub-disasters:
+        - CPU:XS
+        - CPU:S
+        - CPU:M
+        - CPU:L
+        - CPU:XL
+        - CPU:XXL
+        - CPU:XXL
+        - CPU:XXXL
+
+  - name: JupyterHub Disasters GPU User
+    clientRoles:
+      jupyterhub-disasters:
         - GPU:T4
 
 identityProviders:
