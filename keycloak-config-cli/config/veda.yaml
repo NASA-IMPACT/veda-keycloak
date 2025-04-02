@@ -80,7 +80,7 @@ clients:
       -  $(env:JUPYTERHUB_MAAP_CLIENT_URL)/hub/oauth_callback
     protocol: openid-connect
     fullScopeAllowed: true
-    defaultClientScopes: &jupyterhub-default-client-scopes
+    defaultClientScopes:
       - basic
       - profile
       - jupyterhub:admin
@@ -92,6 +92,7 @@ clients:
       - jupyterhub:cpu:xxl
       - jupyterhub:cpu:xxxl
       - jupyterhub:gpu:t4
+      - jupyterhub:access:maap
 
   - clientId: jupyterhub-disasters
     name: Disasters JupyterHub
@@ -105,7 +106,19 @@ clients:
       -  $(env:JUPYTERHUB_DISASTERS_CLIENT_URL)/hub/oauth_callback
     protocol: openid-connect
     fullScopeAllowed: true
-    defaultClientScopes: *jupyterhub-default-client-scopes
+    defaultClientScopes:
+      - basic
+      - profile
+      - jupyterhub:admin
+      - jupyterhub:cpu:xs
+      - jupyterhub:cpu:s
+      - jupyterhub:cpu:m
+      - jupyterhub:cpu:l
+      - jupyterhub:cpu:xl
+      - jupyterhub:cpu:xxl
+      - jupyterhub:cpu:xxxl
+      - jupyterhub:gpu:t4
+      - jupyterhub:access:disasters
 
 roles:
   client:
@@ -123,7 +136,7 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
-    jupyterhub-maap: &jupyterhub-roles
+    jupyterhub-maap:
       - name: Admin
         description: Can use the JupyterHub Admin Panel
       - name: CPU:XS
@@ -142,10 +155,32 @@ roles:
         description: Access to extra extra extra large instances (~121GB RAM)
       - name: GPU:T4
         description: Access to T4 GPU instances (1 T4 GPU)
-    jupyterhub-disasters: *jupyterhub-roles
+      - name: Access
+        description: Access to the MAAP hub
+    jupyterhub-disasters:
+      - name: Admin
+        description: Can use the JupyterHub Admin Panel
+      - name: CPU:XS
+        description: Access to extra small instances (~1.9GB RAM)
+      - name: CPU:S
+        description: Access to small instances (~3.7GB RAM)
+      - name: CPU:M
+        description: Access to medium instances (~7.4GB RAM)
+      - name: CPU:L
+        description: Access to large instances (~14.8GB RAM)
+      - name: CPU:XL
+        description: Access to extra large instances (~29.7GB RAM)
+      - name: CPU:XXL
+        description: Access to extra extra large instances (~60.6GB RAM)
+      - name: CPU:XXXL
+        description: Access to extra extra extra large instances (~121GB RAM)
+      - name: GPU:T4
+        description: Access to T4 GPU instances (1 T4 GPU)
+      - name: Access
+        description: Access to the Disasters hub
 
 clientScopeMappings:
-  jupyterhub-maap: &jupyterhub-client-scope-mappings
+  jupyterhub-maap:
     - clientScope: jupyterhub:admin
       roles:
         - Admin
@@ -173,7 +208,40 @@ clientScopeMappings:
     - clientScope: jupyterhub:gpu:t4
       roles:
         - GPU:T4
-  jupyterhub-disasters: *jupyterhub-client-scope-mappings
+    - clientScope: jupyterhub:access:maap
+      roles:
+        - Access
+  jupyterhub-disasters:
+    - clientScope: jupyterhub:admin
+      roles:
+        - Admin
+    - clientScope: jupyterhub:cpu:xs
+      roles:
+        - CPU:XS
+    - clientScope: jupyterhub:cpu:s
+      roles:
+        - CPU:S
+    - clientScope: jupyterhub:cpu:m
+      roles:
+        - CPU:M
+    - clientScope: jupyterhub:cpu:l
+      roles:
+        - CPU:L
+    - clientScope: jupyterhub:cpu:xl
+      roles:
+        - CPU:XL
+    - clientScope: jupyterhub:cpu:xxl
+      roles:
+        - CPU:XXL
+    - clientScope: jupyterhub:cpu:xxxl
+      roles:
+        - CPU:XXXL
+    - clientScope: jupyterhub:gpu:t4
+      roles:
+        - GPU:T4
+    - clientScope: jupyterhub:access:disasters
+      roles:
+        - Access
   stac:
     - clientScope: stac:item:create
       roles:
@@ -245,6 +313,12 @@ clientScopes:
   - name: jupyterhub:gpu:t4
     description: Access to T4 GPU instances (1 T4 GPU)
     protocol: openid-connect
+  - name: jupyterhub:access:maap
+    description: Access to the MAAP hubs
+    protocol: openid-connect
+  - name: jupyterhub:access:disasters
+    description: Access to the disasters hubs
+    protocol: openid-connect
 
 groups:
   - name: System Administrators
@@ -272,6 +346,7 @@ groups:
     clientRoles:
       jupyterhub-maap:
         - Admin
+        - Access
 
   - name: JupyterHub MAAP User
     clientRoles:
@@ -284,16 +359,19 @@ groups:
         - CPU:XXL
         - CPU:XXL
         - CPU:XXXL
+        - Access
 
   - name: JupyterHub MAAP GPU User
     clientRoles:
       jupyterhub-maap:
         - GPU:T4
+        - Access
 
   - name: JupyterHub Disasters Admin
     clientRoles:
       jupyterhub-disasters:
         - Admin
+        - Access
 
   - name: JupyterHub Disasters User
     clientRoles:
@@ -306,11 +384,13 @@ groups:
         - CPU:XXL
         - CPU:XXL
         - CPU:XXXL
+        - Access
 
   - name: JupyterHub Disasters GPU User
     clientRoles:
       jupyterhub-disasters:
         - GPU:T4
+        - Access
 
 identityProviders:
   # CILogon
