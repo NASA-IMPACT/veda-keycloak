@@ -1,7 +1,10 @@
 version: "3"
 services:
   keycloak:
-    build: ./keycloak
+    build: 
+      context: ./keycloak
+      args:
+        KEYCLOAK_VERSION: 26.1.3
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
@@ -22,7 +25,10 @@ services:
           path: ./keycloak
 
   keycloak-config-cli:
-    build: ./config
+    build:
+      context: ./keycloak-config-cli
+      args:
+        KEYCLOAK_CONFIG_CLI_VERSION: latest
     depends_on:
       - keycloak
     environment:
