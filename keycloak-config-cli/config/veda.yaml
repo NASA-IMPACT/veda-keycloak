@@ -182,7 +182,6 @@ clientScopeMappings:
     - clientScope: stac:collection:delete
       roles:
         - Admin
-        - Editor
 
 clientScopes:
   - name: stac:item:create
