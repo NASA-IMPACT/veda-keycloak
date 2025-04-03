@@ -90,6 +90,7 @@ clients:
         config:
           access.token.claim: "false"
           userinfo.token.claim: "true"
+          id.token.claim: "true"
           claim.name: roles
           jsonType.label: String
           multivalued: "true"
@@ -116,6 +117,7 @@ clients:
         config:
           access.token.claim: "false"
           userinfo.token.claim: "true"
+          id.token.claim: "true"
           claim.name: roles
           jsonType.label: String
           multivalued: "true"
