@@ -88,7 +88,8 @@ clients:
         protocol: openid-connect
         protocolMapper: oidc-usermodel-client-role-mapper
         config:
-          access.token.claim: "true"
+          access.token.claim: "false"
+          userinfo.token.claim: "true"
           claim.name: roles
           jsonType.label: String
           multivalued: "true"
@@ -113,7 +114,8 @@ clients:
         protocol: openid-connect
         protocolMapper: oidc-usermodel-client-role-mapper
         config:
-          access.token.claim: "true"
+          access.token.claim: "false"
+          userinfo.token.claim: "true"
           claim.name: roles
           jsonType.label: String
           multivalued: "true"
