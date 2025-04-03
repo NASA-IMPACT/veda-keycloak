@@ -246,6 +246,13 @@ groups:
         - CPU:XXL
         - CPU:XXXL
 
+  - name: JupyterHub MAAP Basic User
+    clientRoles:
+      jupyterhub-maap:
+        - CPU:XS
+        - CPU:M
+        - CPU:L
+  
   - name: JupyterHub MAAP GPU User
     clientRoles:
       jupyterhub-maap:
