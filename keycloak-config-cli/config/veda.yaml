@@ -68,6 +68,25 @@ clients:
       - stac:collection:update
       - stac:collection:delete
 
+  - clientId: airflow-stac-etl
+    name: Airflow STAC ETL
+    secret: $(env:AIRFLOW_STAC_ETL_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    protocol: openid-connect
+    fullScopeAllowed: true
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    optionalClientScopes:
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+    
   - clientId: jupyterhub-maap
     name: MAAP JupyterHub
     # Staging JupyterHub is at https://staging.hub.maap.2i2c.cloud
@@ -375,3 +394,12 @@ authenticatorConfig:
   - alias: cilogon
     config:
       defaultProvider: cilogon
+
+users:
+- username: service-account-airflow-stac-etl
+  emailVerified: true
+  enabled: true
+  serviceAccountClientId: airflow-stac-etl
+  clientRoles:
+    stac:
+    - Admin
