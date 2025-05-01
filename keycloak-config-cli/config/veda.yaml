@@ -86,6 +86,50 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+  
+  - clientId: ingest-api
+    name: STAC Ingest API
+    rootUrl: $(env:INGEST_API_CLIENT_URL)
+    publicClient: true
+    attributes: {}
+    redirectUris:
+      - $(env:INGEST_API_CLIENT_URL)/*
+    webOrigins:
+      - $(env:INGEST_API_CLIENT_URL)
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+
+  - clientId: airflow-ingest-api-etl
+    name: Airflow Ingest API ETL
+    secret: $(env:AIRFLOW_INGEST_API_ETL_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    protocol: openid-connect
+    fullScopeAllowed: true
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    optionalClientScopes:
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
     
   - clientId: jupyterhub-maap
     name: MAAP JupyterHub
@@ -159,6 +203,11 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+    ingest-api:
+      - name: Admin
+        description: Can create, update and delete STAC collections and items
+      - name: Editor
+        description: Can create and update STAC collections and items
     jupyterhub-maap: &jupyterhub-roles
       - name: Admin
         description: Can use the JupyterHub Admin Panel
@@ -182,6 +231,30 @@ roles:
 
 clientScopeMappings:
   stac:
+    - clientScope: stac:item:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:delete
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:delete
+      roles:
+        - Admin
+  ingest-api:
     - clientScope: stac:item:create
       roles:
         - Admin
@@ -233,6 +306,8 @@ groups:
         - GrafanaAdmin
       stac:
         - Admin
+      ingest-api:
+        - Admin
 
   - name: Developers
     clientRoles:
@@ -240,12 +315,16 @@ groups:
         - Editor
       stac:
         - Admin
+      ingest-api:
+        - Admin
 
   - name: Data Editors
     clientRoles:
       grafana:
         - Viewer
       stac:
+        - Editor
+      ingest-api:
         - Editor
 
   - name: JupyterHub MAAP Admin
@@ -396,10 +475,18 @@ authenticatorConfig:
       defaultProvider: cilogon
 
 users:
-- username: service-account-airflow-stac-etl
-  emailVerified: true
-  enabled: true
-  serviceAccountClientId: airflow-stac-etl
-  clientRoles:
-    stac:
-    - Admin
+  - username: service-account-airflow-stac-etl
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: airflow-stac-etl
+    clientRoles:
+      stac:
+      - Admin
+  - username: service-account-airflow-stac-etl
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: airflow-stac-etl
+    clientRoles:
+      ingest-api:
+      - Admin
+
