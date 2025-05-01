@@ -482,10 +482,10 @@ users:
     clientRoles:
       stac:
       - Admin
-  - username: service-account-airflow-stac-etl
+  - username: service-account-airflow-ingest-api-etl
     emailVerified: true
     enabled: true
-    serviceAccountClientId: airflow-stac-etl
+    serviceAccountClientId: airflow-ingest-api-etl
     clientRoles:
       ingest-api:
       - Admin
