@@ -86,6 +86,8 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+    defaultClientScopes:
+      - roles
   
   - clientId: ingest-api
     name: STAC Ingest API
@@ -130,6 +132,8 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+    defaultClientScopes:
+      - roles
     
   - clientId: jupyterhub-maap
     name: MAAP JupyterHub
