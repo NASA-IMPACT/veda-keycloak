@@ -191,6 +191,27 @@ clients:
           usermodel.clientRoleMapping.clientId: jupyterhub-disasters
           usermodel.clientRoleMapping.rolePrefix: ""
 
+  - clientId: ingest-ui
+    name: Ingest UI
+    rootUrl: $(env:INGEST_UI_CLIENT_URL)
+    publicClient: true
+    attributes: {}
+    redirectUris:
+      - $(env:INGEST_UI_CLIENT_URL)/*
+    webOrigins:
+      - $(env:INGEST_UI_CLIENT_URL)
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - dataset:create
+      - dataset:update
+      
 roles:
   client:
     grafana:
@@ -232,6 +253,9 @@ roles:
       - name: GPU:T4
         description: Access to T4 GPU instances (1 T4 GPU)
     jupyterhub-disasters: *jupyterhub-roles
+    ingest-ui:
+      - name: Editor
+        description: Can initiate and update dataset ingests
 
 clientScopeMappings:
   stac:
@@ -282,6 +306,13 @@ clientScopeMappings:
     - clientScope: stac:collection:delete
       roles:
         - Admin
+  ingest-ui:
+    - clientScope: dataset:create
+      roles:
+        - Editor
+    - clientScope: dataset:update
+      roles:
+        - Editor
 
 clientScopes:
   - name: stac:item:create
@@ -302,6 +333,12 @@ clientScopes:
   - name: stac:collection:delete
     description: Delete STAC collections
     protocol: openid-connect
+  - name: dataset:create
+    description: Ingest new datasets
+    protocol: openid-connect
+  - name: dataset:update
+    description: Update existing datasets
+    protocol: openid-connect
 
 groups:
   - name: System Administrators
@@ -312,6 +349,8 @@ groups:
         - Admin
       ingest-api:
         - Admin
+      ingest-ui:
+        - Editor
 
   - name: Developers
     clientRoles:
@@ -321,6 +360,8 @@ groups:
         - Admin
       ingest-api:
         - Admin
+      ingest-ui:
+        - Editor
 
   - name: Data Editors
     clientRoles:
@@ -330,6 +371,9 @@ groups:
         - Editor
       ingest-api:
         - Editor
+      ingest-ui:
+        - Editor
+      
 
   - name: JupyterHub MAAP Admin
     clientRoles:
