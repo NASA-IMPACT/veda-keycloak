@@ -193,13 +193,13 @@ clients:
 
   - clientId: ingest-ui
     name: Ingest UI
-    rootUrl: http://localhost:3000/
+    rootUrl: $(env:INGEST_UI_CLIENT_URL)
     publicClient: true
     attributes: {}
     redirectUris:
-      - http://localhost:3000/api/auth/callback/*
+      - $(env:INGEST_UI_CLIENT_URL)/*
     webOrigins:
-      - http://localhost:3000/
+      - $(env:INGEST_UI_CLIENT_URL)
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -209,13 +209,9 @@ clients:
       - roles
       - basic
       - email
-      - stac:item:create
-      - stac:item:update
-      - stac:item:delete
-      - stac:collection:create
-      - stac:collection:update
-      - stac:collection:delete
-
+      - dataset:create
+      - dataset:update
+      
 roles:
   client:
     grafana:
@@ -258,10 +254,8 @@ roles:
         description: Access to T4 GPU instances (1 T4 GPU)
     jupyterhub-disasters: *jupyterhub-roles
     ingest-ui:
-      - name: Admin
-        description: Can create, update and delete STAC collections and items
       - name: Editor
-        description: Can create and update STAC collections and items
+        description: Can initiate and update dataset ingests
 
 clientScopeMappings:
   stac:
@@ -312,6 +306,13 @@ clientScopeMappings:
     - clientScope: stac:collection:delete
       roles:
         - Admin
+  ingest-ui:
+    - clientScope: dataset:create
+      roles:
+        - Editor
+    - clientScope: dataset:update
+      roles:
+        - Editor
 
 clientScopes:
   - name: stac:item:create
@@ -332,6 +333,12 @@ clientScopes:
   - name: stac:collection:delete
     description: Delete STAC collections
     protocol: openid-connect
+  - name: dataset:create
+    description: Ingest new datasets
+    protocol: openid-connect
+  - name: dataset:update
+    description: Update existing datasets
+    protocol: openid-connect
 
 groups:
   - name: System Administrators
@@ -342,6 +349,8 @@ groups:
         - Admin
       ingest-api:
         - Admin
+      ingest-ui:
+        - Editor
 
   - name: Developers
     clientRoles:
@@ -351,6 +360,8 @@ groups:
         - Admin
       ingest-api:
         - Admin
+      ingest-ui:
+        - Editor
 
   - name: Data Editors
     clientRoles:
@@ -360,6 +371,9 @@ groups:
         - Editor
       ingest-api:
         - Editor
+      ingest-ui:
+        - Editor
+      
 
   - name: JupyterHub MAAP Admin
     clientRoles:
