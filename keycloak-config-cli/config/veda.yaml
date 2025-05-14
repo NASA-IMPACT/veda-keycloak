@@ -191,6 +191,31 @@ clients:
           usermodel.clientRoleMapping.clientId: jupyterhub-disasters
           usermodel.clientRoleMapping.rolePrefix: ""
 
+  - clientId: ingest-ui
+    name: Ingest UI
+    rootUrl: http://localhost:3000/
+    publicClient: true
+    attributes: {}
+    redirectUris:
+      - http://localhost:3000/api/auth/callback/*
+    webOrigins:
+      - http://localhost:3000/
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+
 roles:
   client:
     grafana:
@@ -232,6 +257,11 @@ roles:
       - name: GPU:T4
         description: Access to T4 GPU instances (1 T4 GPU)
     jupyterhub-disasters: *jupyterhub-roles
+    ingest-ui:
+      - name: Admin
+        description: Can create, update and delete STAC collections and items
+      - name: Editor
+        description: Can create and update STAC collections and items
 
 clientScopeMappings:
   stac:
