@@ -194,7 +194,8 @@ clients:
   - clientId: ingest-ui
     name: Ingest UI
     rootUrl: $(env:INGEST_UI_CLIENT_URL)
-    publicClient: true
+    secret: $(env:INGEST_UI_CLIENT_SECRET)
+    publicClient: false
     attributes: {}
     redirectUris:
       - $(env:INGEST_UI_CLIENT_URL)/*
