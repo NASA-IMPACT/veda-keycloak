@@ -7,6 +7,7 @@ from aws_cdk import (
     Stack,
     aws_ecr_assets as ecr_assets,
     aws_ecs as ecs,
+    aws_iam as iam,
     aws_lambda as _lambda,
     aws_secretsmanager as secretsmanager,
 )
@@ -29,6 +30,7 @@ class KeycloakConfig(Construct):
         admin_secret: secretsmanager.ISecret,
         hostname: str,
         app_dir: str,
+        application_role_arn: str,
         idp_oauth_client_secrets: dict[str, str],
         private_oauth_clients: list[dict[str, str]],
         version: str,
@@ -63,6 +65,15 @@ class KeycloakConfig(Construct):
                     password_length=16,
                 ),
             )
+            # Add the policy to the secret if application_role_arn is provided
+            if application_role_arn:
+                secret.add_to_resource_policy(
+                    iam.PolicyStatement(
+                        effect=iam.Effect.ALLOW,
+                        principals=[iam.ArnPrincipal(application_role_arn)],
+                        actions=["secretsmanager:GetSecretValue"],
+                    )
+                )
             created_client_secrets.append((client_slug, secret))
 
         # Import the client secrets for each public clients

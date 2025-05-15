@@ -65,6 +65,7 @@ KeycloakStack(
     f"veda-keycloak-{settings.stage}",
     vpc_id=settings.vpc_id,
     ssl_certificate_arn=settings.ssl_certificate_arn,
+    application_role_arn=settings.application_role_arn,
     hostname=settings.hostname,
     keycloak_version=settings.keycloak_version,
     keycloak_app_dir=settings.keycloak_app_dir.as_posix(),
