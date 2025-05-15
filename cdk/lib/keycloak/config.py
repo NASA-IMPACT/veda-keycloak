@@ -30,7 +30,6 @@ class KeycloakConfig(Construct):
         admin_secret: secretsmanager.ISecret,
         hostname: str,
         app_dir: str,
-        application_role_arn: str,
         idp_oauth_client_secrets: dict[str, str],
         private_oauth_clients: list[dict[str, str]],
         version: str,
@@ -43,6 +42,7 @@ class KeycloakConfig(Construct):
         for client_info in private_oauth_clients:
             client_slug = client_info["id"]
             realm = client_info["realm"]
+            application_role_arn = client_info["application_role_arn"]
             secret = secretsmanager.Secret(
                 self,
                 f"{client_slug}-client-secret",

@@ -9,7 +9,6 @@ class Settings(BaseSettings):
     cdk_bootstrap_qualifier: Optional[str] = None
     vpc_id: Optional[str] = None
     permissions_boundary_arn: Optional[str] = None
-    application_role_arn: Optional[str] = None
     ssl_certificate_arn: str
     hostname: str
     stage: str = "dev"

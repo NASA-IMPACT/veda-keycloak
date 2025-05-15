@@ -45,6 +45,7 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
                                     {
                                         "id": client["clientId"],
                                         "realm": data.get("realm", ""),
+                                        "application_role_arn": client.get("application_role_arn", ""),
                                     }
                                 )
                             else:
