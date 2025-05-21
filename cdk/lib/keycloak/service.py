@@ -164,4 +164,10 @@ class KeycloakService(Construct):
             interval=Duration.seconds(30),
         )
 
+        self.alb_service.service.connections.allow_from(
+            load_balancer,
+            ec2.Port.tcp(health_management_port),
+            "Health check on port 9000",
+        )
+
         database_instance.connections.allow_default_port_from(self.alb_service.service)
