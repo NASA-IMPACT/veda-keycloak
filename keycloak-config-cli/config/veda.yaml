@@ -447,12 +447,35 @@ identityProviders:
       issuer: "https://cilogon.org"
       useJwksUrl: "true"
       pkceEnabled: "false"
+      defaultScope: "openid email profile",
       metadataDescriptorUrl: "https://cilogon.org/.well-known/openid-configuration"
       authorizationUrl: "https://cilogon.org/authorize"
       clientAuthMethod: "client_secret_post"
-      syncMode: "LEGACY"
+      syncMode: "IMPORT"
       clientId: $(env:CILOGON_CLIENT_ID)
       clientSecret: $(env:CILOGON_CLIENT_SECRET)
+identityProviderMappers:
+  - name: "email"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "email"
+      user.attribute: "email"
+  - name: "first name"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "profile.given_name"
+      user.attribute: "firstName"
+  - name: "last name"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "profile.family_name"
+      user.attribute: "lastName"
 
 # Login Flow Configuration
 browserFlow: Browser without Password
