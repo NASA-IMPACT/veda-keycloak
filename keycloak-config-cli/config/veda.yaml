@@ -447,7 +447,7 @@ identityProviders:
       issuer: "https://cilogon.org"
       useJwksUrl: "true"
       pkceEnabled: "false"
-      defaultScope: "openid email profile",
+      defaultScope: "openid email profile"
       metadataDescriptorUrl: "https://cilogon.org/.well-known/openid-configuration"
       authorizationUrl: "https://cilogon.org/authorize"
       clientAuthMethod: "client_secret_post"
