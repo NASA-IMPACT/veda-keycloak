@@ -123,6 +123,7 @@ class KeycloakService(Construct):
                     "KC_HOSTNAME": hostname,
                     "KC_HTTP_ENABLED": "true",
                     "KC_HTTP_MANAGEMENT_PORT": str(health_management_port),
+                    "KC_HEALTH_ENABLED": "true",
                 },
                 secrets={
                     # Database credentials
@@ -156,12 +157,12 @@ class KeycloakService(Construct):
 
         self.alb_service.target_group.configure_health_check(
             path="/health",
-            port=str(health_management_port),  # "9000"
+            port=str(health_management_port),  # 9000
             protocol=elbv2.Protocol.HTTP,
             healthy_threshold_count=3,
             unhealthy_threshold_count=2,
             timeout=Duration.seconds(5),
-            interval=Duration.seconds(30),
+            interval=Duration.seconds(60),
         )
 
         self.alb_service.service.connections.allow_from(

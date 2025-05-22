@@ -12,6 +12,7 @@ services:
       ROOT_LOGLEVEL: INFO
     ports:
       - 8080:8080
+      - 9000:9000
     command:
       - start
       - --optimized
@@ -45,9 +46,8 @@ services:
       GRAFANA_CLIENT_URL: http://localhost:3000
       CILOGON_CLIENT_ID: abc13
       CILOGON_CLIENT_SECRET: abc123
-
     env_file:
-      - path: .env
+      - path: ./.env
         required: false
     restart: "no"
     develop:
