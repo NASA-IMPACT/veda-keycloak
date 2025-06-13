@@ -46,6 +46,24 @@ services:
       GRAFANA_CLIENT_URL: http://localhost:3000
       CILOGON_CLIENT_ID: abc13
       CILOGON_CLIENT_SECRET: abc123
+      GH_CLIENT_ID: Ov23liYaH7eHLDt9vYZ8
+      GH_CLIENT_SECRET: 6a3a64cbd907d881a78d42ecd2211d5c00f60066
+      GH_ADMIN_TEAM: veda-auth
+      # STAC related
+      STAC_CLIENT_URL: http://mock-stac-client-url
+      AIRFLOW_STAC_ETL_CLIENT_SECRET: mock_airflow_stac_etl_secret
+      # Ingest API related
+      INGEST_API_CLIENT_URL: http://mock-ingest-api-client-url
+      AIRFLOW_INGEST_API_ETL_CLIENT_SECRET: mock_airflow_ingest_api_etl_secret
+      # JupyterHub MAAP related
+      JUPYTERHUB_MAAP_CLIENT_URL: http://mock-jupyterhub-maap-client-url
+      JUPYTERHUB_MAAP_CLIENT_SECRET: mock_jupyterhub_maap_secret
+      # JupyterHub Disasters related
+      JUPYTERHUB_DISASTERS_CLIENT_URL: http://mock-jupyterhub-disasters-client-url
+      JUPYTERHUB_DISASTERS_CLIENT_SECRET: mock_jupyterhub_disasters_secret
+      # Ingest UI related
+      INGEST_UI_CLIENT_URL: http://mock-ingest-ui-client-url
+      INGEST_UI_CLIENT_SECRET: mock_ingest_ui_secret
     env_file:
       - path: ./.env
         required: false
