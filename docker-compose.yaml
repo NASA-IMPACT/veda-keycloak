@@ -24,6 +24,8 @@ services:
       watch:
         - action: rebuild
           path: ./keycloak
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   keycloak-config-cli:
     build:
@@ -48,7 +50,7 @@ services:
       CILOGON_CLIENT_SECRET: abc123
       GH_CLIENT_ID: Ov23liYaH7eHLDt9vYZ8
       GH_CLIENT_SECRET: 6a3a64cbd907d881a78d42ecd2211d5c00f60066
-      GH_ADMIN_TEAM: veda-auth
+      GH_ADMIN_TEAM: ""
       # STAC related
       STAC_CLIENT_URL: http://mock-stac-client-url
       AIRFLOW_STAC_ETL_CLIENT_SECRET: mock_airflow_stac_etl_secret
@@ -77,6 +79,8 @@ services:
     profiles:
       - grafana
     image: grafana/grafana:latest
+    depends_on:
+      - keycloak-config-cli
     ports:
       - 3000:3000
     environment:
@@ -92,5 +96,52 @@ services:
       GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
       GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: mock_grafana_client_secret
       GF_AUTH_GENERIC_OAUTH_AUTH_URL: http://localhost:8080/realms/veda/protocol/openid-connect/auth
-      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: http://keycloak:8080/realms/veda/protocol/openid-connect/token
-      GF_AUTH_GENERIC_OAUTH_API_URL: http://keycloak:8080/realms/veda/protocol/openid-connect/userinfo
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: http://localhost:8080/realms/veda/protocol/openid-connect/token
+      GF_AUTH_GENERIC_OAUTH_API_URL: http://localhost:8080/realms/veda/protocol/openid-connect/userinfo
+  cilogon-mock:
+    image: ghcr.io/soluto/oidc-server-mock:0.8.6
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      SERVER_OPTIONS_INLINE: |
+        {
+          "AccessTokenJwtType": "JWT",
+          "Discovery": { "ShowKeySet": true },
+          "Authentication": {
+            "CookieSameSiteMode": "Lax",
+            "CheckSessionCookieSameSiteMode": "Lax"
+          }
+        }
+      LOGIN_OPTIONS_INLINE: |
+        {
+          "AllowRememberLogin": false
+        }
+      USERS_CONFIGURATION_INLINE: |
+        [
+          {
+            "SubjectId": "1",
+            "Username": "cilogonuser",
+            "Password": "testpass",
+            "Claims": [
+              { "Type": "name", "Value": "CILogon User", "ValueType": "string" },
+              { "Type": "email", "Value": "cilogonuser@example.com", "ValueType": "string" }
+            ]
+          }
+        ]
+      CLIENTS_CONFIGURATION_INLINE: |
+        [
+          {
+            "ClientId": "abc13",
+            "ClientSecrets": ["abc123"],
+            "Description": "Keycloak CILogon mock client",
+            "AllowedGrantTypes": ["authorization_code"],
+            "RequirePkce": false,
+            "AllowAccessTokensViaBrowser": true,
+            "RedirectUris": ["http://localhost:8080/realms/veda/broker/cilogon/endpoint"],
+            "AllowedScopes": ["openid", "profile", "email"],
+            "IdentityTokenLifetime": 3600,
+            "AccessTokenLifetime": 3600,
+            "RequireClientSecret": false
+          }
+        ]
+    ports:
+      - 9090:80
