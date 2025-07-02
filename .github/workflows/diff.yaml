@@ -13,6 +13,10 @@ jobs:
   diff:
     runs-on: ubuntu-latest
     environment: dev
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
 
     steps:
       - name: Checkout the repository
