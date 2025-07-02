@@ -37,10 +37,9 @@ jobs:
         run: uv sync -p 3.13
 
       - name: Diff
-        uses: corymhall/cdk-diff-action@v2
+        uses: corymhall/cdk-diff-action@v1.4.21
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          cdkOutDir: cdk.out
         env:
           AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
