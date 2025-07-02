@@ -40,8 +40,10 @@ jobs:
       - name: Install dependencies
         run: uv sync -p 3.13
 
-      - name: Synthesize CDK
-        run: uv run npx cdk synth
+      - name: Diff CDK
+        uses: corymhall/cdk-diff-action@v2
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
         env:
           AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
