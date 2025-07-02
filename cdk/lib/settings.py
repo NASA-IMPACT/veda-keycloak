@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import DirectoryPath, Field
+from pydantic import DirectoryPath, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,6 +20,13 @@ class Settings(BaseSettings):
         default=None,
         pattern=r"^arn:aws:rds:[a-z0-9-]+:\d{12}:snapshot:.+$",
     )
+
+    @field_validator("rds_snapshot_identifier", mode="before")
+    @classmethod
+    def convert_empty_string_to_none(cls, v):
+        if v == "":
+            return None
+        return v
 
     model_config = SettingsConfigDict(extra="ignore")
 
