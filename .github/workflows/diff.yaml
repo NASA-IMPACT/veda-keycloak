@@ -1,0 +1,56 @@
+name: Diff CDK Stack
+
+on:
+  pull_request:
+
+permissions:
+  id-token: write # Required for OIDC authentication w/ AWS
+  contents: read
+
+run-name: Diff ${{ github.ref }}
+
+jobs:
+  diff:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: GitHubActionsCDKDeploy
+          role-duration-seconds: 3600
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: uv sync -p 3.13
+
+      - name: Diff
+        uses: corymhall/cdk-diff-action@v2
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          CDK_BOOTSTRAP_QUALIFIER: ${{ vars.CDK_BOOTSTRAP_QUALIFIER }}
+          VPC_ID: ${{ vars.VPC_ID }}
+          PERMISSIONS_BOUNDARY_ARN: ${{ vars.PERMISSIONS_BOUNDARY_ARN }}
+          HOSTNAME: ${{ vars.HOSTNAME }}
+          KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
+          KEYCLOAK_CONFIG_CLI_VERSION: ${{ vars.KEYCLOAK_CONFIG_CLI_VERSION }}
+          SSL_CERTIFICATE_ARN: ${{ vars.SSL_CERTIFICATE_ARN }}
+          STAGE: dev
+          # Imported Identity Provider secrets
+          IDP_SECRET_ARN_GH: ${{ vars.IDP_SECRET_ARN_GH }}
+          IDP_SECRET_ARN_CILOGON: ${{ vars.IDP_SECRET_ARN_CILOGON }}
