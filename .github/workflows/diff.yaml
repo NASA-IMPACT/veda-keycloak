@@ -36,8 +36,11 @@ jobs:
       - name: Install dependencies
         run: uv sync -p 3.13
 
-      - name: Diff
-        uses: corymhall/cdk-diff-action@v1.4.21
+      - name: Synthesize CDK
+        run: uv run npx cdk synth
+
+      - name: Diff CDK
+        uses: corymhall/cdk-diff-action@v2
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
         env:
