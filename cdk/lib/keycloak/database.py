@@ -40,7 +40,6 @@ class KeycloakDatabase(Construct):
             "instance_type": ec2.InstanceType.of(
                 ec2.InstanceClass.BURSTABLE4_GRAVITON, ec2.InstanceSize.MEDIUM
             ),
-            "storage_encrypted": True,
             "removal_policy": (
                 RemovalPolicy.RETAIN if is_production else RemovalPolicy.DESTROY
             ),
@@ -52,6 +51,7 @@ class KeycloakDatabase(Construct):
             rds.DatabaseInstance(
                 self,
                 "KeycloakPostgres",
+                storage_encrypted=True,
                 **database_instance_props,
             )
             if snapshot_identifier is None
