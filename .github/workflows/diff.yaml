@@ -40,6 +40,7 @@ jobs:
         uses: corymhall/cdk-diff-action@v2
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+          skipVersionCheck: true
         env:
           AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
