@@ -1,3 +1,5 @@
+from typing import Optional
+
 from aws_cdk import (
     Stack,
     aws_ec2 as ec2,
@@ -11,6 +13,7 @@ from .url import KeycloakUrl
 
 
 class KeycloakStack(Stack):
+
     def __init__(
         self,
         scope: Construct,
@@ -25,7 +28,8 @@ class KeycloakStack(Stack):
         keycloak_config_cli_app_dir: str,
         idp_oauth_client_secrets: dict,
         private_oauth_clients: list,
-        vpc_id: str = None,
+        vpc_id: Optional[str] = None,
+        rds_snapshot_identifier: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -42,6 +46,7 @@ class KeycloakStack(Stack):
             vpc=vpc,
             database_name="keycloak",
             is_production=is_production,
+            snapshot_identifier=rds_snapshot_identifier,
         )
 
         kc_service = KeycloakService(

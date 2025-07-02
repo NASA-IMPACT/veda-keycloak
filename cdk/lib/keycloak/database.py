@@ -7,6 +7,7 @@ from aws_cdk import (
 
 
 class KeycloakDatabase(Construct):
+
     def __init__(
         self,
         scope: Construct,
@@ -16,6 +17,7 @@ class KeycloakDatabase(Construct):
         database_name: str,
         instance_identifier: str = None,
         is_production: bool = False,
+        snapshot_identifier: str = None,
         **kwargs,
     ) -> None:
         """
@@ -30,20 +32,33 @@ class KeycloakDatabase(Construct):
         super().__init__(scope, construct_id)
 
         self.database_name = database_name
-        self.database = rds.DatabaseInstance(
-            self,
-            "KeycloakPostgres",
-            instance_identifier=instance_identifier,
-            engine=rds.DatabaseInstanceEngine.postgres(
+        database_instance_props = {
+            "instance_identifier": instance_identifier,
+            "engine": rds.DatabaseInstanceEngine.postgres(
                 version=rds.PostgresEngineVersion.VER_16_4
             ),
-            instance_type=ec2.InstanceType.of(
+            "instance_type": ec2.InstanceType.of(
                 ec2.InstanceClass.BURSTABLE4_GRAVITON, ec2.InstanceSize.MEDIUM
             ),
-            removal_policy=(
+            "storage_encrypted": True,
+            "removal_policy": (
                 RemovalPolicy.RETAIN if is_production else RemovalPolicy.DESTROY
             ),
-            vpc=vpc,
-            database_name=self.database_name,
+            "vpc": vpc,
+            "database_name": self.database_name,
             **kwargs,  # Pass along any additional props
+        }
+        self.database = (
+            rds.DatabaseInstance(
+                self,
+                "KeycloakPostgres",
+                **database_instance_props,
+            )
+            if snapshot_identifier is None
+            else rds.DatabaseInstanceFromSnapshot(
+                self,
+                "KeycloakPostgres",
+                snapshot_identifier=snapshot_identifier,
+                **database_instance_props,
+            )
         )
