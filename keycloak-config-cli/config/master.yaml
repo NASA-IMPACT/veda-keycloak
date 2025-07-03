@@ -23,7 +23,7 @@ identityProviders:
       clientId: $(env:GH_CLIENT_ID)
       clientSecret: $(env:GH_CLIENT_SECRET)
       defaultScope: openid read:org user:email
-      organization: nasa-impact
+      organization: developmentseed
       team: $(env:GH_ADMIN_TEAM:-"veda-auth")
       caseSensitiveOriginalUsername: "false"
       syncMode: FORCE
