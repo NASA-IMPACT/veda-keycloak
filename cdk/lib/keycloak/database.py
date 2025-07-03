@@ -34,7 +34,7 @@ class KeycloakDatabase(Construct):
         self.database_name = database_name
         database_instance_props = {
             "engine": rds.DatabaseInstanceEngine.postgres(
-                version=rds.PostgresEngineVersion.VER_16_4
+                version=rds.PostgresEngineVersion.VER_16_8
             ),
             "instance_identifier": instance_identifier,
             "instance_type": ec2.InstanceType.of(
