@@ -59,6 +59,10 @@ class KeycloakDatabase(Construct):
                 self,
                 "KeycloakPostgres",
                 snapshot_identifier=snapshot_identifier,
+                credentials=rds.SnapshotCredentials.from_generated_secret(
+                    username="admin",
+                    exclude_characters="!&*^#@()",
+                ),
                 **database_instance_props,
             )
         )
