@@ -33,10 +33,10 @@ class KeycloakDatabase(Construct):
 
         self.database_name = database_name
         database_instance_props = {
-            "instance_identifier": instance_identifier,
             "engine": rds.DatabaseInstanceEngine.postgres(
-                version=rds.PostgresEngineVersion.VER_16_4
+                version=rds.PostgresEngineVersion.VER_16_8
             ),
+            "instance_identifier": instance_identifier,
             "instance_type": ec2.InstanceType.of(
                 ec2.InstanceClass.BURSTABLE4_GRAVITON, ec2.InstanceSize.MEDIUM
             ),
@@ -44,14 +44,15 @@ class KeycloakDatabase(Construct):
                 RemovalPolicy.RETAIN if is_production else RemovalPolicy.DESTROY
             ),
             "vpc": vpc,
-            "database_name": self.database_name,
             **kwargs,  # Pass along any additional props
         }
         self.database = (
             rds.DatabaseInstance(
                 self,
                 "KeycloakPostgres",
+                database_name=self.database_name,
                 storage_encrypted=True,
+                storage_type=rds.StorageType.GP3,
                 **database_instance_props,
             )
             if snapshot_identifier is None
@@ -60,8 +61,7 @@ class KeycloakDatabase(Construct):
                 "KeycloakPostgres",
                 snapshot_identifier=snapshot_identifier,
                 credentials=rds.SnapshotCredentials.from_generated_secret(
-                    username="admin",
-                    exclude_characters="!&*^#@()",
+                    username="postgres"
                 ),
                 **database_instance_props,
             )
