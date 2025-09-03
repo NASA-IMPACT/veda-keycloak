@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     vpc_id: Optional[str] = None
     permissions_boundary_arn: Optional[str] = None
     ssl_certificate_arn: str
-    hostname: Optional[str] = None
+    hostname: str
     stage: str = "dev"
     keycloak_version: str = "26.0.5"
     keycloak_app_dir: DirectoryPath = DirectoryPath("keycloak")

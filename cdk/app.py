@@ -72,6 +72,7 @@ KeycloakStack(
     keycloak_config_cli_app_dir=settings.keycloak_config_cli_app_dir.as_posix(),
     idp_oauth_client_secrets=idp_oauth_client_secrets,
     private_oauth_clients=private_oauth_clients,
+    configure_route53=settings.configure_route53,
     is_production=settings.is_production,
     rds_snapshot_identifier=settings.rds_snapshot_identifier,
     # Stack Configuration
