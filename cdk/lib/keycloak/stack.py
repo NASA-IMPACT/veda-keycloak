@@ -87,4 +87,4 @@ class KeycloakStack(Stack):
                 alb=kc_service.alb_service.load_balancer,
             )
         else:
-            print("Warning: Hostname not provided--new record for keycloak service load balancer must be added to hosted zone")
+            print("Warning: Environment is set to manual DNS configuration--new record for keycloak service load balancer must be added to hosted zone")
