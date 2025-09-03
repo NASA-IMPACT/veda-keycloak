@@ -20,6 +20,7 @@ class Settings(BaseSettings):
         default=None,
         pattern=r"^arn:aws:rds:[a-z0-9-]+:\d{12}:snapshot:.+$",
     )
+    configure_route53: Optional[bool] = True
 
     @field_validator("rds_snapshot_identifier", mode="before")
     @classmethod

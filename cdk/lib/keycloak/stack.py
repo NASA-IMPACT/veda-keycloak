@@ -30,6 +30,7 @@ class KeycloakStack(Stack):
         private_oauth_clients: list,
         vpc_id: Optional[str] = None,
         rds_snapshot_identifier: Optional[str] = None,
+        configure_route53: Optional[bool] = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -78,7 +79,7 @@ class KeycloakStack(Stack):
             version=keycloak_config_cli_version,
         )
 
-        if hostname:
+        if configure_route53:
             KeycloakUrl(
                 self,
                 "url",
