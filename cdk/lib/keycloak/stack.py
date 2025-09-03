@@ -78,9 +78,12 @@ class KeycloakStack(Stack):
             version=keycloak_config_cli_version,
         )
 
-        KeycloakUrl(
-            self,
-            "url",
-            hostname=hostname,
-            alb=kc_service.alb_service.load_balancer,
-        )
+        if hostname:
+            KeycloakUrl(
+                self,
+                "url",
+                hostname=hostname,
+                alb=kc_service.alb_service.load_balancer,
+            )
+        else:
+            print("Warning: Hostname not provided--new record for keycloak service load balancer must be added to hosted zone")
