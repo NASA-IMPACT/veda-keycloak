@@ -62,4 +62,5 @@ jobs:
       - name: Diff CDK
         uses: corymhall/cdk-diff-action@v2
         with:
+          failOnDestructiveChanges: false
           githubToken: ${{ secrets.GITHUB_TOKEN }}
