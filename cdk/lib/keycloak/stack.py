@@ -30,7 +30,7 @@ class KeycloakStack(Stack):
         private_oauth_clients: list,
         vpc_id: Optional[str] = None,
         rds_snapshot_identifier: Optional[str] = None,
-        configure_route53: Optional[bool] = None,
+        configure_route53: Optional[bool] = False,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
