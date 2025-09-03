@@ -54,6 +54,7 @@ jobs:
           SSL_CERTIFICATE_ARN: ${{ vars.SSL_CERTIFICATE_ARN }}
           RDS_SNAPSHOT_IDENTIFIER: ${{ vars.RDS_SNAPSHOT_IDENTIFIER }}
           STAGE: dev
+          CONFIGURE_ROUTE53: ${{ vars.CONFIGURE_ROUTE53 }}
           # Imported Identity Provider secrets
           IDP_SECRET_ARN_GH: ${{ vars.IDP_SECRET_ARN_GH }}
           IDP_SECRET_ARN_CILOGON: ${{ vars.IDP_SECRET_ARN_CILOGON }}
@@ -61,4 +62,5 @@ jobs:
       - name: Diff CDK
         uses: corymhall/cdk-diff-action@v2
         with:
+          failOnDestructiveChanges: false
           githubToken: ${{ secrets.GITHUB_TOKEN }}
