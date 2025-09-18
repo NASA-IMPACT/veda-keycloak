@@ -39,8 +39,8 @@ class KeycloakConfig(Construct):
         # Create a client secret for each private OAuth client
         created_client_secrets = []
         for client_info in private_oauth_clients:
-            client_slug = client_info["id"]
             realm = client_info["realm"]
+            client_slug = f"{realm}-{client_info["id"]}"
             secret = secretsmanager.Secret(
                 self,
                 f"{client_slug}-client-secret",
