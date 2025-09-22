@@ -93,7 +93,9 @@ clients:
     name: STAC Ingest API
     rootUrl: $(env:INGEST_API_CLIENT_URL)
     publicClient: true
-    attributes: {}
+    attributes: {
+      "access.token.lifespan": "3600",
+    }
     redirectUris:
       - $(env:INGEST_API_CLIENT_URL)/*
     webOrigins:
