@@ -217,14 +217,14 @@ clients:
   
   - clientId: discourse-forum
     name: Discourse
-    rootUrl: $(env:DISCOURSE_CLIENT_URL)
-    secret: $(env:DISCOURSE_CLIENT_SECRET)
+    rootUrl: $(env:DISCOURSE_FORUM_CLIENT_URL)
+    secret: $(env:DISCOURSE_FORUM_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - $(env:DISCOURSE_CLIENT_URL)/*
+      - $(env:DISCOURSE_FORUM_CLIENT_URL)/*
     webOrigins:
-      - $(env:DISCOURSE_CLIENT_URL)
+      - $(env:DISCOURSE_FORUM_CLIENT_URL)
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
