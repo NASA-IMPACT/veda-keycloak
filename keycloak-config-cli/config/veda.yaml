@@ -11,10 +11,8 @@ clients:
     secret: $(env:GRAFANA_CLIENT_SECRET)
     publicClient: false
     attributes: {}
-    redirectUris:
-      - $(env:GRAFANA_CLIENT_URL)/*
-    webOrigins:
-      - $(env:GRAFANA_CLIENT_URL)
+    redirectUris: [$(env:GRAFANA_CLIENT_REDIRECTS)]
+    webOrigins: [$(env:GRAFANA_CLIENT_ORIGINS)]
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -48,10 +46,8 @@ clients:
     rootUrl: $(env:STAC_CLIENT_URL)
     publicClient: true
     attributes: {}
-    redirectUris:
-      - $(env:STAC_CLIENT_URL)/*
-    webOrigins:
-      - $(env:STAC_CLIENT_URL)
+    redirectUris: [$(env:STAC_CLIENT_REDIRECTS)]
+    webOrigins: [$(env:STAC_CLIENT_ORIGINS)]
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -96,10 +92,8 @@ clients:
     attributes: {
       "access.token.lifespan": "3600",
     }
-    redirectUris:
-      - $(env:INGEST_API_CLIENT_URL)/*
-    webOrigins:
-      - $(env:INGEST_API_CLIENT_URL)
+    redirectUris: [$(env:INGEST_API_CLIENT_REDIRECTS)]
+    webOrigins: [$(env:INGEST_API_CLIENT_ORIGINS)]
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -145,8 +139,7 @@ clients:
     secret: $(env:JUPYTERHUB_MAAP_CLIENT_SECRET)
     publicClient: false
     attributes: {}
-    redirectUris:
-      - $(env:JUPYTERHUB_MAAP_CLIENT_URL)/hub/oauth_callback
+    redirectUris: [$(env:JUPYTERHUB_MAAP_CLIENT_REDIRECTS)]
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes: &jupyterhub-default-client-scopes
@@ -174,8 +167,7 @@ clients:
     secret: $(env:JUPYTERHUB_DISASTERS_CLIENT_SECRET)
     publicClient: false
     attributes: {}
-    redirectUris:
-      - $(env:JUPYTERHUB_DISASTERS_CLIENT_URL)/hub/oauth_callback
+    redirectUris: [$(env:JUPYTERHUB_DISASTERS_CLIENT_REDIRECTS)]
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes: *jupyterhub-default-client-scopes
@@ -199,10 +191,8 @@ clients:
     secret: $(env:INGEST_UI_CLIENT_SECRET)
     publicClient: false
     attributes: {}
-    redirectUris:
-      - $(env:INGEST_UI_CLIENT_URL)/*
-    webOrigins:
-      - $(env:INGEST_UI_CLIENT_URL)
+    redirectUris: [$(env:INGEST_UI_CLIENT_REDIRECTS)]
+    webOrigins: [$(env:INGEST_UI_CLIENT_ORIGINS)]
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
