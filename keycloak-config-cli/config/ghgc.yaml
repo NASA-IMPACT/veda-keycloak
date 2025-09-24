@@ -1,0 +1,339 @@
+---
+enabled: true
+realm: ghgc
+displayName: Applications
+displayNameHtml: GHGC 
+
+clients:
+  - clientId: ghgc-stac
+    name: GHGC STAC Catalog
+    rootUrl: $(env:GHGC_STAC_CLIENT_URL)
+    publicClient: true
+    attributes: {}
+    redirectUris:
+      - $(env:GHGC_STAC_CLIENT_URL)/*
+    webOrigins:
+      - $(env:GHGC_STAC_CLIENT_URL)
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+
+  - clientId: ghgc-airflow-stac-etl
+    name: GHGC Airflow STAC ETL
+    secret: $(env:GHGC_AIRFLOW_STAC_ETL_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    protocol: openid-connect
+    fullScopeAllowed: true
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    optionalClientScopes:
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+    defaultClientScopes:
+      - roles
+  
+  - clientId: ghgc-ingest-api
+    name: GHGC Ingest API
+    rootUrl: $(env:GHGC_INGEST_API_CLIENT_URL)
+    publicClient: true
+    attributes: {}
+    redirectUris:
+      - $(env:GHGC_INGEST_API_CLIENT_URL)/*
+    webOrigins:
+      - $(env:GHGC_INGEST_API_CLIENT_URL)
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+
+  - clientId: ghgc-airflow-ingest-api-etl
+    name: GHGC Airflow Ingest API ETL
+    secret: $(env:GHGC_AIRFLOW_INGEST_API_ETL_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    protocol: openid-connect
+    fullScopeAllowed: true
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    optionalClientScopes:
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+    defaultClientScopes:
+      - roles
+    
+roles:
+  client:
+    ghgc-stac:
+      - name: Admin
+        description: Can create, update and delete STAC collections and items
+      - name: Editor
+        description: Can create and update STAC collections and items
+    ghgc-ingest-api:
+      - name: Admin
+        description: Can create, update and delete STAC collections and items
+      - name: Editor
+        description: Can create and update STAC collections and items
+
+clientScopeMappings:
+  ghgc-stac:
+    - clientScope: stac:item:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:delete
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:delete
+      roles:
+        - Admin
+  ghgc-ingest-api:
+    - clientScope: stac:item:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:delete
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:delete
+      roles:
+        - Admin
+
+clientScopes:
+  - name: stac:item:create
+    description: Create STAC items
+    protocol: openid-connect
+  - name: stac:item:update
+    description: Update STAC items
+    protocol: openid-connect
+  - name: stac:item:delete
+    description: Delete STAC items
+    protocol: openid-connect
+  - name: stac:collection:create
+    description: Create STAC collections
+    protocol: openid-connect
+  - name: stac:collection:update
+    description: Update STAC collections
+    protocol: openid-connect
+  - name: stac:collection:delete
+    description: Delete STAC collections
+    protocol: openid-connect
+
+groups:
+  - name: System Administrators
+    clientRoles:
+      stac:
+        - Admin
+      ingest-api:
+        - Admin
+
+  - name: Developers
+    clientRoles:
+      stac:
+        - Admin
+      ingest-api:
+        - Admin
+
+  - name: Data Editors
+    clientRoles:
+      stac:
+        - Editor
+      ingest-api:
+        - Editor
+
+identityProviders:
+  # CILogon
+  - alias: cilogon # NOTE: this alias appears in the redirect_uri for the auth flow, update Github OAuth settings accordingly
+    displayName: CILogon
+    providerId: oidc
+    enabled: true
+    updateProfileFirstLoginMode: on
+    trustEmail: false
+    storeToken: false
+    addReadTokenRoleOnCreate: false
+    authenticateByDefault: false
+    linkOnly: false
+    config:
+      userInfoUrl: "https://cilogon.org/oauth2/userinfo"
+      validateSignature: "true"
+      tokenUrl: "https://cilogon.org/oauth2/token"
+      jwksUrl: "https://cilogon.org/oauth2/certs"
+      issuer: "https://cilogon.org"
+      useJwksUrl: "true"
+      pkceEnabled: "false"
+      defaultScope: "openid email profile"
+      metadataDescriptorUrl: "https://cilogon.org/.well-known/openid-configuration"
+      authorizationUrl: "https://cilogon.org/authorize"
+      clientAuthMethod: "client_secret_post"
+      syncMode: "IMPORT"
+      clientId: $(env:CILOGON_CLIENT_ID)
+      clientSecret: $(env:CILOGON_CLIENT_SECRET)
+identityProviderMappers:
+  - name: "email"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "email"
+      user.attribute: "email"
+  - name: "first name"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "profile.given_name"
+      user.attribute: "firstName"
+  - name: "last name"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "profile.family_name"
+      user.attribute: "lastName"
+
+# Login Flow Configuration
+browserFlow: Browser without Password
+authenticationFlows:
+  - alias: Browser without Password
+    description: browser based authentication without username password form
+    providerId: basic-flow
+    topLevel: true
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: auth-cookie
+        authenticatorFlow: false
+        requirement: ALTERNATIVE
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-spnego
+        authenticatorFlow: false
+        requirement: DISABLED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: ALTERNATIVE
+        priority: 30
+        autheticatorFlow: true
+        flowAlias: Browser without Password forms
+        userSetupAllowed: false
+  - alias: Browser without Password forms
+    description: Username, password, otp and other auth forms.
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticatorConfig: cilogon
+        authenticator: identity-provider-redirector
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: CONDITIONAL
+        priority: 21
+        autheticatorFlow: true
+        flowAlias: Browser without Password Browser - Conditional OTP
+        userSetupAllowed: false
+  - alias: Browser without Password Browser - Conditional OTP
+    description: Flow to determine if the OTP is required for the authentication
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: conditional-user-configured
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-otp-form
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+authenticatorConfig:
+  - alias: cilogon
+    config:
+      defaultProvider: cilogon
+
+users:
+  - username: service-account-airflow-stac-etl
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: ghgc-airflow-stac-etl
+    clientRoles:
+      stac:
+      - Admin
+  - username: service-account-airflow-ingest-api-etl
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: ghgc-airflow-ingest-api-etl
+    clientRoles:
+      ingest-api:
+      - Admin
+
