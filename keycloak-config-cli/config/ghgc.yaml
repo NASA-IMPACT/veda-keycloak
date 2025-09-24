@@ -327,7 +327,7 @@ users:
     enabled: true
     serviceAccountClientId: ghgc-airflow-stac-etl
     clientRoles:
-      ghg-stac:
+      ghgc-stac:
       - Admin
   - username: service-account-airflow-ingest-api-etl
     emailVerified: true
