@@ -5,7 +5,7 @@ displayName: Applications
 displayNameHtml: GHGC 
 
 clients:
-  - clientId: stac
+  - clientId: ghgc-stac
     name: GHGC STAC Catalog
     rootUrl: $(env:GHGC_STAC_CLIENT_URL)
     publicClient: true
@@ -30,7 +30,7 @@ clients:
       - stac:collection:update
       - stac:collection:delete
 
-  - clientId: airflow-stac-etl
+  - clientId: ghgc-airflow-stac-etl
     name: GHGC Airflow STAC ETL
     secret: $(env:GHGC_AIRFLOW_STAC_ETL_CLIENT_SECRET)
     publicClient: false
@@ -51,7 +51,7 @@ clients:
     defaultClientScopes:
       - roles
   
-  - clientId: ingest-api
+  - clientId: ghgc-ingest-api
     name: GHGC Ingest API
     rootUrl: $(env:GHGC_INGEST_API_CLIENT_URL)
     publicClient: true
@@ -76,7 +76,7 @@ clients:
       - stac:collection:update
       - stac:collection:delete
 
-  - clientId: airflow-ingest-api-etl
+  - clientId: ghgc-airflow-ingest-api-etl
     name: GHGC Airflow Ingest API ETL
     secret: $(env:GHGC_AIRFLOW_INGEST_API_ETL_CLIENT_SECRET)
     publicClient: false
@@ -99,19 +99,19 @@ clients:
     
 roles:
   client:
-    stac:
+    ghgc-stac:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
-    ingest-api:
+    ghgc-ingest-api:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
 
 clientScopeMappings:
-  stac:
+  ghgc-stac:
     - clientScope: stac:item:create
       roles:
         - Admin
@@ -135,7 +135,7 @@ clientScopeMappings:
     - clientScope: stac:collection:delete
       roles:
         - Admin
-  ingest-api:
+  ghgc-ingest-api:
     - clientScope: stac:item:create
       roles:
         - Admin
@@ -325,14 +325,14 @@ users:
   - username: service-account-airflow-stac-etl
     emailVerified: true
     enabled: true
-    serviceAccountClientId: airflow-stac-etl
+    serviceAccountClientId: ghgc-airflow-stac-etl
     clientRoles:
       stac:
       - Admin
   - username: service-account-airflow-ingest-api-etl
     emailVerified: true
     enabled: true
-    serviceAccountClientId: airflow-ingest-api-etl
+    serviceAccountClientId: ghgc-airflow-ingest-api-etl
     clientRoles:
       ingest-api:
       - Admin
