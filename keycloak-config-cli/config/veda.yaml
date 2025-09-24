@@ -93,7 +93,9 @@ clients:
     name: STAC Ingest API
     rootUrl: $(env:INGEST_API_CLIENT_URL)
     publicClient: true
-    attributes: {}
+    attributes: {
+      "access.token.lifespan": "3600",
+    }
     redirectUris:
       - $(env:INGEST_API_CLIENT_URL)/*
     webOrigins:
@@ -212,6 +214,26 @@ clients:
       - email
       - dataset:create
       - dataset:update
+  
+  - clientId: discourse-forum
+    name: Discourse
+    rootUrl: $(env:DISCOURSE_FORUM_CLIENT_URL)
+    secret: $(env:DISCOURSE_FORUM_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - $(env:DISCOURSE_FORUM_CLIENT_URL)/*
+    webOrigins:
+      - $(env:DISCOURSE_FORUM_CLIENT_URL)
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
       
 roles:
   client:
