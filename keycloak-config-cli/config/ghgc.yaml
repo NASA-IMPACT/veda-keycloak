@@ -183,23 +183,23 @@ clientScopes:
 groups:
   - name: System Administrators
     clientRoles:
-      stac:
+      ghgc-stac:
         - Admin
-      ingest-api:
+      ghgc-ingest-api:
         - Admin
 
   - name: Developers
     clientRoles:
-      stac:
+      ghgc-stac:
         - Admin
-      ingest-api:
+      ghgc-ingest-api:
         - Admin
 
   - name: Data Editors
     clientRoles:
-      stac:
+      ghgc-stac:
         - Editor
-      ingest-api:
+      ghgc-ingest-api:
         - Editor
 
 identityProviders:
@@ -327,13 +327,13 @@ users:
     enabled: true
     serviceAccountClientId: ghgc-airflow-stac-etl
     clientRoles:
-      stac:
+      ghgc-stac:
       - Admin
   - username: service-account-airflow-ingest-api-etl
     emailVerified: true
     enabled: true
     serviceAccountClientId: ghgc-airflow-ingest-api-etl
     clientRoles:
-      ingest-api:
+      ghgc-ingest-api:
       - Admin
 
