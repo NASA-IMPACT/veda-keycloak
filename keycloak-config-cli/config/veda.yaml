@@ -11,10 +11,8 @@ clients:
     secret: $(env:GRAFANA_CLIENT_SECRET)
     publicClient: false
     attributes: {}
-    redirectUris:
-      - $(env:GRAFANA_CLIENT_URL)/*
-    webOrigins:
-      - $(env:GRAFANA_CLIENT_URL)
+    redirectUris: [$(env:GRAFANA_CLIENT_REDIRECTS)]
+    webOrigins: [$(env:GRAFANA_CLIENT_ORIGINS)]
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
