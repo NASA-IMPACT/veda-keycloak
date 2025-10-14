@@ -67,6 +67,20 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "false"
 
   - clientId: airflow-stac-etl
     name: Airflow STAC ETL
@@ -88,7 +102,7 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
-  
+
   - clientId: ingest-api
     name: STAC Ingest API
     rootUrl: $(env:INGEST_API_CLIENT_URL)
@@ -115,6 +129,20 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "false"
 
   - clientId: airflow-ingest-api-etl
     name: Airflow Ingest API ETL
@@ -136,7 +164,7 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
-    
+
   - clientId: jupyterhub-maap
     name: MAAP JupyterHub
     # Staging JupyterHub is at https://staging.hub.maap.2i2c.cloud
@@ -214,7 +242,21 @@ clients:
       - email
       - dataset:create
       - dataset:update
-  
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "false"
+
   - clientId: discourse-forum
     name: Discourse
     rootUrl: $(env:DISCOURSE_FORUM_CLIENT_URL)
@@ -234,7 +276,7 @@ clients:
       - roles
       - basic
       - email
-      
+
 roles:
   client:
     grafana:
@@ -396,7 +438,7 @@ groups:
         - Editor
       ingest-ui:
         - Editor
-      
+
 
   - name: JupyterHub MAAP Admin
     clientRoles:
@@ -421,7 +463,7 @@ groups:
         - CPU:XS
         - CPU:M
         - CPU:L
-  
+
   - name: JupyterHub MAAP GPU User
     clientRoles:
       jupyterhub-maap:
