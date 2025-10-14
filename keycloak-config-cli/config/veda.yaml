@@ -81,6 +81,8 @@ clients:
           jsonType.label: String
           multivalued: "true"
           full.path: "false"
+          usermodel.clientRoleMapping.clientId: stac
+          usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: airflow-stac-etl
     name: Airflow STAC ETL
@@ -143,6 +145,8 @@ clients:
           jsonType.label: String
           multivalued: "true"
           full.path: "false"
+          usermodel.clientRoleMapping.clientId: ingest-api
+          usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: airflow-ingest-api-etl
     name: Airflow Ingest API ETL
@@ -256,6 +260,8 @@ clients:
           jsonType.label: String
           multivalued: "true"
           full.path: "false"
+          usermodel.clientRoleMapping.clientId: ingest-ui
+          usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: discourse-forum
     name: Discourse
