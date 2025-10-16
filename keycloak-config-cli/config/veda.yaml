@@ -247,7 +247,9 @@ clients:
       - $(env:JUPYTERHUB_DISASTERS_CLIENT_URL)/hub/oauth_callback
     protocol: openid-connect
     fullScopeAllowed: true
-    defaultClientScopes: *jupyterhub-default-client-scopes
+    defaultClientScopes:
+      - basic
+      - profile
     protocolMappers:
       - name: client-roles-claim
         protocol: openid-connect
@@ -341,7 +343,7 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
-    jupyterhub-maap: &jupyterhub-roles
+    jupyterhub-disasters:
       - name: Admin
         description: Can use the JupyterHub Admin Panel
       - name: CPU:XS
@@ -360,7 +362,6 @@ roles:
         description: Access to extra extra extra large instances (~121GB RAM)
       - name: GPU:T4
         description: Access to T4 GPU instances (1 T4 GPU)
-    jupyterhub-disasters: *jupyterhub-roles
     ingest-ui:
       - name: Editor
         description: Can initiate and update dataset ingests
@@ -481,36 +482,6 @@ groups:
         - Editor
       ingest-ui:
         - Editor
-
-
-  - name: JupyterHub MAAP Admin
-    clientRoles:
-      jupyterhub-maap:
-        - Admin
-
-  - name: JupyterHub MAAP User
-    clientRoles:
-      jupyterhub-maap:
-        - CPU:XS
-        - CPU:S
-        - CPU:M
-        - CPU:L
-        - CPU:XL
-        - CPU:XXL
-        - CPU:XXL
-        - CPU:XXXL
-
-  - name: JupyterHub MAAP Basic User
-    clientRoles:
-      jupyterhub-maap:
-        - CPU:XS
-        - CPU:M
-        - CPU:L
-
-  - name: JupyterHub MAAP GPU User
-    clientRoles:
-      jupyterhub-maap:
-        - GPU:T4
 
   - name: JupyterHub Disasters Admin
     clientRoles:
