@@ -54,7 +54,7 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
                         logging.warning(
                             "Missing clientId for client %s in file %s",
                             client,
-                            filename
+                            filename,
                         )
 
     # Validate each extracted clientId
