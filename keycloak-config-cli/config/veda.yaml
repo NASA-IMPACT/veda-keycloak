@@ -68,7 +68,7 @@ clients:
       - stac:collection:update
       - stac:collection:delete
     protocolMappers:
-      # Include user groups in JWT tokens
+      # Include user groups in JWT tokens with full paths
       - name: groups
         protocol: openid-connect
         protocolMapper: oidc-group-membership-mapper
@@ -80,8 +80,45 @@ clients:
           claim.name: groups
           jsonType.label: String
           multivalued: "true"
-          full.path: "false"
+          full.path: "true"
+      - name: stac_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: stac_roles
+          jsonType.label: String
+          multivalued: "true"
           usermodel.clientRoleMapping.clientId: stac
+          usermodel.clientRoleMapping.rolePrefix: ""
+      - name: grafana_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: grafana_roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: grafana
+          usermodel.clientRoleMapping.rolePrefix: ""
+      - name: ingest_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: ingest_roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: ingest-api
           usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: airflow-stac-etl
