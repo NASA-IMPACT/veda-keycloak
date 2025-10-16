@@ -149,7 +149,9 @@ clients:
       - $(env:JUPYTERHUB_DISASTERS_CLIENT_URL)/hub/oauth_callback
     protocol: openid-connect
     fullScopeAllowed: true
-    defaultClientScopes: *jupyterhub-default-client-scopes
+    defaultClientScopes: &jupyterhub-default-client-scopes
+      - basic
+      - profile
     protocolMappers:
       - name: client-roles-claim
         protocol: openid-connect
