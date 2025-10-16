@@ -53,7 +53,8 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
                                     f"in file {filename}"
                                 )
             except Exception as e:
-                print(f"Failed to process file '{filename}': {e}")
+                print(f"Failed to process file '{filename}'")
+                raise e
 
     # Validate each extracted clientId
     for client in client_ids:
