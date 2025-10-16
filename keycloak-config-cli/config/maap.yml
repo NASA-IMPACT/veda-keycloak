@@ -14,7 +14,7 @@ clients:
     publicClient: false
     attributes: {}
     redirectUris:
-      - $(env:JUPYTERHUB_MAAP_CLIENT_URL)/hub/oauth_callback
+      - $(env:JUPYTERHUB_MAAP_CLIENT_URL)/hub/oauth_callback/*
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes: &jupyterhub-default-client-scopes
@@ -88,7 +88,7 @@ groups:
 
 identityProviders:
   # EDL
-  - alias: edl # NOTE: this alias appears in the redirect_uri for the auth flow, update Github OAuth settings accordingly
+  - alias: edl 
     displayName: EarthData Login
     providerId: oidc
     enabled: true
