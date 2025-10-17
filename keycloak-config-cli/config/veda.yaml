@@ -478,6 +478,71 @@ groups:
       jupyterhub-disasters:
         - GPU:T4
 
+  - name: Tenants
+    subGroups:
+      - name: VEDA
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+
+      - name: Disasters
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+
+      - name: GHGC
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+
 identityProviders:
   # CILogon
   - alias: cilogon # NOTE: this alias appears in the redirect_uri for the auth flow, update Github OAuth settings accordingly
