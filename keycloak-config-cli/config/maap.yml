@@ -1,0 +1,143 @@
+---
+enabled: true
+realm: maap
+displayName: Applications
+displayNameHtml: MAAP 
+
+clients:
+  - clientId: jupyterhub-maap
+    name: MAAP JupyterHub
+    # Staging JupyterHub is at https://staging.hub.maap.2i2c.cloud
+    # Prod JupyterHub is at https://hub.maap.2i2c.cloud
+    rootUrl: $(env:JUPYTERHUB_MAAP_CLIENT_URL)
+    secret: $(env:JUPYTERHUB_MAAP_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - $(env:JUPYTERHUB_MAAP_CLIENT_URL)/hub/oauth_callback/*
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes: &jupyterhub-default-client-scopes
+      - basic
+      - profile
+    protocolMappers:
+      - name: client-roles-claim
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "false"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          claim.name: roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: jupyterhub-maap
+          usermodel.clientRoleMapping.rolePrefix: ""
+
+roles:
+  client:
+    jupyterhub-maap: &jupyterhub-roles
+      - name: Admin
+        description: Can use the JupyterHub Admin Panel
+      - name: CPU:XS
+        description: Access to extra small instances (~1.9GB RAM)
+      - name: CPU:S
+        description: Access to small instances (~3.7GB RAM)
+      - name: CPU:M
+        description: Access to medium instances (~7.4GB RAM)
+      - name: CPU:L
+        description: Access to large instances (~14.8GB RAM)
+      - name: CPU:XL
+        description: Access to extra large instances (~29.7GB RAM)
+      - name: CPU:XXL
+        description: Access to extra extra large instances (~60.6GB RAM)
+      - name: CPU:XXXL
+        description: Access to extra extra extra large instances (~121GB RAM)
+      - name: GPU:T4
+        description: Access to T4 GPU instances (1 T4 GPU)
+
+groups:
+  - name: JupyterHub MAAP Admin
+    clientRoles:
+      jupyterhub-maap:
+        - Admin
+
+  - name: JupyterHub MAAP User
+    clientRoles:
+      jupyterhub-maap:
+        - CPU:XS
+        - CPU:S
+        - CPU:M
+        - CPU:L
+        - CPU:XL
+        - CPU:XXL
+        - CPU:XXL
+        - CPU:XXXL
+
+  - name: JupyterHub MAAP Basic User
+    clientRoles:
+      jupyterhub-maap:
+        - CPU:XS
+        - CPU:M
+        - CPU:L
+  
+  - name: JupyterHub MAAP GPU User
+    clientRoles:
+      jupyterhub-maap:
+        - GPU:T4
+
+identityProviders:
+  # EDL
+  - alias: edl
+    displayName: EarthData Login
+    providerId: oidc
+    enabled: true
+    updateProfileFirstLoginMode: on
+    trustEmail: false
+    storeToken: false
+    addReadTokenRoleOnCreate: false
+    authenticateByDefault: false
+    linkOnly: false
+    config:
+      userInfoUrl: "https://uat.urs.earthdata.nasa.gov/oauth/userInfo"
+      tokenUrl: "https://uat.urs.earthdata.nasa.gov/oauth/token"
+      issuer: "https://uat.urs.earthdata.nasa.gov"
+      authorizationUrl: "https://uat.urs.earthdata.nasa.gov/oauth/authorize"
+      validateSignature: "false"
+      useJwksUrl: "true"
+      pkceEnabled: "true"
+      pkceMethod: "plain"
+      defaultScope: "openid email profile"
+      clientAuthMethod: "client_secret_basic"
+      syncMode: "IMPORT"
+      clientId: $(env:EDL_CLIENT_ID)
+      clientSecret: $(env:EDL_CLIENT_SECRET)
+identityProviderMappers:
+  - name: "username"
+    identityProviderAlias: edl
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "uid"
+      user.attribute: "username"
+  - name: "email"
+    identityProviderAlias: edl
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "email_address"
+      user.attribute: "email"
+  - name: "first name"
+    identityProviderAlias: edl
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "first_name"
+      user.attribute: "firstName"
+  - name: "last name"
+    identityProviderAlias: edl
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "last_name"
+      user.attribute: "lastName"
