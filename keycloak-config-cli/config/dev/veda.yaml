@@ -14,7 +14,7 @@ clients:
     redirectUris:
       - https://monitoring.dev.openveda.cloud/*
     webOrigins:
-      - https://monitoring.dev.openveda.cloud/
+      - https://monitoring.dev.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
