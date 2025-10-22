@@ -74,6 +74,7 @@ KeycloakStack(
     private_oauth_clients=private_oauth_clients,
     configure_route53=settings.configure_route53,
     is_production=settings.is_production,
+    stage=settings.stage,
     rds_snapshot_identifier=settings.rds_snapshot_identifier,
     # Stack Configuration
     env={
