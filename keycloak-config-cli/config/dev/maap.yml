@@ -141,3 +141,7 @@ identityProviderMappers:
       syncMode: "IMPORT"
       claim: "last_name"
       user.attribute: "lastName"
+
+spi-events-listener:
+  email-on-user-creation:
+    email-address: example@example.com
