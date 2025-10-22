@@ -1,0 +1,690 @@
+---
+enabled: true
+realm: veda
+displayName: Applications
+displayNameHtml: VEDA Ecosystem
+
+clients:
+  - clientId: grafana
+    name: Grafana
+    rootUrl: https://monitoring.openveda.cloud
+    secret: $(env:GRAFANA_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - https://monitoring.openveda.cloud/*
+    webOrigins:
+      - https://monitoring.openveda.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+    protocolMappers:
+      # We ensure that user's client roles are injected into the userinfo so that Grafana
+      # can retrieve them via the `role_attribute_path` JMES expression.
+      - name: client-roles-claim
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "false"
+          lightweight.claim: "false"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+
+          claim.name: roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: grafana # Filter-out non-Grafana roles
+          usermodel.clientRoleMapping.rolePrefix: ""
+
+  - clientId: stac
+    name: STAC Catalog
+    rootUrl: https://openveda.cloud
+    publicClient: true
+    attributes: {}
+    redirectUris:
+      - https://test.openveda.cloud/*
+      - https://staging.openveda.cloud/*
+      - https://openveda.cloud/*
+    webOrigins:
+      - https://test.openveda.cloud
+      - https://staging.openveda.cloud
+      - https://openveda.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+    protocolMappers:
+      # Include user groups in JWT tokens with full paths
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "true"
+      - name: stac_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: stac_roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: stac
+          usermodel.clientRoleMapping.rolePrefix: ""
+      - name: grafana_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: grafana_roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: grafana
+          usermodel.clientRoleMapping.rolePrefix: ""
+      - name: ingest_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: ingest_roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: ingest-api
+          usermodel.clientRoleMapping.rolePrefix: ""
+
+  - clientId: airflow-stac-etl
+    name: Airflow STAC ETL
+    secret: $(env:AIRFLOW_STAC_ETL_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    protocol: openid-connect
+    fullScopeAllowed: true
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    optionalClientScopes:
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+    defaultClientScopes:
+      - roles
+
+  - clientId: ingest-api
+    name: STAC Ingest API
+    rootUrl: https://openveda.cloud
+    publicClient: true
+    attributes: {
+      "access.token.lifespan": "3600",
+    }
+    redirectUris:
+      - https://test.openveda.cloud/*
+      - https://staging.openveda.cloud/*
+      - https://openveda.cloud/*
+    webOrigins:
+      - https://test.openveda.cloud
+      - https://staging.openveda.cloud
+      - https://openveda.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "false"
+          usermodel.clientRoleMapping.clientId: ingest-api
+          usermodel.clientRoleMapping.rolePrefix: ""
+
+  - clientId: airflow-ingest-api-etl
+    name: Airflow Ingest API ETL
+    secret: $(env:AIRFLOW_INGEST_API_ETL_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    protocol: openid-connect
+    fullScopeAllowed: true
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    optionalClientScopes:
+      - stac:item:create
+      - stac:item:update
+      - stac:item:delete
+      - stac:collection:create
+      - stac:collection:update
+      - stac:collection:delete
+    defaultClientScopes:
+      - roles
+
+
+
+  - clientId: jupyterhub-disasters
+    name: Disasters JupyterHub
+    # Staging JupyterHub is at https://staging.hub.disasters.2i2c.cloud
+    # Prod JupyterHub is at https://hub.disasters.2i2c.cloud
+    rootUrl: https://hub.disasters.2i2c.cloud
+    secret: $(env:JUPYTERHUB_DISASTERS_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - https://hub.disasters.2i2c.cloud/hub/oauth_callback/*
+    webOrigins:
+      - https://hub.disasters.2i2c.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - basic
+      - profile
+    protocolMappers:
+      - name: client-roles-claim
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "false"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          claim.name: roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: jupyterhub-disasters
+          usermodel.clientRoleMapping.rolePrefix: ""
+
+  - clientId: ingest-ui
+    name: Ingest UI
+    rootUrl: https://ingest.openveda.cloud
+    secret: $(env:INGEST_UI_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - https://ingest.openveda.cloud/*
+    webOrigins:
+      - https://ingest.openveda.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - dataset:create
+      - dataset:update
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "false"
+          usermodel.clientRoleMapping.clientId: ingest-ui
+          usermodel.clientRoleMapping.rolePrefix: ""
+
+  - clientId: discourse-forum
+    name: Discourse
+    rootUrl: https://community.openveda.cloud
+    secret: $(env:DISCOURSE_FORUM_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - https://community.openveda.cloud/*
+    webOrigins:
+      - https://community.openveda.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+
+roles:
+  client:
+    grafana:
+      - name: GrafanaAdmin
+        description: Has full instance-wide permissions to manage all organizations, users, and global settings.
+      - name: Admin
+        description: Manages an organization's settings, users, dashboards, and data sources within that specific organization.
+      - name: Editor
+        description: Can create, edit, and delete dashboards and data sources in an organization but cannot modify organization or user settings.
+      - name: Viewer
+        description: Can only view dashboards and panels without the ability to create or modify content.
+    stac:
+      - name: Admin
+        description: Can create, update and delete STAC collections and items
+      - name: Editor
+        description: Can create and update STAC collections and items
+    ingest-api:
+      - name: Admin
+        description: Can create, update and delete STAC collections and items
+      - name: Editor
+        description: Can create and update STAC collections and items
+    jupyterhub-disasters:
+      - name: Admin
+        description: Can use the JupyterHub Admin Panel
+      - name: CPU:XS
+        description: Access to extra small instances (~1.9GB RAM)
+      - name: CPU:S
+        description: Access to small instances (~3.7GB RAM)
+      - name: CPU:M
+        description: Access to medium instances (~7.4GB RAM)
+      - name: CPU:L
+        description: Access to large instances (~14.8GB RAM)
+      - name: CPU:XL
+        description: Access to extra large instances (~29.7GB RAM)
+      - name: CPU:XXL
+        description: Access to extra extra large instances (~60.6GB RAM)
+      - name: CPU:XXXL
+        description: Access to extra extra extra large instances (~121GB RAM)
+      - name: GPU:T4
+        description: Access to T4 GPU instances (1 T4 GPU)
+    ingest-ui:
+      - name: Editor
+        description: Can initiate and update dataset ingests
+
+clientScopeMappings:
+  stac:
+    - clientScope: stac:item:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:delete
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:delete
+      roles:
+        - Admin
+  ingest-api:
+    - clientScope: stac:item:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:item:delete
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:create
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:update
+      roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:delete
+      roles:
+        - Admin
+  ingest-ui:
+    - clientScope: dataset:create
+      roles:
+        - Editor
+    - clientScope: dataset:update
+      roles:
+        - Editor
+
+clientScopes:
+  - name: stac:item:create
+    description: Create STAC items
+    protocol: openid-connect
+  - name: stac:item:update
+    description: Update STAC items
+    protocol: openid-connect
+  - name: stac:item:delete
+    description: Delete STAC items
+    protocol: openid-connect
+  - name: stac:collection:create
+    description: Create STAC collections
+    protocol: openid-connect
+  - name: stac:collection:update
+    description: Update STAC collections
+    protocol: openid-connect
+  - name: stac:collection:delete
+    description: Delete STAC collections
+    protocol: openid-connect
+  - name: dataset:create
+    description: Ingest new datasets
+    protocol: openid-connect
+  - name: dataset:update
+    description: Update existing datasets
+    protocol: openid-connect
+
+groups:
+  - name: System Administrators
+    clientRoles:
+      grafana:
+        - GrafanaAdmin
+      stac:
+        - Admin
+      ingest-api:
+        - Admin
+      ingest-ui:
+        - Editor
+
+  - name: Developers
+    clientRoles:
+      grafana:
+        - Editor
+      stac:
+        - Admin
+      ingest-api:
+        - Admin
+      ingest-ui:
+        - Editor
+
+  - name: Data Editors
+    clientRoles:
+      grafana:
+        - Viewer
+      stac:
+        - Editor
+      ingest-api:
+        - Editor
+      ingest-ui:
+        - Editor
+
+  - name: JupyterHub Disasters Admin
+    clientRoles:
+      jupyterhub-disasters:
+        - Admin
+
+  - name: JupyterHub Disasters User
+    clientRoles:
+      jupyterhub-disasters:
+        - CPU:XS
+        - CPU:S
+        - CPU:M
+        - CPU:L
+        - CPU:XL
+        - CPU:XXL
+        - CPU:XXL
+        - CPU:XXXL
+
+  - name: JupyterHub Disasters GPU User
+    clientRoles:
+      jupyterhub-disasters:
+        - GPU:T4
+
+  - name: Tenants
+    subGroups:
+      - name: VEDA
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+
+      - name: Disasters
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+
+      - name: GHGC
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+
+identityProviders:
+  # CILogon
+  - alias: cilogon # NOTE: this alias appears in the redirect_uri for the auth flow, update Github OAuth settings accordingly
+    displayName: CILogon
+    providerId: oidc
+    enabled: true
+    updateProfileFirstLoginMode: on
+    trustEmail: false
+    storeToken: false
+    addReadTokenRoleOnCreate: false
+    authenticateByDefault: false
+    linkOnly: false
+    config:
+      userInfoUrl: "https://cilogon.org/oauth2/userinfo"
+      validateSignature: "true"
+      tokenUrl: "https://cilogon.org/oauth2/token"
+      jwksUrl: "https://cilogon.org/oauth2/certs"
+      issuer: "https://cilogon.org"
+      useJwksUrl: "true"
+      pkceEnabled: "false"
+      defaultScope: "openid email profile"
+      metadataDescriptorUrl: "https://cilogon.org/.well-known/openid-configuration"
+      authorizationUrl: "https://cilogon.org/authorize"
+      clientAuthMethod: "client_secret_post"
+      syncMode: "IMPORT"
+      clientId: $(env:CILOGON_CLIENT_ID)
+      clientSecret: $(env:CILOGON_CLIENT_SECRET)
+identityProviderMappers:
+  - name: "email"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "email"
+      user.attribute: "email"
+  - name: "first name"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "profile.given_name"
+      user.attribute: "firstName"
+  - name: "last name"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "profile.family_name"
+      user.attribute: "lastName"
+
+# Login Flow Configuration
+browserFlow: Browser without Password
+authenticationFlows:
+  - alias: Browser without Password
+    description: browser based authentication without username password form
+    providerId: basic-flow
+    topLevel: true
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: auth-cookie
+        authenticatorFlow: false
+        requirement: ALTERNATIVE
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-spnego
+        authenticatorFlow: false
+        requirement: DISABLED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: ALTERNATIVE
+        priority: 30
+        autheticatorFlow: true
+        flowAlias: Browser without Password forms
+        userSetupAllowed: false
+  - alias: Browser without Password forms
+    description: Username, password, otp and other auth forms.
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticatorConfig: cilogon
+        authenticator: identity-provider-redirector
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: CONDITIONAL
+        priority: 21
+        autheticatorFlow: true
+        flowAlias: Browser without Password Browser - Conditional OTP
+        userSetupAllowed: false
+  - alias: Browser without Password Browser - Conditional OTP
+    description: Flow to determine if the OTP is required for the authentication
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: conditional-user-configured
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-otp-form
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+authenticatorConfig:
+  - alias: cilogon
+    config:
+      defaultProvider: cilogon
+
+users:
+  - username: service-account-airflow-stac-etl
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: airflow-stac-etl
+    clientRoles:
+      stac:
+      - Admin
+  - username: service-account-airflow-ingest-api-etl
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: airflow-ingest-api-etl
+    clientRoles:
+      ingest-api:
+      - Admin
+

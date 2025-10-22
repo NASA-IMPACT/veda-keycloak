@@ -7,13 +7,13 @@ displayNameHtml: GHGC
 clients:
   - clientId: ghgc-stac
     name: GHGC STAC Catalog
-    rootUrl: $(env:GHGC_STAC_CLIENT_URL)
+    rootUrl: https://dev.ghg.center/api/stac
     publicClient: true
     attributes: {}
     redirectUris:
-      - $(env:GHGC_STAC_CLIENT_URL)/*
+      - https://dev.ghg.center/api/stac/*
     webOrigins:
-      - $(env:GHGC_STAC_CLIENT_URL)
+      - https://dev.ghg.center/api/stac
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -53,13 +53,13 @@ clients:
   
   - clientId: ghgc-ingest-api
     name: GHGC Ingest API
-    rootUrl: $(env:GHGC_INGEST_API_CLIENT_URL)
+    rootUrl: https://dev.ghg.center/api/ingest
     publicClient: true
     attributes: {}
     redirectUris:
-      - $(env:GHGC_INGEST_API_CLIENT_URL)/*
+      - https://dev.ghg.center/api/ingest/*
     webOrigins:
-      - $(env:GHGC_INGEST_API_CLIENT_URL)
+      - https://dev.ghg.center/api/ingest
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
