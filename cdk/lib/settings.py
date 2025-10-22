@@ -37,4 +37,4 @@ class Settings(BaseSettings):
 
     @property
     def keycloak_config_cli_config_dir(self):
-        return self.keycloak_config_cli_app_dir / "config"
+        return self.keycloak_config_cli_app_dir / "config" / self.stage

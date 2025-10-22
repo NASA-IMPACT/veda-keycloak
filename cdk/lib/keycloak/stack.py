@@ -20,6 +20,7 @@ class KeycloakStack(Stack):
         construct_id: str,
         *,
         is_production: bool,
+        stage: str,
         hostname: str,
         ssl_certificate_arn: str,
         keycloak_version: str,
@@ -77,6 +78,7 @@ class KeycloakStack(Stack):
             idp_oauth_client_secrets=idp_oauth_client_secrets,
             private_oauth_clients=private_oauth_clients,
             version=keycloak_config_cli_version,
+            stage=stage,
         )
 
         if configure_route53:
