@@ -77,6 +77,7 @@ class KeycloakStack(Stack):
             idp_oauth_client_secrets=idp_oauth_client_secrets,
             private_oauth_clients=private_oauth_clients,
             version=keycloak_config_cli_version,
+            is_production=is_production,
         )
 
         if configure_route53:

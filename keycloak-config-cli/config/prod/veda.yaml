@@ -7,14 +7,14 @@ displayNameHtml: VEDA Ecosystem
 clients:
   - clientId: grafana
     name: Grafana
-    rootUrl: $(env:GRAFANA_CLIENT_URL)
+    rootUrl: https://monitoring.openveda.cloud
     secret: $(env:GRAFANA_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - $(env:GRAFANA_CLIENT_URL)/*
+      - https://monitoring.openveda.cloud/*
     webOrigins:
-      - $(env:GRAFANA_CLIENT_URL)
+      - https://monitoring.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -45,13 +45,17 @@ clients:
 
   - clientId: stac
     name: STAC Catalog
-    rootUrl: $(env:STAC_CLIENT_URL)
+    rootUrl: https://openveda.cloud
     publicClient: true
     attributes: {}
     redirectUris:
-      - $(env:STAC_CLIENT_URL)/*
+      - https://test.openveda.cloud/*
+      - https://staging.openveda.cloud/*
+      - https://openveda.cloud/*
     webOrigins:
-      - $(env:STAC_CLIENT_URL)
+      - https://test.openveda.cloud
+      - https://staging.openveda.cloud
+      - https://openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -144,15 +148,19 @@ clients:
 
   - clientId: ingest-api
     name: STAC Ingest API
-    rootUrl: $(env:INGEST_API_CLIENT_URL)
+    rootUrl: https://openveda.cloud
     publicClient: true
     attributes: {
       "access.token.lifespan": "3600",
     }
     redirectUris:
-      - $(env:INGEST_API_CLIENT_URL)/*
+      - https://test.openveda.cloud/*
+      - https://staging.openveda.cloud/*
+      - https://openveda.cloud/*
     webOrigins:
-      - $(env:INGEST_API_CLIENT_URL)
+      - https://test.openveda.cloud
+      - https://staging.openveda.cloud
+      - https://openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -212,12 +220,14 @@ clients:
     name: Disasters JupyterHub
     # Staging JupyterHub is at https://staging.hub.disasters.2i2c.cloud
     # Prod JupyterHub is at https://hub.disasters.2i2c.cloud
-    rootUrl: $(env:JUPYTERHUB_DISASTERS_CLIENT_URL)
+    rootUrl: https://hub.disasters.2i2c.cloud
     secret: $(env:JUPYTERHUB_DISASTERS_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - $(env:JUPYTERHUB_DISASTERS_CLIENT_URL)/hub/oauth_callback
+      - https://hub.disasters.2i2c.cloud/hub/oauth_callback/*
+    webOrigins:
+      - https://hub.disasters.2i2c.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -239,14 +249,14 @@ clients:
 
   - clientId: ingest-ui
     name: Ingest UI
-    rootUrl: $(env:INGEST_UI_CLIENT_URL)
+    rootUrl: https://ingest.openveda.cloud
     secret: $(env:INGEST_UI_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - $(env:INGEST_UI_CLIENT_URL)/*
+      - https://ingest.openveda.cloud/*
     webOrigins:
-      - $(env:INGEST_UI_CLIENT_URL)
+      - https://ingest.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -277,14 +287,14 @@ clients:
 
   - clientId: discourse-forum
     name: Discourse
-    rootUrl: $(env:DISCOURSE_FORUM_CLIENT_URL)
+    rootUrl: https://community.openveda.cloud
     secret: $(env:DISCOURSE_FORUM_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - $(env:DISCOURSE_FORUM_CLIENT_URL)/*
+      - https://community.openveda.cloud/*
     webOrigins:
-      - $(env:DISCOURSE_FORUM_CLIENT_URL)
+      - https://community.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:

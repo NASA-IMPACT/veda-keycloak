@@ -32,6 +32,7 @@ class KeycloakConfig(Construct):
         idp_oauth_client_secrets: dict[str, str],
         private_oauth_clients: list[dict[str, str]],
         version: str,
+        is_production: bool,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -87,6 +88,7 @@ class KeycloakConfig(Construct):
             self, "ConfigTaskDef", cpu=256, memory_limit_mib=512
         )
         container_name = "ConfigContainer"
+        stage = "prod" if is_production else "dev"
         config_task_def.add_container(
             container_name,
             container_name=container_name,
@@ -99,7 +101,7 @@ class KeycloakConfig(Construct):
                 "KEYCLOAK_URL": hostname,
                 "KEYCLOAK_AVAILABILITYCHECK_ENABLED": "true",
                 "KEYCLOAK_AVAILABILITYCHECK_TIMEOUT": "120s",
-                "IMPORT_FILES_LOCATIONS": "/config/*",
+                "IMPORT_FILES_LOCATIONS": f"/config/{stage}/*",
                 "IMPORT_CACHE_ENABLED": "false",
                 "IMPORT_VARSUBSTITUTION_ENABLED": "true",
             },
