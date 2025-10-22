@@ -7,8 +7,6 @@ displayNameHtml: MAAP
 clients:
   - clientId: jupyterhub-maap
     name: MAAP JupyterHub
-    # Staging JupyterHub is at https://staging.hub.maap.2i2c.cloud
-    # Prod JupyterHub is at https://hub.maap.2i2c.cloud
     rootUrl: https://staging.hub.maap.2i2c.cloud
     secret: $(env:JUPYTERHUB_MAAP_CLIENT_SECRET)
     publicClient: false
