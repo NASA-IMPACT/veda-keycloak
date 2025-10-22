@@ -7,7 +7,7 @@ displayNameHtml: VEDA Ecosystem
 clients:
   - clientId: grafana
     name: Grafana
-    rootUrl: https://monitoring.dev.openveda.cloud/
+    rootUrl: https://monitoring.dev.openveda.cloud
     secret: $(env:GRAFANA_CLIENT_SECRET)
     publicClient: false
     attributes: {}
