@@ -77,7 +77,7 @@ class KeycloakStack(Stack):
             app_dir=keycloak_config_cli_app_dir,
             idp_oauth_client_secrets=idp_oauth_client_secrets,
             private_oauth_clients=private_oauth_clients,
-            version=keycloak_config_cli_version,,
+            version=keycloak_config_cli_version,
             stage=stage,
         )
 
