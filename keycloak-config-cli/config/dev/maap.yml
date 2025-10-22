@@ -144,4 +144,4 @@ identityProviderMappers:
 
 spi-events-listener:
   email-on-user-creation:
-    email-address: example@example.com
+    email-address: saadiq@developmentseed.org # temp email for testing

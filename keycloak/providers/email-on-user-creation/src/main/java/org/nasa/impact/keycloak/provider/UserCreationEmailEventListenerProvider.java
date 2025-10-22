@@ -36,13 +36,13 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
         if (EventType.REGISTER.equals(event.getType())) {
             DefaultEmailSenderProvider senderProvider = new DefaultEmailSenderProvider(session);
             StringBuilder sbtxt = new StringBuilder();
-            sbtxt.append("A new user has registered for SCARF access via Keycloak\n\n");
+            sbtxt.append("A new user has registered to MAAP JupyterHub via Keycloak\n\n");
             sbtxt.append("User UUID: ").append(event.getUserId()).append("\n");
             sbtxt.append("IP Address: ").append(event.getIpAddress()).append("\n");
             sbtxt.append("Email from IdP: ").append(event.getDetails().get("email")).append("\n");
 
             StringBuilder sbhtml = new StringBuilder();
-            sbhtml.append("<p>A new user has registered for SCARF access via Keycloak</p>");
+            sbhtml.append("<p>A new user has registered to MAAP JupyterHub via Keycloak</p>");
             sbhtml.append("<p>User UUID: ").append(event.getUserId()).append("</p>");
             sbhtml.append("<p>IP Address: ").append(event.getIpAddress()).append("</p>");
             sbhtml.append("<p>Email from IdP: ").append(event.getDetails().get("email")).append("</p>");
