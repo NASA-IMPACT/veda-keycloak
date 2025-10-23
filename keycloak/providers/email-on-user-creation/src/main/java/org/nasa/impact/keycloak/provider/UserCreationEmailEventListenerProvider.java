@@ -1,5 +1,10 @@
 package org.nasa.impact.keycloak.provider;
 
+/**
+ * Implementation adapted from:
+ * https://github.com/stfc/keycloak-email-on-user-creation
+ */
+
 import org.jboss.logging.Logger;
 import org.keycloak.email.DefaultEmailSenderProvider;
 import org.keycloak.email.EmailException;

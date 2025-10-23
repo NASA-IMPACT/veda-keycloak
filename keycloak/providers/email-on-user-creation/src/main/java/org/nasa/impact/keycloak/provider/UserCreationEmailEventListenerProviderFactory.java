@@ -1,5 +1,10 @@
 package org.nasa.impact.keycloak.provider;
 
+/**
+ * Implementation adapted from:
+ * https://github.com/stfc/keycloak-email-on-user-creation
+ */
+
 import org.keycloak.Config;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventListenerProviderFactory;
