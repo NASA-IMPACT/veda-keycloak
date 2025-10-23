@@ -680,3 +680,10 @@ users:
       ingest-api:
       - Admin
 
+eventsListeners:
+  - jboss-logging
+  - email-on-user-creation
+
+spi-events-listener:
+  email-on-user-creation:
+    email-address: saadiq@developmentseed.org #temp email for testing
