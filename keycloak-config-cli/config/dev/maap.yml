@@ -86,6 +86,12 @@ groups:
       jupyterhub-maap:
         - GPU:T4
 
+  - name: Realm Admin #Needed for users that can't be added to NASA-IMPACT Github org 
+    clientRoles:
+      realm-management:
+        - realm-admin
+
+
 identityProviders:
   # EDL
   - alias: edl
@@ -148,4 +154,4 @@ eventsListeners:
 
 spi-events-listener:
   email-on-user-creation:
-    email-address: saadiq@developmentseed.org # temp email for testing
+    email-address: saadiq@developmentseed.org #temp email for testing
