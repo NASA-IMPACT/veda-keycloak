@@ -1,0 +1,10 @@
+/* Intentionally minimal; only hide specific metadata labels */
+
+/* Intentionally left without global group header/description overrides */
+
+/* Hide only the user-metadata group's header/description by id */
+#header-user-metadata,
+#description-user-metadata {
+	display: none !important;
+}
+
