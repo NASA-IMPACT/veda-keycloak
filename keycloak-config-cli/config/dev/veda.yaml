@@ -2,7 +2,7 @@
 enabled: true
 realm: veda
 displayName: Applications
-displayNameHtml: VEDA Ecosystem
+displayNameHtml: VEDA Login
 
 clients:
   - clientId: grafana
@@ -572,6 +572,7 @@ identityProviders:
       syncMode: "IMPORT"
       clientId: $(env:CILOGON_CLIENT_ID)
       clientSecret: $(env:CILOGON_CLIENT_SECRET)
+
 identityProviderMappers:
   - name: "email"
     identityProviderAlias: cilogon
@@ -595,70 +596,6 @@ identityProviderMappers:
       claim: "profile.family_name"
       user.attribute: "lastName"
 
-# Login Flow Configuration
-browserFlow: Browser without Password
-authenticationFlows:
-  - alias: Browser without Password
-    description: browser based authentication without username password form
-    providerId: basic-flow
-    topLevel: true
-    builtIn: false
-    authenticationExecutions:
-      - authenticator: auth-cookie
-        authenticatorFlow: false
-        requirement: ALTERNATIVE
-        priority: 10
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticator: auth-spnego
-        authenticatorFlow: false
-        requirement: DISABLED
-        priority: 20
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticatorFlow: true
-        requirement: ALTERNATIVE
-        priority: 30
-        autheticatorFlow: true
-        flowAlias: Browser without Password forms
-        userSetupAllowed: false
-  - alias: Browser without Password forms
-    description: Username, password, otp and other auth forms.
-    providerId: basic-flow
-    topLevel: false
-    builtIn: false
-    authenticationExecutions:
-      - authenticatorConfig: cilogon
-        authenticator: identity-provider-redirector
-        authenticatorFlow: false
-        requirement: REQUIRED
-        priority: 20
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticatorFlow: true
-        requirement: CONDITIONAL
-        priority: 21
-        autheticatorFlow: true
-        flowAlias: Browser without Password Browser - Conditional OTP
-        userSetupAllowed: false
-  - alias: Browser without Password Browser - Conditional OTP
-    description: Flow to determine if the OTP is required for the authentication
-    providerId: basic-flow
-    topLevel: false
-    builtIn: false
-    authenticationExecutions:
-      - authenticator: conditional-user-configured
-        authenticatorFlow: false
-        requirement: REQUIRED
-        priority: 10
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticator: auth-otp-form
-        authenticatorFlow: false
-        requirement: REQUIRED
-        priority: 20
-        autheticatorFlow: false
-        userSetupAllowed: false
 authenticatorConfig:
   - alias: cilogon
     config:
@@ -680,3 +617,58 @@ users:
       ingest-api:
       - Admin
 
+userProfile:
+  attributes:
+    - name: username
+      displayName: Username
+      required: true
+      permissions:
+        view:
+          - admin
+          - user
+        edit:
+          - admin
+          - user
+    - name: firstName
+      displayName: First Name
+      required: true
+      permissions:
+        view:
+          - admin
+          - user
+        edit:
+          - admin
+          - user
+    - name: lastName
+      displayName: Last Name
+      required: true
+      permissions:
+        view:
+          - admin
+          - user
+        edit:
+          - admin
+          - user
+    - name: email
+      displayName: Email
+      required: true
+      permissions:
+        view:
+          - admin
+          - user
+        edit:
+          - admin
+          - user
+    - name: groupRequest
+      displayName: Additional Details
+      required: true
+      attributeGroup: user-metadata
+      inputType: textarea
+      inputHelperText: "What VEDA services do you need access to?"
+      permissions:
+        view:
+          - admin
+          - user
+        edit:
+          - admin
+          - user
