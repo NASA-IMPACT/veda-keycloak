@@ -7,14 +7,14 @@ displayNameHtml: MAAP
 clients:
   - clientId: jupyterhub-maap
     name: MAAP JupyterHub
-    rootUrl: https://hub.maap.2i2c.cloud
+    rootUrl: https://hub.maap-project.org
     secret: $(env:JUPYTERHUB_MAAP_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - https://hub.maap.2i2c.cloud/hub/oauth_callback/*
+      - https://hub.maap-project.org/hub/oauth_callback/*
     webOrigins:
-      - https://hub.maap.2i2c.cloud
+      - https://hub.maap-project.org
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes: &jupyterhub-default-client-scopes
