@@ -1,4 +1,4 @@
-package uk.ac.stfc.auth.emailonusercreation;
+package org.nasa.impact.keycloak.provider;
 
 import org.jboss.logging.Logger;
 import org.keycloak.email.DefaultEmailSenderProvider;

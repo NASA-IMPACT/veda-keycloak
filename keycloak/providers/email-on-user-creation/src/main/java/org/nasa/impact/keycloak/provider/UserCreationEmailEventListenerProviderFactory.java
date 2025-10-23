@@ -1,4 +1,4 @@
-package uk.ac.stfc.auth.emailonusercreation;
+package org.nasa.impact.keycloak.provider;
 
 import org.keycloak.Config;
 import org.keycloak.events.EventListenerProvider;
