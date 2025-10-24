@@ -55,14 +55,16 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             log.infof("Sending new-user notification for realm '%s' to '%s' (stage='%s')", realmName, to, stage);
             StringBuilder sbtxt = new StringBuilder();
             sbtxt.append("A new Keycloak user has registered in the %s realm (%s)%n%n".formatted(realmName, stage));
-            sbtxt.append("First name: ").append(event.getDetails().get("first_name")).append("\n");
-            sbtxt.append("Last name: ").append(event.getDetails().get("last_name")).append("\n");
+            sbtxt.append("Username: ").append(event.getDetails().get("username")).append("\n");
+            sbtxt.append("First name: ").append(event.getDetails().get("firstName")).append("\n");
+            sbtxt.append("Last name: ").append(event.getDetails().get("lastName")).append("\n");
             sbtxt.append("Email: ").append(event.getDetails().get("email")).append("\n");
 
             StringBuilder sbhtml = new StringBuilder();
             sbhtml.append("<p>A new Keycloak user has registered in the %s realm (%s)</p>".formatted(realmName, stage));
-            sbhtml.append("<p>First name: ").append(event.getDetails().get("first_name")).append("</p>");
-            sbhtml.append("<p>Last name: ").append(event.getDetails().get("last_name")).append("</p>");
+            sbhtml.append("<p>Username: ").append(event.getDetails().get("username")).append("</p>");
+            sbhtml.append("<p>First name: ").append(event.getDetails().get("firstName")).append("</p>");
+            sbhtml.append("<p>Last name: ").append(event.getDetails().get("lastName")).append("</p>");
             sbhtml.append("<p>Email: ").append(event.getDetails().get("email")).append("</p>");
             try {
                 senderProvider.send(session.getContext().getRealm().getSmtpConfig(), to, "New user on Keycloak", sbtxt.toString(), sbhtml.toString());
