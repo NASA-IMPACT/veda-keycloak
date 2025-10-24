@@ -70,6 +70,7 @@ KeycloakStack(
     keycloak_app_dir=settings.keycloak_app_dir.as_posix(),
     keycloak_config_cli_version=settings.keycloak_config_cli_version,
     keycloak_config_cli_app_dir=settings.keycloak_config_cli_app_dir.as_posix(),
+    keycloak_send_email_address=settings.keycloak_send_email_address,
     idp_oauth_client_secrets=idp_oauth_client_secrets,
     private_oauth_clients=private_oauth_clients,
     configure_route53=settings.configure_route53,
