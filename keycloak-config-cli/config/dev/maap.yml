@@ -7,14 +7,14 @@ displayNameHtml: MAAP
 clients:
   - clientId: jupyterhub-maap
     name: MAAP JupyterHub
-    rootUrl: https://staging.hub.maap.2i2c.cloud
+    rootUrl: https://staging.hub.maap-project.org
     secret: $(env:JUPYTERHUB_MAAP_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - https://staging.hub.maap.2i2c.cloud/hub/oauth_callback/*
+      - https://staging.hub.maap-project.org/hub/oauth_callback/*
     webOrigins:
-      - https://staging.hub.maap.2i2c.cloud
+      - https://staging.hub.maap-project.org
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes: &jupyterhub-default-client-scopes
