@@ -32,7 +32,7 @@ class KeycloakService(Construct):
         version: str,
         hostname: str,
         ssl_certificate_arn: str,
-        keycloak_send_email_address: Optional[str] = None,
+        keycloak_send_email_address: str,
         **kwargs,
     ) -> None:
         """
