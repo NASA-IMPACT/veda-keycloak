@@ -67,7 +67,7 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             sbhtml.append("<p>Last name: ").append(event.getDetails().get("lastName")).append("</p>");
             sbhtml.append("<p>Email: ").append(event.getDetails().get("email")).append("</p>");
             try {
-                senderProvider.send(session.getContext().getRealm().getSmtpConfig(), to, "New user on Keycloak", sbtxt.toString(), sbhtml.toString());
+                senderProvider.send(session.getContext().getRealm().getSmtpConfig(), to, "New User Registration with Keycloak", sbtxt.toString(), sbhtml.toString());
             } catch (EmailException e) {
                 log.error("Failed to send email", e);
             }
