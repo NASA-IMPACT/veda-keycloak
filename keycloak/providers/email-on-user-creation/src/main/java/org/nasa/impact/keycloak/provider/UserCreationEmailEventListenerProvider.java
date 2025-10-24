@@ -13,21 +13,23 @@ import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.models.KeycloakSession;
+import java.util.Map;
+import java.util.Collections;
 
 public class UserCreationEmailEventListenerProvider implements EventListenerProvider {
 
     private static final Logger log = Logger.getLogger(UserCreationEmailEventListenerProvider.class);
     private final KeycloakSession session;
-    private final String emailAddress;
+    private final Map<String, String> realmToEmail;
 
     /**
      * Init the UserCreationEmailEventListenerProvider with key instance info
      * @param session our current session
-     * @param emailAddress the email address to send emails to
+     * @param realmToEmail mapping of realm name to email address to send emails to
      */
-    public UserCreationEmailEventListenerProvider(KeycloakSession session, String emailAddress) {
+    public UserCreationEmailEventListenerProvider(KeycloakSession session, Map<String, String> realmToEmail) {
         this.session = session;
-        this.emailAddress = emailAddress;
+        this.realmToEmail = realmToEmail != null ? realmToEmail : Collections.emptyMap();
     }
 
     /**
@@ -40,6 +42,14 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
     public void onEvent(Event event) {
         if (EventType.REGISTER.equals(event.getType())) {
             DefaultEmailSenderProvider senderProvider = new DefaultEmailSenderProvider(session);
+            String realmName = session.getContext().getRealm().getName();
+            log.infof("Registration event for realm '%s' detected", realmName);
+            String to = realmToEmail.get(realmName);
+            if (to == null || to.isBlank()) {
+                log.infof("No email mapping for realm '%s'; skipping notification", realmName);
+                return;
+            }
+            log.infof("Sending new-user notification for realm '%s' to '%s'", realmName, to);
             StringBuilder sbtxt = new StringBuilder();
             sbtxt.append("A new user has registered to MAAP JupyterHub via Keycloak\n\n");
             sbtxt.append("User UUID: ").append(event.getUserId()).append("\n");
@@ -52,7 +62,7 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             sbhtml.append("<p>IP Address: ").append(event.getIpAddress()).append("</p>");
             sbhtml.append("<p>Email from IdP: ").append(event.getDetails().get("email")).append("</p>");
             try {
-                senderProvider.send(session.getContext().getRealm().getSmtpConfig(), emailAddress, "New user on Keycloak", sbtxt.toString(), sbhtml.toString());
+                senderProvider.send(session.getContext().getRealm().getSmtpConfig(), to, "New user on Keycloak", sbtxt.toString(), sbhtml.toString());
             } catch (EmailException e) {
                 log.error("Failed to send email", e);
             }
@@ -66,7 +76,7 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
      */
     @Override
     public void onEvent(AdminEvent adminEvent, boolean b) {
-
+        // No-op for admin events
     }
 
     @Override

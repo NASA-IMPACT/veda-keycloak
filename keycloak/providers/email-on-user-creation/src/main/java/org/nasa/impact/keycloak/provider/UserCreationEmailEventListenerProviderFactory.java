@@ -5,6 +5,7 @@ package org.nasa.impact.keycloak.provider;
  * https://github.com/stfc/keycloak-email-on-user-creation
  */
 
+import org.jboss.logging.Logger;
 import org.keycloak.Config;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventListenerProviderFactory;
@@ -14,10 +15,14 @@ import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.provider.ProviderConfigurationBuilder;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
 
 public class UserCreationEmailEventListenerProviderFactory implements EventListenerProviderFactory {
 
-    private String emailAddress = "";
+    private static final Logger log = Logger.getLogger(UserCreationEmailEventListenerProviderFactory.class);
+    private Map<String, String> realmToEmail = Collections.emptyMap();
 
     /**
      * Create the EventListenerProvider
@@ -26,7 +31,7 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
      */
     @Override
     public EventListenerProvider create(KeycloakSession keycloakSession) {
-        return new UserCreationEmailEventListenerProvider(keycloakSession, this.emailAddress);
+        return new UserCreationEmailEventListenerProvider(keycloakSession, this.realmToEmail);
     }
 
     /**
@@ -35,7 +40,23 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
      */
     @Override
     public void init(Config.Scope config) {
-        this.emailAddress = config.get("email-address");
+        String raw = config.get("email-address");
+        log.infof("email-address from Keycloak config scope: '%s'", raw);
+        Map<String, String> mapping = new HashMap<>();
+        if (raw != null && !raw.isBlank()) {
+            for (String pair : raw.split(",")) {
+                String[] parts = pair.split("=", 2);
+                if (parts.length == 2) {
+                    String realm = parts[0].trim();
+                    String addr = parts[1].trim();
+                    if (!realm.isEmpty() && !addr.isEmpty()) {
+                        mapping.put(realm, addr);
+                    }
+                }
+            }
+        }
+        this.realmToEmail = mapping;
+        log.infof("User creation listener configured with realm-to-email map: %s", this.realmToEmail);
     }
 
     @Override
@@ -67,8 +88,8 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
                 .property()
                 .name("email-address")
                 .type("string")
-                .helpText("The email address to send registration notifications to")
-                .defaultValue("example@example.com")
+                .helpText("Comma-separated realm=email pairs. Example: veda=ops@exa.mple,maap=ops@exa.mple")
+                .defaultValue("")
                 .add()
                 .build();
     }
