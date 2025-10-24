@@ -63,6 +63,7 @@ class KeycloakStack(Stack):
             hostname=hostname,
             ssl_certificate_arn=ssl_certificate_arn,
             keycloak_send_email_address=keycloak_send_email_address,
+            stage=stage,
         )
 
         KeycloakConfig(

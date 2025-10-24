@@ -21,15 +21,18 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
     private static final Logger log = Logger.getLogger(UserCreationEmailEventListenerProvider.class);
     private final KeycloakSession session;
     private final Map<String, String> realmToEmail;
+    private final String stage;
 
     /**
      * Init the UserCreationEmailEventListenerProvider with key instance info
      * @param session our current session
      * @param realmToEmail mapping of realm name to email address to send emails to
+     * @param stage deployment stage identifier
      */
-    public UserCreationEmailEventListenerProvider(KeycloakSession session, Map<String, String> realmToEmail) {
+    public UserCreationEmailEventListenerProvider(KeycloakSession session, Map<String, String> realmToEmail, String stage) {
         this.session = session;
         this.realmToEmail = realmToEmail != null ? realmToEmail : Collections.emptyMap();
+        this.stage = stage != null ? stage : "";
     }
 
     /**
@@ -43,24 +46,24 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
         if (EventType.REGISTER.equals(event.getType())) {
             DefaultEmailSenderProvider senderProvider = new DefaultEmailSenderProvider(session);
             String realmName = session.getContext().getRealm().getName();
-            log.infof("Registration event for realm '%s' detected", realmName);
+            log.infof("Registration event for realm '%s' detected (stage='%s')", realmName, stage);
             String to = realmToEmail.get(realmName);
             if (to == null || to.isBlank()) {
                 log.infof("No email mapping for realm '%s'; skipping notification", realmName);
                 return;
             }
-            log.infof("Sending new-user notification for realm '%s' to '%s'", realmName, to);
+            log.infof("Sending new-user notification for realm '%s' to '%s' (stage='%s')", realmName, to, stage);
             StringBuilder sbtxt = new StringBuilder();
-            sbtxt.append("A new user has registered to MAAP JupyterHub via Keycloak\n\n");
-            sbtxt.append("User UUID: ").append(event.getUserId()).append("\n");
-            sbtxt.append("IP Address: ").append(event.getIpAddress()).append("\n");
-            sbtxt.append("Email from IdP: ").append(event.getDetails().get("email")).append("\n");
+            sbtxt.append("A new Keycloak user has registered in the %s realm (%s)%n%n".formatted(realmName, stage));
+            sbtxt.append("First name: ").append(event.getDetails().get("first_name")).append("\n");
+            sbtxt.append("Last name: ").append(event.getDetails().get("last_name")).append("\n");
+            sbtxt.append("Email: ").append(event.getDetails().get("email")).append("\n");
 
             StringBuilder sbhtml = new StringBuilder();
-            sbhtml.append("<p>A new user has registered to MAAP JupyterHub via Keycloak</p>");
-            sbhtml.append("<p>User UUID: ").append(event.getUserId()).append("</p>");
-            sbhtml.append("<p>IP Address: ").append(event.getIpAddress()).append("</p>");
-            sbhtml.append("<p>Email from IdP: ").append(event.getDetails().get("email")).append("</p>");
+            sbhtml.append("<p>A new Keycloak user has registered in the %s realm (%s)</p>".formatted(realmName, stage));
+            sbhtml.append("<p>First name: ").append(event.getDetails().get("first_name")).append("</p>");
+            sbhtml.append("<p>Last name: ").append(event.getDetails().get("last_name")).append("</p>");
+            sbhtml.append("<p>Email: ").append(event.getDetails().get("email")).append("</p>");
             try {
                 senderProvider.send(session.getContext().getRealm().getSmtpConfig(), to, "New user on Keycloak", sbtxt.toString(), sbhtml.toString());
             } catch (EmailException e) {

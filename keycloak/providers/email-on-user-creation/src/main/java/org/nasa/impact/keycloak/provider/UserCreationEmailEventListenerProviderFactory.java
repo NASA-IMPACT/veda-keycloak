@@ -23,6 +23,7 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
 
     private static final Logger log = Logger.getLogger(UserCreationEmailEventListenerProviderFactory.class);
     private Map<String, String> realmToEmail = Collections.emptyMap();
+    private String stage = "";
 
     /**
      * Create the EventListenerProvider
@@ -31,7 +32,7 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
      */
     @Override
     public EventListenerProvider create(KeycloakSession keycloakSession) {
-        return new UserCreationEmailEventListenerProvider(keycloakSession, this.realmToEmail);
+        return new UserCreationEmailEventListenerProvider(keycloakSession, this.realmToEmail, this.stage);
     }
 
     /**
@@ -42,6 +43,8 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
     public void init(Config.Scope config) {
         String raw = config.get("email-address");
         log.infof("email-address from Keycloak config scope: '%s'", raw);
+        this.stage = config.get("stage");
+        log.infof("stage from Keycloak config scope: '%s'", this.stage);
         Map<String, String> mapping = new HashMap<>();
         if (raw != null && !raw.isBlank()) {
             for (String pair : raw.split(",")) {
@@ -89,6 +92,12 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
                 .name("email-address")
                 .type("string")
                 .helpText("Comma-separated realm=email pairs. Example: veda=ops@exa.mple,maap=ops@exa.mple")
+                .defaultValue("")
+                .add()
+                .property()
+                .name("stage")
+                .type("string")
+                .helpText("Deployment stage identifier (e.g., dev, prod)")
                 .defaultValue("")
                 .add()
                 .build();
