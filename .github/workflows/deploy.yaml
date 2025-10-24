@@ -74,8 +74,6 @@ jobs:
           IDP_SECRET_ARN_EDL: ${{ vars.IDP_SECRET_ARN_EDL }}
           RDS_SNAPSHOT_IDENTIFIER: ${{ vars.RDS_SNAPSHOT_IDENTIFIER }}
           CONFIGURE_ROUTE53: ${{ vars.CONFIGURE_ROUTE53 }}
-          SES_SMTP_USERNAME: ${{ vars.SES_SMTP_USERNAME }}
-          SES_SMTP_PASSWORD: ${{ secrets.SES_SMTP_PASSWORD }}
 
       - name: Get ConfigLambdaArn from CloudFormation
         id: get-lambda-arn
