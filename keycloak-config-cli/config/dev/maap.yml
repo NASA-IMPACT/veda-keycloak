@@ -151,15 +151,3 @@ identityProviderMappers:
 eventsListeners:
   - jboss-logging
   - email-on-user-creation
-
-smtpServer:
-  host: email-smtp.us-west-2.amazonaws.com
-  port: 465
-  user: $(env:SES_SMTP_USERNAME)
-  password: $(env:SES_SMTP_PASSWORD)
-  from: noreply@mail.dev.openveda.cloud
-  fromDisplayName: MAAP JupyterHub (Noreply)
-  auth: true
-  ssl: true
-  auth: true
-  starttls: true
