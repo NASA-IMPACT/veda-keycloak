@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     )
     configure_route53: Optional[bool] = True
     keycloak_send_email_address: Optional[str] = ""
-
+    
     @field_validator("rds_snapshot_identifier", mode="before")
     @classmethod
     def convert_empty_string_to_none(cls, v):
