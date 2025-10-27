@@ -1,0 +1,41 @@
+realms:
+  - realm: idp-realm
+    displayName: "Identity Provider Realm"
+    clients:
+      - clientId: broker-client
+        secret: broker-secret
+        standardFlowEnabled: true
+        redirectUris:
+          - "http://localhost:8080/realms/broker-realm/broker/idp-realm/*"
+    users:
+      - username: idp-user
+        enabled: true
+        emailVerified: true
+        credentials:
+          - type: password
+            value: Password123
+            temporary: false
+
+  - realm: broker-realm
+    displayName: "Broker Realm"
+    clients:
+      - clientId: my-app
+        protocol: openid-connect
+        publicClient: true
+        standardFlowEnabled: true
+        redirectUris:
+          - "http://localhost:8080/realms/broker-realm/account"
+    identityProviders:
+      - alias: idp-realm
+        providerId: keycloak-oidc
+        displayName: "Login with IdP Realm"
+        enabled: true
+        trustEmail: true
+        storeToken: true
+        addReadTokenRoleOnCreate: true
+        authenticateByDefault: false
+        clientId: broker-client
+        clientSecret: broker-secret
+        authorizationUrl: "http://localhost:8080/realms/idp-realm/protocol/openid-connect/auth"
+        tokenUrl: "http://localhost:8080/realms/idp-realm/protocol/openid-connect/token"
+        defaultScope: "openid email profile"
