@@ -617,6 +617,10 @@ users:
       ingest-api:
       - Admin
 
+eventsListeners:
+  - jboss-logging
+  - email-on-user-creation
+
 userProfile:
   attributes:
     - name: username
@@ -672,3 +676,4 @@ userProfile:
         edit:
           - admin
           - user
+
