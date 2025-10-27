@@ -9,7 +9,7 @@ from aws_cdk import (
 )
 
 from lib.keycloak import KeycloakStack
-from lib.utils import get_oauth_secrets, get_private_client_ids
+from lib.utils import get_oauth_secrets, get_private_client_ids, get_send_email_addresses
 from lib.settings import Settings
 
 logging.basicConfig(
@@ -43,6 +43,15 @@ else:
         "No private client IDs found in %s",
         settings.keycloak_config_cli_config_dir,
     )
+    
+send_email_addresses = get_send_email_addresses()
+if send_email_addresses:
+    logging.info(
+        "Found send email addresses in environment: %s",
+        ", ".join(send_email_addresses.keys()),
+    )
+else:
+    logging.warning("No send email addresses found in the environment.")
 
 app = App()
 
@@ -70,7 +79,7 @@ KeycloakStack(
     keycloak_app_dir=settings.keycloak_app_dir.as_posix(),
     keycloak_config_cli_version=settings.keycloak_config_cli_version,
     keycloak_config_cli_app_dir=settings.keycloak_config_cli_app_dir.as_posix(),
-    keycloak_send_email_address=settings.keycloak_send_email_address,
+    keycloak_send_email_address=send_email_addresses,
     idp_oauth_client_secrets=idp_oauth_client_secrets,
     private_oauth_clients=private_oauth_clients,
     configure_route53=settings.configure_route53,

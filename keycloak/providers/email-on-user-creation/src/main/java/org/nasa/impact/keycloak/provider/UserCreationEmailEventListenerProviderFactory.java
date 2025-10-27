@@ -41,23 +41,31 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
      */
     @Override
     public void init(Config.Scope config) {
-        String raw = config.get("email-address");
-        log.infof("email-address from Keycloak config scope: '%s'", raw);
         this.stage = config.get("stage");
         log.infof("stage from Keycloak config scope: '%s'", this.stage);
+        
         Map<String, String> mapping = new HashMap<>();
-        if (raw != null && !raw.isBlank()) {
-            for (String pair : raw.split(",")) {
-                String[] parts = pair.split("=", 2);
-                if (parts.length == 2) {
-                    String realm = parts[0].trim();
-                    String addr = parts[1].trim();
-                    if (!realm.isEmpty() && !addr.isEmpty()) {
-                        mapping.put(realm, addr);
-                    }
+        
+        // Dynamically discover realm email configurations from environment variables
+        // Pattern: KEYCLOAK_EMAIL_ADDRESS_<REALM>
+        String envPrefix = "KEYCLOAK_EMAIL_ADDRESS_";
+        
+        Map<String, String> envVars = System.getenv();
+        for (Map.Entry<String, String> entry : envVars.entrySet()) {
+            String envKey = entry.getKey();
+            if (envKey.startsWith(envPrefix)) {
+                // Extract realm name from environment variable
+                String realmUpper = envKey.substring(envPrefix.length());
+                String realm = realmUpper.toLowerCase();
+                String email = entry.getValue();
+                
+                if (!realm.isEmpty() && email != null && !email.isBlank()) {
+                    mapping.put(realm, email);
+                    log.infof("Found %s: configured email notification(s) for realm '%s' to '%s'", envKey, realm, email);
                 }
             }
         }
+        
         this.realmToEmail = mapping;
         log.infof("User creation listener configured with realm-to-email map: %s", this.realmToEmail);
     }
@@ -83,21 +91,15 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
 
     /**
      * Build up the list of configuration properties this provider supports
-     * @return a single property in a list, the email address
+     * @return the configuration properties for stage (realm emails are read from env vars)
      */
     @Override
     public List<ProviderConfigProperty> getConfigMetadata() {
         return ProviderConfigurationBuilder.create()
                 .property()
-                .name("email-address")
-                .type("string")
-                .helpText("Comma-separated realm=email pairs. Example: veda=ops@exa.mple,maap=ops@exa.mple")
-                .defaultValue("")
-                .add()
-                .property()
                 .name("stage")
                 .type("string")
-                .helpText("Deployment stage identifier (e.g., dev, prod)")
+                .helpText("Deployment stage identifier (e.g., dev, prod). Realm-specific emails are configured via environment variables: KEYCLOAK_EMAIL_ADDRESS_<REALM> (e.g., KEYCLOAK_EMAIL_ADDRESS_VEDA)")
                 .defaultValue("")
                 .add()
                 .build();
