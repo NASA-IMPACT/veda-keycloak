@@ -51,12 +51,16 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
 
             log.infof("Registration event for realm '%s' detected (stage='%s')", realmName, stage);
             
-            String to = realmToEmail.get(realmName);
-            if (to == null || to.isBlank()) {
+            String toAddresses = realmToEmail.get(realmName);
+            if (toAddresses == null || toAddresses.isBlank()) {
                 log.infof("No email mapping for realm '%s'; skipping notification", realmName);
                 return;
             }
-            log.infof("Sending new-user notification for realm '%s' to '%s' (stage='%s')", realmName, to, stage);
+            toAddresses = toAddresses.trim();  // Clean up any leading/trailing whitespace
+            
+            // Split comma-separated addresses
+            String[] recipients = toAddresses.split(",");
+            log.infof("Sending new-user notification for realm '%s' to %d recipient(s) (stage='%s')", realmName, recipients.length, stage);
 
             UserModel user = session.users().getUserById(session.getContext().getRealm(), event.getUserId());
 
@@ -79,10 +83,15 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             sbhtml.append("<p>Last name: ").append(lastName).append("</p>");
             sbhtml.append("<p>Email: ").append(email).append("</p>");
             
-            try {
-                senderProvider.send(session.getContext().getRealm().getSmtpConfig(), to, "New User Registration with Keycloak", sbtxt.toString(), sbhtml.toString());
-            } catch (EmailException e) {
-                log.error("Failed to send email", e);
+            // Send to each recipient individually
+            for (String recipient : recipients) {
+                String trimmedRecipient = recipient.trim();
+                try {
+                    log.infof("Sending email to: %s", trimmedRecipient);
+                    senderProvider.send(session.getContext().getRealm().getSmtpConfig(), trimmedRecipient, "New User Registration with Keycloak", sbtxt.toString(), sbhtml.toString());
+                } catch (EmailException e) {
+                    log.errorf("Failed to send email to %s: %s", trimmedRecipient, e.getMessage());
+                }
             }
         }
     }
