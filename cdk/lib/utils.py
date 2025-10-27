@@ -73,7 +73,7 @@ def get_send_email_addresses() -> dict[str, str]:
     for key, value in os.environ.items():
         if key.startswith(send_email_address_prefix):
             realm = key.split("_")[-1].upper()
-            send_email_addresses[f"KEYCLOAK_EMAIL_ADDRESS_{realm}"] = value
+            send_email_addresses[f"KEYCLOAK_EMAIL_ADDRESS_{realm}"] = str(value)
     return send_email_addresses
 
 

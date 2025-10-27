@@ -51,7 +51,6 @@ jobs:
           HOSTNAME: ${{ vars.HOSTNAME }}
           KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
           KEYCLOAK_CONFIG_CLI_VERSION: ${{ vars.KEYCLOAK_CONFIG_CLI_VERSION }}
-          KEYCLOAK_SEND_EMAIL_ADDRESS: ${{ vars.KEYCLOAK_SEND_EMAIL_ADDRESS }}
           SSL_CERTIFICATE_ARN: ${{ vars.SSL_CERTIFICATE_ARN }}
           RDS_SNAPSHOT_IDENTIFIER: ${{ vars.RDS_SNAPSHOT_IDENTIFIER }}
           STAGE: dev
@@ -60,6 +59,8 @@ jobs:
           IDP_SECRET_ARN_GH: ${{ vars.IDP_SECRET_ARN_GH }}
           IDP_SECRET_ARN_CILOGON: ${{ vars.IDP_SECRET_ARN_CILOGON }}
           IDP_SECRET_ARN_EDL: ${{ vars.IDP_SECRET_ARN_EDL }}
+          KEYCLOAK_SEND_EMAIL_ADDRESS_VEDA: ${{ vars.KEYCLOAK_SEND_EMAIL_ADDRESS_VEDA }}
+          KEYCLOAK_SEND_EMAIL_ADDRESS_MAAP: ${{ vars.KEYCLOAK_SEND_EMAIL_ADDRESS_MAAP }}
 
       - name: Diff CDK
         uses: corymhall/cdk-diff-action@v2
