@@ -32,6 +32,8 @@ class KeycloakService(Construct):
         version: str,
         hostname: str,
         ssl_certificate_arn: str,
+        keycloak_send_email_addresses: dict[str, str],
+        stage: str,
         **kwargs,
     ) -> None:
         """
@@ -124,6 +126,8 @@ class KeycloakService(Construct):
                     "KC_HTTP_ENABLED": "true",
                     "KC_HTTP_MANAGEMENT_PORT": str(health_management_port),
                     "KC_HEALTH_ENABLED": "true",
+                    "KC_SPI_EVENTS_LISTENER_EMAIL_ON_USER_CREATION_STAGE": stage,
+                    **keycloak_send_email_addresses
                 },
                 secrets={
                     # Database credentials

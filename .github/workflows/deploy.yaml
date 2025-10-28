@@ -73,6 +73,8 @@ jobs:
           IDP_SECRET_ARN_EDL: ${{ vars.IDP_SECRET_ARN_EDL }}
           RDS_SNAPSHOT_IDENTIFIER: ${{ vars.RDS_SNAPSHOT_IDENTIFIER }}
           CONFIGURE_ROUTE53: ${{ vars.CONFIGURE_ROUTE53 }}
+          KEYCLOAK_SEND_EMAIL_ADDRESS_VEDA: ${{ vars.KEYCLOAK_SEND_EMAIL_ADDRESS_VEDA }}
+          KEYCLOAK_SEND_EMAIL_ADDRESS_MAAP: ${{ vars.KEYCLOAK_SEND_EMAIL_ADDRESS_MAAP }}
 
       - name: Get ConfigLambdaArn from CloudFormation
         id: get-lambda-arn
