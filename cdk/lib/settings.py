@@ -21,7 +21,6 @@ class Settings(BaseSettings):
         pattern=r"^arn:aws:rds:[a-z0-9-]+:\d{12}:snapshot:.+$",
     )
     configure_route53: Optional[bool] = True
-    keycloak_send_email_address: Optional[str] = ""
     
     @field_validator("rds_snapshot_identifier", mode="before")
     @classmethod
