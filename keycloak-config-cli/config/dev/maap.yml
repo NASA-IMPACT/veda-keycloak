@@ -151,3 +151,51 @@ identityProviderMappers:
 eventsListeners:
   - jboss-logging
   - email-on-user-creation
+
+userProfile:
+  attributes:
+    - name: institution
+      displayName: Institution
+      required: false
+      attributeGroup: user-metadata
+      permissions:
+        view:
+          - admin
+        edit:
+          - admin
+    - name: project
+      displayName: Project
+      required: false
+      attributeGroup: user-metadata
+      permissions:
+        view:
+          - admin
+        edit:
+          - admin
+    - name: sponsor
+      displayName: Sponsor Name
+      required: false
+      attributeGroup: user-metadata
+      permissions:
+        view:
+          - admin
+        edit:
+          - admin
+    - name: funding
+      displayName: Funding Source
+      required: false
+      attributeGroup: user-metadata
+      permissions:
+        view:
+          - admin
+        edit:
+          - admin
+    - name: additional_details
+      displayName: Additional Details
+      required: false
+      attributeGroup: user-metadata
+      permissions:
+        view:
+          - admin
+        edit:
+          - admin
