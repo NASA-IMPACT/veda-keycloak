@@ -1,7 +1,7 @@
 ---
 enabled: true
 realm: maap
-displayName: Applications
+displayName: MAAP
 displayNameHtml: MAAP 
 
 clients:

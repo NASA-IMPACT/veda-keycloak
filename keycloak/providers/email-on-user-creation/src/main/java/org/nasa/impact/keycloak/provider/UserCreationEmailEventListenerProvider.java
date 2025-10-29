@@ -68,6 +68,11 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             String email = user != null ? user.getEmail() : event.getDetails().get("email");
             String firstName = user != null ? user.getFirstName() : null;
             String lastName = user != null ? user.getLastName() : null;
+            String institution = user != null ? user.getFirstAttribute("institution") : null;
+            String project = user != null ? user.getFirstAttribute("project") : null;
+            String sponsor = user != null ? user.getFirstAttribute("sponsor") : null;
+            String funding = user != null ? user.getFirstAttribute("funding") : null;
+            String additionalDetails = user != null ? user.getFirstAttribute("additional_details") : null;
             
             StringBuilder sbtxt = new StringBuilder();
             sbtxt.append("A new Keycloak user has registered in the %s realm (%s)%n%n".formatted(realmName, stage));
@@ -75,6 +80,11 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             sbtxt.append("First name: ").append(firstName).append("\n");
             sbtxt.append("Last name: ").append(lastName).append("\n");
             sbtxt.append("Email: ").append(email).append("\n");
+            if (institution != null) sbtxt.append("Institution: ").append(institution).append("\n");
+            if (project != null) sbtxt.append("Project: ").append(project).append("\n");
+            if (sponsor != null) sbtxt.append("Sponsor: ").append(sponsor).append("\n");
+            if (funding != null) sbtxt.append("Funding: ").append(funding).append("\n");
+            if (additionalDetails != null) sbtxt.append("Additional Details: ").append(additionalDetails).append("\n");
 
             StringBuilder sbhtml = new StringBuilder();
             sbhtml.append("<p>A new Keycloak user has registered in the %s realm (%s)</p>".formatted(realmName, stage));
@@ -82,6 +92,11 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             sbhtml.append("<p>First name: ").append(firstName).append("</p>");
             sbhtml.append("<p>Last name: ").append(lastName).append("</p>");
             sbhtml.append("<p>Email: ").append(email).append("</p>");
+            if (institution != null) sbhtml.append("<p>Institution: ").append(institution).append("</p>");
+            if (project != null) sbhtml.append("<p>Project: ").append(project).append("</p>");
+            if (sponsor != null) sbhtml.append("<p>Sponsor: ").append(sponsor).append("</p>");
+            if (funding != null) sbhtml.append("<p>Funding: ").append(funding).append("</p>");
+            if (additionalDetails != null) sbhtml.append("<p>Additional Details: ").append(additionalDetails).append("</p>");
             
             // Send to each recipient individually
             for (String recipient : recipients) {
