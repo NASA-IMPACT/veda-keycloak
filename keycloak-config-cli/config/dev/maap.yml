@@ -156,7 +156,7 @@ userProfile:
   attributes:
     - name: institution
       displayName: Institution
-      required: false
+      required: "false"
       attributeGroup: user-metadata
       permissions:
         view:
@@ -165,7 +165,7 @@ userProfile:
           - admin
     - name: project
       displayName: Project
-      required: false
+      required: "false"
       attributeGroup: user-metadata
       permissions:
         view:
@@ -174,7 +174,7 @@ userProfile:
           - admin
     - name: sponsor
       displayName: Sponsor Name
-      required: false
+      required: "false"
       attributeGroup: user-metadata
       permissions:
         view:
@@ -183,7 +183,7 @@ userProfile:
           - admin
     - name: funding
       displayName: Funding Source
-      required: false
+      required: "false"
       attributeGroup: user-metadata
       permissions:
         view:
@@ -192,7 +192,7 @@ userProfile:
           - admin
     - name: additional_details
       displayName: Additional Details
-      required: false
+      required: "false"
       attributeGroup: user-metadata
       permissions:
         view:
