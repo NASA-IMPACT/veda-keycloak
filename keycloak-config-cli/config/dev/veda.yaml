@@ -621,6 +621,7 @@ eventsListeners:
   - jboss-logging
   - email-on-user-creation
 
+<<<<<<< HEAD
 userProfile:
   attributes:
     - name: username
@@ -677,3 +678,5 @@ userProfile:
           - admin
           - user
 
+=======
+>>>>>>> main

@@ -59,6 +59,8 @@ jobs:
           IDP_SECRET_ARN_GH: ${{ vars.IDP_SECRET_ARN_GH }}
           IDP_SECRET_ARN_CILOGON: ${{ vars.IDP_SECRET_ARN_CILOGON }}
           IDP_SECRET_ARN_EDL: ${{ vars.IDP_SECRET_ARN_EDL }}
+          KEYCLOAK_SEND_EMAIL_ADDRESS_VEDA: ${{ vars.KEYCLOAK_SEND_EMAIL_ADDRESS_VEDA }}
+          KEYCLOAK_SEND_EMAIL_ADDRESS_MAAP: ${{ vars.KEYCLOAK_SEND_EMAIL_ADDRESS_MAAP }}
 
       - name: Diff CDK
         uses: corymhall/cdk-diff-action@v2

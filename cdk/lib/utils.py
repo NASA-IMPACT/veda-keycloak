@@ -63,6 +63,19 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
 
     return client_ids
 
+def get_send_email_addresses() -> dict[str, str]:
+    """
+    Extracts send email addresses from environment variables starting with 'KEYCLOAK_SEND_EMAIL_ADDRESS_'.
+    Returns a dictionary mapping each realm to its email address.
+    """
+    send_email_addresses = {}
+    send_email_address_prefix = "KEYCLOAK_SEND_EMAIL_ADDRESS_"
+    for key, value in os.environ.items():
+        if key.startswith(send_email_address_prefix):
+            realm = key.split("_")[-1].upper()
+            send_email_addresses[f"KEYCLOAK_EMAIL_ADDRESS_{realm}"] = str(value)
+    return send_email_addresses
+
 
 def validate_client_id(client_id: str) -> None:
     """

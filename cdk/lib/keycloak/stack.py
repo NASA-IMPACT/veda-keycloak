@@ -32,6 +32,7 @@ class KeycloakStack(Stack):
         configure_route53: bool,
         vpc_id: Optional[str] = None,
         rds_snapshot_identifier: Optional[str] = None,
+        keycloak_send_email_addresses: Optional[dict[str, str]] = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -61,6 +62,8 @@ class KeycloakStack(Stack):
             version=keycloak_version,
             hostname=hostname,
             ssl_certificate_arn=ssl_certificate_arn,
+            keycloak_send_email_addresses=keycloak_send_email_addresses,
+            stage=stage,
         )
 
         KeycloakConfig(

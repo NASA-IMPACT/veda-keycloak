@@ -13,21 +13,28 @@ import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.UserModel;
+import java.util.Map;
+import java.util.Collections;
+ 
 
 public class UserCreationEmailEventListenerProvider implements EventListenerProvider {
 
     private static final Logger log = Logger.getLogger(UserCreationEmailEventListenerProvider.class);
     private final KeycloakSession session;
-    private final String emailAddress;
+    private final Map<String, String> realmToEmail;
+    private final String stage;
 
     /**
      * Init the UserCreationEmailEventListenerProvider with key instance info
      * @param session our current session
-     * @param emailAddress the email address to send emails to
+     * @param realmToEmail mapping of realm name to email address to send emails to
+     * @param stage deployment stage identifier
      */
-    public UserCreationEmailEventListenerProvider(KeycloakSession session, String emailAddress) {
+    public UserCreationEmailEventListenerProvider(KeycloakSession session, Map<String, String> realmToEmail, String stage) {
         this.session = session;
-        this.emailAddress = emailAddress;
+        this.realmToEmail = realmToEmail != null ? realmToEmail : Collections.emptyMap();
+        this.stage = stage != null ? stage : "";
     }
 
     /**
@@ -40,21 +47,51 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
     public void onEvent(Event event) {
         if (EventType.REGISTER.equals(event.getType())) {
             DefaultEmailSenderProvider senderProvider = new DefaultEmailSenderProvider(session);
+            String realmName = session.getContext().getRealm().getName();
+
+            log.infof("Registration event for realm '%s' detected (stage='%s')", realmName, stage);
+            
+            String toAddresses = realmToEmail.get(realmName);
+            if (toAddresses == null || toAddresses.isBlank()) {
+                log.infof("No email mapping for realm '%s'; skipping notification", realmName);
+                return;
+            }
+            toAddresses = toAddresses.trim();  // Clean up any leading/trailing whitespace
+            
+            // Split comma-separated addresses
+            String[] recipients = toAddresses.split(",");
+            log.infof("Sending new-user notification for realm '%s' to %d recipient(s) (stage='%s')", realmName, recipients.length, stage);
+
+            UserModel user = session.users().getUserById(session.getContext().getRealm(), event.getUserId());
+
+            String username = user != null ? user.getUsername() : event.getDetails().get("username");
+            String email = user != null ? user.getEmail() : event.getDetails().get("email");
+            String firstName = user != null ? user.getFirstName() : null;
+            String lastName = user != null ? user.getLastName() : null;
+            
             StringBuilder sbtxt = new StringBuilder();
-            sbtxt.append("A new user has registered to MAAP JupyterHub via Keycloak\n\n");
-            sbtxt.append("User UUID: ").append(event.getUserId()).append("\n");
-            sbtxt.append("IP Address: ").append(event.getIpAddress()).append("\n");
-            sbtxt.append("Email from IdP: ").append(event.getDetails().get("email")).append("\n");
+            sbtxt.append("A new Keycloak user has registered in the %s realm (%s)%n%n".formatted(realmName, stage));
+            sbtxt.append("Username: ").append(username).append("\n");
+            sbtxt.append("First name: ").append(firstName).append("\n");
+            sbtxt.append("Last name: ").append(lastName).append("\n");
+            sbtxt.append("Email: ").append(email).append("\n");
 
             StringBuilder sbhtml = new StringBuilder();
-            sbhtml.append("<p>A new user has registered to MAAP JupyterHub via Keycloak</p>");
-            sbhtml.append("<p>User UUID: ").append(event.getUserId()).append("</p>");
-            sbhtml.append("<p>IP Address: ").append(event.getIpAddress()).append("</p>");
-            sbhtml.append("<p>Email from IdP: ").append(event.getDetails().get("email")).append("</p>");
-            try {
-                senderProvider.send(session.getContext().getRealm().getSmtpConfig(), emailAddress, "New user on Keycloak", sbtxt.toString(), sbhtml.toString());
-            } catch (EmailException e) {
-                log.error("Failed to send email", e);
+            sbhtml.append("<p>A new Keycloak user has registered in the %s realm (%s)</p>".formatted(realmName, stage));
+            sbhtml.append("<p>Username: ").append(username).append("</p>");
+            sbhtml.append("<p>First name: ").append(firstName).append("</p>");
+            sbhtml.append("<p>Last name: ").append(lastName).append("</p>");
+            sbhtml.append("<p>Email: ").append(email).append("</p>");
+            
+            // Send to each recipient individually
+            for (String recipient : recipients) {
+                String trimmedRecipient = recipient.trim();
+                try {
+                    log.infof("Sending email to: %s", trimmedRecipient);
+                    senderProvider.send(session.getContext().getRealm().getSmtpConfig(), trimmedRecipient, "New User Registration with Keycloak", sbtxt.toString(), sbhtml.toString());
+                } catch (EmailException e) {
+                    log.errorf("Failed to send email to %s: %s", trimmedRecipient, e.getMessage());
+                }
             }
         }
     }
@@ -66,11 +103,13 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
      */
     @Override
     public void onEvent(AdminEvent adminEvent, boolean b) {
-
+        // No-op for admin events
     }
 
     @Override
     public void close() {
 
     }
+
+ 
 }
