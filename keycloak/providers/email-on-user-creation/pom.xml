@@ -13,26 +13,26 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-core</artifactId>
-            <version>26.0.0</version>
+            <version>26.2.5</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-server-spi</artifactId>
-            <version>26.0.0</version>
+            <version>26.2.5</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-server-spi-private</artifactId>
-            <version>26.0.0</version>
+            <version>26.2.5</version>
             <scope>provided</scope>
         </dependency>
         <!-- Keycloak Social Identity Providers -->
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-services</artifactId>
-            <version>26.0.0</version>
+            <version>26.2.5</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
