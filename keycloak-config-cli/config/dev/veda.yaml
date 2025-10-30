@@ -683,4 +683,3 @@ users:
 eventsListeners:
   - jboss-logging
   - email-on-user-creation
-
