@@ -6,8 +6,8 @@ package org.nasa.impact.keycloak.provider;
  */
 
 import org.jboss.logging.Logger;
-import org.keycloak.email.DefaultEmailSenderProvider;
 import org.keycloak.email.EmailException;
+import org.keycloak.email.EmailSenderProvider;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
@@ -46,7 +46,7 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
     @Override
     public void onEvent(Event event) {
         if (EventType.REGISTER.equals(event.getType())) {
-            DefaultEmailSenderProvider senderProvider = new DefaultEmailSenderProvider(session);
+            EmailSenderProvider senderProvider = session.getProvider(EmailSenderProvider.class);
             String realmName = session.getContext().getRealm().getName();
 
             log.infof("Registration event for realm '%s' detected (stage='%s')", realmName, stage);
