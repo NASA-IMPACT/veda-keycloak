@@ -7,6 +7,7 @@ from aws_cdk import (
     Stack,
     aws_ecr_assets as ecr_assets,
     aws_ecs as ecs,
+    aws_iam as iam,
     aws_lambda as _lambda,
     aws_secretsmanager as secretsmanager,
 )
@@ -36,6 +37,9 @@ class KeycloakConfig(Construct):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        # Ensure hostname has https:// prefix for OAuth client URLs
+        public_url = hostname if hostname.startswith("http") else f"https://{hostname}"
+
         # Create a client secret for each private OAuth client
         created_client_secrets = []
         for client_info in private_oauth_clients:
@@ -53,9 +57,9 @@ class KeycloakConfig(Construct):
                     secret_string_template=json.dumps(
                         {
                             "id": client_slug,
-                            "auth_url": f"{hostname}/realms/{realm}/protocol/openid-connect/auth",
-                            "token_url": f"{hostname}/realms/{realm}/protocol/openid-connect/token",
-                            "userinfo_url": f"{hostname}/realms/{realm}/protocol/openid-connect/userinfo",
+                            "auth_url": f"{public_url}/realms/{realm}/protocol/openid-connect/auth",
+                            "token_url": f"{public_url}/realms/{realm}/protocol/openid-connect/token",
+                            "userinfo_url": f"{public_url}/realms/{realm}/protocol/openid-connect/userinfo",
                         },
                         separators=(",", ":"),
                     ),
@@ -68,7 +72,7 @@ class KeycloakConfig(Construct):
         # Import the client secrets for each public clients
         imported_client_secrets = []
         for client_slug, secret_arn in idp_oauth_client_secrets.items():
-            imported_secret = secretsmanager.Secret.from_secret_complete_arn(
+            imported_secret = secretsmanager.Secret.from_secret_partial_arn(
                 self, f"{client_slug}-client-secret", secret_arn
             )
             imported_client_secrets.append((client_slug, imported_secret))
@@ -96,7 +100,8 @@ class KeycloakConfig(Construct):
                 build_args={"KEYCLOAK_CONFIG_CLI_VERSION": version},
             ),
             environment={
-                "KEYCLOAK_URL": hostname,
+                # Ensure HTTPS protocol is included for Keycloak URL
+                "KEYCLOAK_URL": public_url,
                 "KEYCLOAK_AVAILABILITYCHECK_ENABLED": "true",
                 "KEYCLOAK_AVAILABILITYCHECK_TIMEOUT": "120s",
                 "IMPORT_FILES_LOCATIONS": "/config/*",
@@ -114,6 +119,20 @@ class KeycloakConfig(Construct):
                 **task_client_secrets,  # Merge the generated client secrets
             },
         )
+
+        # Explicitly grant GetSecretValue permission for imported IdP secrets
+        if imported_client_secrets:
+            idp_secret_arns = [secret.secret_arn for _, secret in imported_client_secrets]
+            config_task_def.execution_role.add_to_policy(
+                iam.PolicyStatement(
+                    effect=iam.Effect.ALLOW,
+                    actions=[
+                        "secretsmanager:GetSecretValue",
+                        "secretsmanager:DescribeSecret",
+                    ],
+                    resources=idp_secret_arns,
+                )
+            )
 
         # Helper to simplify triggering the ECS task
         code = f"""

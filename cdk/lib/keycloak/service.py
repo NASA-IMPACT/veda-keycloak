@@ -1,3 +1,4 @@
+import re
 from constructs import Construct
 from aws_cdk import (
     Duration,
@@ -120,10 +121,14 @@ class KeycloakService(Construct):
                 command=["start"],
                 environment={
                     "KC_DB_URL_DATABASE": database_name,
-                    "KC_HOSTNAME": hostname,
+                    # Strip protocol from hostname for KC_HOSTNAME (it should be just the domain)
+                    "KC_HOSTNAME": re.sub(r"(^\w+:|^)//", "", hostname),
                     "KC_HTTP_ENABLED": "true",
                     "KC_HTTP_MANAGEMENT_PORT": str(health_management_port),
                     "KC_HEALTH_ENABLED": "true",
+                    # Trust proxy headers from ALB (X-Forwarded-* headers)
+                    "KC_PROXY_HEADERS": "xforwarded",
+                    "KC_HOSTNAME_STRICT": "false",
                 },
                 secrets={
                     # Database credentials

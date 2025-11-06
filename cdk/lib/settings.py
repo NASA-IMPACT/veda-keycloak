@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     permissions_boundary_arn: Optional[str] = None
     ssl_certificate_arn: str
     hostname: str
+    hosted_zone_domain: Optional[str] = None  # Override auto-detected domain for Route53
     stage: str = "dev"
     keycloak_version: str = "26.0.5"
     keycloak_app_dir: DirectoryPath = DirectoryPath("keycloak")

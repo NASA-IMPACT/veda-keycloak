@@ -29,6 +29,7 @@ class KeycloakStack(Stack):
         idp_oauth_client_secrets: dict,
         private_oauth_clients: list,
         configure_route53: bool,
+        hosted_zone_domain: Optional[str] = None,
         vpc_id: Optional[str] = None,
         rds_snapshot_identifier: Optional[str] = None,
         **kwargs,
@@ -85,6 +86,7 @@ class KeycloakStack(Stack):
                 "url",
                 hostname=hostname,
                 alb=kc_service.alb_service.load_balancer,
+                hosted_zone_domain=hosted_zone_domain,
             )
         else:
             print("Warning: Environment is set to manual DNS configuration--new record for keycloak service load balancer must be added to hosted zone")

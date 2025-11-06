@@ -17,6 +17,7 @@ class KeycloakUrl(Construct):
         *,
         hostname: str,
         alb: elbv2.ApplicationLoadBalancer,
+        hosted_zone_domain: str = None,
     ) -> None:
         super().__init__(scope, construct_id)
 
@@ -30,8 +31,21 @@ class KeycloakUrl(Construct):
                 'Hostname must be a fully qualified domain name, e.g., "keycloak.foo.com".'
             )
 
-        subdomain = ".".join(parts[:-2])  # e.g., "keycloak"
-        domain_name = ".".join(parts[-2:])  # e.g., "foo.com"
+        # Use provided hosted_zone_domain or auto-detect from hostname
+        if hosted_zone_domain:
+            # Use explicitly provided domain
+            domain_name = hosted_zone_domain
+            # Calculate subdomain relative to the provided zone
+            if cleaned_hostname.endswith(f".{domain_name}"):
+                subdomain = cleaned_hostname[: -(len(domain_name) + 1)]
+            else:
+                raise ValueError(
+                    f"Hostname '{cleaned_hostname}' does not end with hosted zone domain '{domain_name}'"
+                )
+        else:
+            # Auto-detect: assume last 2 parts are the domain
+            subdomain = ".".join(parts[:-2])  # e.g., "auth.veda"
+            domain_name = ".".join(parts[-2:])  # e.g., "grss.cloud"
 
         # Lookup the hosted zone for the domain
         hosted_zone = route53.HostedZone.from_lookup(
