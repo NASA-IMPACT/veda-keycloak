@@ -138,6 +138,30 @@ clients:
       - dataset:create
       - dataset:update
 
+  - clientId: veda-airflow
+    name: Airflow
+    rootUrl: $(env:AIRFLOW_CLIENT_URL)
+    secret: $(env:AIRFLOW_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - $(env:AIRFLOW_CLIENT_URL)/*
+    webOrigins:
+      - $(env:AIRFLOW_CLIENT_URL)
+    protocol: openid-connect
+    fullScopeAllowed: true
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: true
+    serviceAccountsEnabled: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+
 roles:
   client:
     stac:
@@ -153,6 +177,13 @@ roles:
     ingest-ui:
       - name: Editor
         description: Can initiate and update dataset ingests
+    veda-airflow:
+      - name: Admin
+        description: Full administrative access to Airflow
+      - name: Reader
+        description: Read-only access to Airflow
+      - name: Launcher
+
 
 clientScopeMappings:
   stac:
@@ -264,6 +295,19 @@ groups:
         - Editor
       ingest-ui:
         - Editor
+
+  - name: VEDA Airflow Admins
+    clientRoles:
+      veda-airflow:
+        - Admin
+  - name: VEDA Airflow Viewers
+    clientRoles:
+      veda-airflow:
+        - Reader
+  - name: VEDA Airflow DAG Launchers
+    clientRoles:
+      veda-airflow:
+        - Launcher
 
 identityProviders:
   # GitHub
