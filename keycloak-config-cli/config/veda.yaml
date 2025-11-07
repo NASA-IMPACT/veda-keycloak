@@ -152,8 +152,8 @@ clients:
     fullScopeAllowed: true
     standardFlowEnabled: true
     implicitFlowEnabled: false
-    directAccessGrantsEnabled: true
-    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: false
     defaultClientScopes:
       - web-origins
       - acr
