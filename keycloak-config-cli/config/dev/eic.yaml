@@ -202,6 +202,25 @@ groups:
       eic-ingest-api:
         - Editor
 
+  - name: Tenants
+    subGroups:
+      - name: GHGC
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              eic-stac:
+                - Editor
+              eic-ingest-api:
+                - Editor
+
 identityProviders:
   # CILogon
   - alias: cilogon # NOTE: this alias appears in the redirect_uri for the auth flow, update Github OAuth settings accordingly
