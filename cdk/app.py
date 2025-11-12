@@ -9,7 +9,7 @@ from aws_cdk import (
 )
 
 from lib.keycloak import KeycloakStack
-from lib.utils import get_oauth_secrets, get_private_client_ids, get_send_email_addresses
+from lib.utils import get_oauth_secrets, get_private_client_ids, get_send_email_addresses, get_application_role_arns
 from lib.settings import Settings
 
 logging.basicConfig(

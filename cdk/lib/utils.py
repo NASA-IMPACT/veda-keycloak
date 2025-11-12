@@ -64,6 +64,10 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
     return client_ids
 
 def get_application_role_arns() -> dict[str, str]:
+    """
+    Extracts application role ARNs from environment variables starting with 'APPLICATION_ROLE_ARN_'.
+    Returns a dictionary mapping each client id to its app role ARN.
+    """
     app_role_arn_prefix = "APPLICATION_ROLE_ARN_"
     app_role_arns = {}
     for key, value in os.environ.items():
