@@ -7,13 +7,13 @@ displayNameHtml: eic
 clients:
   - clientId: eic-stac
     name: EIC STAC Catalog
-    rootUrl: https://dev.earth.gov/api/stac
+    rootUrl: https://staging.earth.gov/api/stac
     publicClient: true
     attributes: {}
     redirectUris:
-      - https://dev.earth.gov/api/stac/*
+      - https://staging.earth.gov/api/stac/*
     webOrigins:
-      - https://dev.earth.gov/api/stac
+      - https://staging.earth.gov/api/stac
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -53,13 +53,13 @@ clients:
 
   - clientId: eic-ingest-api
     name: EIC Ingest API
-    rootUrl: https://dev.earth.gov/api/ingest
+    rootUrl: https://staging.earth.gov/api/ingest
     publicClient: true
     attributes: {}
     redirectUris:
-      - https://dev.earth.gov/api/ingest/*
+      - https://staging.earth.gov/api/ingest/*
     webOrigins:
-      - https://dev.earth.gov/api/ingest
+      - https://staging.earth.gov/api/ingest
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
