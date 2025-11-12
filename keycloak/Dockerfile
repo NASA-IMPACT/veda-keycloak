@@ -10,4 +10,4 @@ RUN ./build_and_collect_jars.sh
 FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} AS keycloak
 COPY --from=builder /workspace/.jars/*.jar /opt/keycloak/providers/
 COPY themes /opt/keycloak/themes
-RUN /opt/keycloak/bin/kc.sh build
+RUN /opt/keycloak/bin/kc.sh build --health-enabled=true

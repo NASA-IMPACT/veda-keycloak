@@ -1,3 +1,5 @@
+from typing import Optional
+
 from aws_cdk import (
     Stack,
     aws_ec2 as ec2,
@@ -11,12 +13,14 @@ from .url import KeycloakUrl
 
 
 class KeycloakStack(Stack):
+
     def __init__(
         self,
         scope: Construct,
         construct_id: str,
         *,
         is_production: bool,
+        stage: str,
         hostname: str,
         ssl_certificate_arn: str,
         keycloak_version: str,
@@ -25,7 +29,10 @@ class KeycloakStack(Stack):
         keycloak_config_cli_app_dir: str,
         idp_oauth_client_secrets: dict,
         private_oauth_clients: list,
-        vpc_id: str = None,
+        configure_route53: bool,
+        vpc_id: Optional[str] = None,
+        rds_snapshot_identifier: Optional[str] = None,
+        keycloak_send_email_addresses: Optional[dict[str, str]] = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -42,6 +49,7 @@ class KeycloakStack(Stack):
             vpc=vpc,
             database_name="keycloak",
             is_production=is_production,
+            snapshot_identifier=rds_snapshot_identifier,
         )
 
         kc_service = KeycloakService(
@@ -54,6 +62,8 @@ class KeycloakStack(Stack):
             version=keycloak_version,
             hostname=hostname,
             ssl_certificate_arn=ssl_certificate_arn,
+            keycloak_send_email_addresses=keycloak_send_email_addresses,
+            stage=stage,
         )
 
         KeycloakConfig(
@@ -71,11 +81,15 @@ class KeycloakStack(Stack):
             idp_oauth_client_secrets=idp_oauth_client_secrets,
             private_oauth_clients=private_oauth_clients,
             version=keycloak_config_cli_version,
+            stage=stage,
         )
 
-        KeycloakUrl(
-            self,
-            "url",
-            hostname=hostname,
-            alb=kc_service.alb_service.load_balancer,
-        )
+        if configure_route53:
+            KeycloakUrl(
+                self,
+                "url",
+                hostname=hostname,
+                alb=kc_service.alb_service.load_balancer,
+            )
+        else:
+            print("Warning: Environment is set to manual DNS configuration--new record for keycloak service load balancer must be added to hosted zone")

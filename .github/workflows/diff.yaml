@@ -1,35 +1,22 @@
-name: Deploy & Configure Service
+name: Diff CDK Stack
 
 on:
-  workflow_call:
-    inputs:
-      environment:
-        required: true
-        description: "Environment to deploy to"
-        type: string
-  workflow_dispatch:
-    inputs:
-      environment:
-        required: true
-        description: "Environment to deploy to"
-        type: environment
+  pull_request:
 
 permissions:
   id-token: write # Required for OIDC authentication w/ AWS
   contents: read
 
-concurrency:
-  group: ${{ inputs.environment }}
-  cancel-in-progress: false
-
-run-name: Deploy to ${{ inputs.environment }} environment by @${{ github.actor }}
+run-name: Diff ${{ github.ref }}
 
 jobs:
-  deploy:
+  diff:
     runs-on: ubuntu-latest
-    environment: 
-      name: ${{ inputs.environment }}
-      url: ${{ vars.HOSTNAME }}
+    environment: dev
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
 
     steps:
       - name: Checkout the repository
@@ -53,9 +40,8 @@ jobs:
       - name: Install dependencies
         run: uv sync -p 3.13
 
-      - name: Deploy CDK to dev environment
-        run: |
-          uv run npx cdk deploy --require-approval never --outputs-file outputs.json
+      - name: Synthesize CDK
+        run: uv run npx cdk synth
         env:
           AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
@@ -66,20 +52,18 @@ jobs:
           KEYCLOAK_VERSION: ${{ vars.KEYCLOAK_VERSION }}
           KEYCLOAK_CONFIG_CLI_VERSION: ${{ vars.KEYCLOAK_CONFIG_CLI_VERSION }}
           SSL_CERTIFICATE_ARN: ${{ vars.SSL_CERTIFICATE_ARN }}
-          STAGE: ${{ inputs.environment }}
+          RDS_SNAPSHOT_IDENTIFIER: ${{ vars.RDS_SNAPSHOT_IDENTIFIER }}
+          STAGE: dev
+          CONFIGURE_ROUTE53: ${{ vars.CONFIGURE_ROUTE53 }}
           # Imported Identity Provider secrets
           IDP_SECRET_ARN_GH: ${{ vars.IDP_SECRET_ARN_GH }}
           IDP_SECRET_ARN_CILOGON: ${{ vars.IDP_SECRET_ARN_CILOGON }}
           IDP_SECRET_ARN_EDL: ${{ vars.IDP_SECRET_ARN_EDL }}
-          RDS_SNAPSHOT_IDENTIFIER: ${{ vars.RDS_SNAPSHOT_IDENTIFIER }}
-          CONFIGURE_ROUTE53: ${{ vars.CONFIGURE_ROUTE53 }}
           KEYCLOAK_SEND_EMAIL_ADDRESS_VEDA: ${{ vars.KEYCLOAK_SEND_EMAIL_ADDRESS_VEDA }}
           KEYCLOAK_SEND_EMAIL_ADDRESS_MAAP: ${{ vars.KEYCLOAK_SEND_EMAIL_ADDRESS_MAAP }}
 
-      - name: Get ConfigLambdaArn from CloudFormation
-        id: get-lambda-arn
-        run: |
-          echo "CONFIG_LAMBDA_ARN=$(jq -r '."veda-keycloak-${{ inputs.environment }}".ConfigLambdaArn' outputs.json)" >> $GITHUB_ENV
-
-      - name: Apply Config
-        run: uv run bin/apply-config.py $CONFIG_LAMBDA_ARN $(echo '${{ toJSON(vars) }}' | jq -c .)
+      - name: Diff CDK
+        uses: corymhall/cdk-diff-action@v2
+        with:
+          failOnDestructiveChanges: false
+          githubToken: ${{ secrets.GITHUB_TOKEN }}

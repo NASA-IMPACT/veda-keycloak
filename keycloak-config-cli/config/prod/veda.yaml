@@ -7,14 +7,14 @@ displayNameHtml: VEDA Ecosystem
 clients:
   - clientId: grafana
     name: Grafana
-    rootUrl: $(env:GRAFANA_CLIENT_URL)
+    rootUrl: https://monitoring.openveda.cloud
     secret: $(env:GRAFANA_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - $(env:GRAFANA_CLIENT_URL)/*
+      - https://monitoring.openveda.cloud/*
     webOrigins:
-      - $(env:GRAFANA_CLIENT_URL)
+      - https://monitoring.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -45,13 +45,17 @@ clients:
 
   - clientId: stac
     name: STAC Catalog
-    rootUrl: $(env:STAC_CLIENT_URL)
+    rootUrl: https://openveda.cloud
     publicClient: true
     attributes: {}
     redirectUris:
-      - $(env:STAC_CLIENT_URL)/*
+      - https://test.openveda.cloud/*
+      - https://staging.openveda.cloud/*
+      - https://openveda.cloud/*
     webOrigins:
-      - $(env:STAC_CLIENT_URL)
+      - https://test.openveda.cloud
+      - https://staging.openveda.cloud
+      - https://openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -67,6 +71,59 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+    protocolMappers:
+      # Include user groups in JWT tokens with full paths
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "true"
+      - name: stac_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: stac_roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: stac
+          usermodel.clientRoleMapping.rolePrefix: ""
+      - name: grafana_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: grafana_roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: grafana
+          usermodel.clientRoleMapping.rolePrefix: ""
+      - name: ingest_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: ingest_roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: ingest-api
+          usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: airflow-stac-etl
     name: Airflow STAC ETL
@@ -88,16 +145,22 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
-  
+
   - clientId: ingest-api
     name: STAC Ingest API
-    rootUrl: $(env:INGEST_API_CLIENT_URL)
+    rootUrl: https://openveda.cloud
     publicClient: true
-    attributes: {}
+    attributes: {
+      "access.token.lifespan": "3600",
+    }
     redirectUris:
-      - $(env:INGEST_API_CLIENT_URL)/*
+      - https://test.openveda.cloud/*
+      - https://staging.openveda.cloud/*
+      - https://openveda.cloud/*
     webOrigins:
-      - $(env:INGEST_API_CLIENT_URL)
+      - https://test.openveda.cloud
+      - https://staging.openveda.cloud
+      - https://openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -113,11 +176,26 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "false"
+          usermodel.clientRoleMapping.clientId: ingest-api
+          usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: airflow-ingest-api-etl
     name: Airflow Ingest API ETL
     secret: $(env:AIRFLOW_INGEST_API_ETL_CLIENT_SECRET)
-    application_role_arn: $(env:AIRFLOW_INGEST_API_ETL_APPLICATION_ROLE_ARN)
     publicClient: false
     attributes: {}
     protocol: openid-connect
@@ -135,49 +213,26 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
-    
-  - clientId: jupyterhub-maap
-    name: MAAP JupyterHub
-    # Staging JupyterHub is at https://staging.hub.maap.2i2c.cloud
-    # Prod JupyterHub is at https://hub.maap.2i2c.cloud
-    rootUrl: $(env:JUPYTERHUB_MAAP_CLIENT_URL)
-    secret: $(env:JUPYTERHUB_MAAP_CLIENT_SECRET)
-    publicClient: false
-    attributes: {}
-    redirectUris:
-      - $(env:JUPYTERHUB_MAAP_CLIENT_URL)/hub/oauth_callback
-    protocol: openid-connect
-    fullScopeAllowed: true
-    defaultClientScopes: &jupyterhub-default-client-scopes
-      - basic
-      - profile
-    protocolMappers:
-      - name: client-roles-claim
-        protocol: openid-connect
-        protocolMapper: oidc-usermodel-client-role-mapper
-        config:
-          access.token.claim: "false"
-          userinfo.token.claim: "true"
-          id.token.claim: "true"
-          claim.name: roles
-          jsonType.label: String
-          multivalued: "true"
-          usermodel.clientRoleMapping.clientId: jupyterhub-maap
-          usermodel.clientRoleMapping.rolePrefix: ""
+
+
 
   - clientId: jupyterhub-disasters
     name: Disasters JupyterHub
     # Staging JupyterHub is at https://staging.hub.disasters.2i2c.cloud
     # Prod JupyterHub is at https://hub.disasters.2i2c.cloud
-    rootUrl: $(env:JUPYTERHUB_DISASTERS_CLIENT_URL)
+    rootUrl: https://hub.disasters.2i2c.cloud
     secret: $(env:JUPYTERHUB_DISASTERS_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - $(env:JUPYTERHUB_DISASTERS_CLIENT_URL)/hub/oauth_callback
+      - https://hub.disasters.2i2c.cloud/hub/oauth_callback/*
+    webOrigins:
+      - https://hub.disasters.2i2c.cloud
     protocol: openid-connect
     fullScopeAllowed: true
-    defaultClientScopes: *jupyterhub-default-client-scopes
+    defaultClientScopes:
+      - basic
+      - profile
     protocolMappers:
       - name: client-roles-claim
         protocol: openid-connect
@@ -194,14 +249,14 @@ clients:
 
   - clientId: ingest-ui
     name: Ingest UI
-    rootUrl: $(env:INGEST_UI_CLIENT_URL)
+    rootUrl: https://ingest.openveda.cloud
     secret: $(env:INGEST_UI_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - $(env:INGEST_UI_CLIENT_URL)/*
+      - https://ingest.openveda.cloud/*
     webOrigins:
-      - $(env:INGEST_UI_CLIENT_URL)
+      - https://ingest.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -213,7 +268,43 @@ clients:
       - email
       - dataset:create
       - dataset:update
-      
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "false"
+          usermodel.clientRoleMapping.clientId: ingest-ui
+          usermodel.clientRoleMapping.rolePrefix: ""
+
+  - clientId: discourse-forum
+    name: Discourse
+    rootUrl: https://community.openveda.cloud
+    secret: $(env:DISCOURSE_FORUM_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - https://community.openveda.cloud/*
+    webOrigins:
+      - https://community.openveda.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+
 roles:
   client:
     grafana:
@@ -235,7 +326,7 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
-    jupyterhub-maap: &jupyterhub-roles
+    jupyterhub-disasters:
       - name: Admin
         description: Can use the JupyterHub Admin Panel
       - name: CPU:XS
@@ -254,7 +345,6 @@ roles:
         description: Access to extra extra extra large instances (~121GB RAM)
       - name: GPU:T4
         description: Access to T4 GPU instances (1 T4 GPU)
-    jupyterhub-disasters: *jupyterhub-roles
     ingest-ui:
       - name: Editor
         description: Can initiate and update dataset ingests
@@ -375,36 +465,6 @@ groups:
         - Editor
       ingest-ui:
         - Editor
-      
-
-  - name: JupyterHub MAAP Admin
-    clientRoles:
-      jupyterhub-maap:
-        - Admin
-
-  - name: JupyterHub MAAP User
-    clientRoles:
-      jupyterhub-maap:
-        - CPU:XS
-        - CPU:S
-        - CPU:M
-        - CPU:L
-        - CPU:XL
-        - CPU:XXL
-        - CPU:XXL
-        - CPU:XXXL
-
-  - name: JupyterHub MAAP Basic User
-    clientRoles:
-      jupyterhub-maap:
-        - CPU:XS
-        - CPU:M
-        - CPU:L
-  
-  - name: JupyterHub MAAP GPU User
-    clientRoles:
-      jupyterhub-maap:
-        - GPU:T4
 
   - name: JupyterHub Disasters Admin
     clientRoles:
@@ -428,6 +488,71 @@ groups:
       jupyterhub-disasters:
         - GPU:T4
 
+  - name: Tenants
+    subGroups:
+      - name: VEDA
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+
+      - name: Disasters
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+
+      - name: GHGC
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+
 identityProviders:
   # CILogon
   - alias: cilogon # NOTE: this alias appears in the redirect_uri for the auth flow, update Github OAuth settings accordingly
@@ -448,12 +573,35 @@ identityProviders:
       issuer: "https://cilogon.org"
       useJwksUrl: "true"
       pkceEnabled: "false"
+      defaultScope: "openid email profile"
       metadataDescriptorUrl: "https://cilogon.org/.well-known/openid-configuration"
       authorizationUrl: "https://cilogon.org/authorize"
       clientAuthMethod: "client_secret_post"
-      syncMode: "LEGACY"
+      syncMode: "IMPORT"
       clientId: $(env:CILOGON_CLIENT_ID)
       clientSecret: $(env:CILOGON_CLIENT_SECRET)
+identityProviderMappers:
+  - name: "email"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "email"
+      user.attribute: "email"
+  - name: "first name"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "profile.given_name"
+      user.attribute: "firstName"
+  - name: "last name"
+    identityProviderAlias: cilogon
+    identityProviderMapper: oidc-user-attribute-idp-mapper
+    config:
+      syncMode: "IMPORT"
+      claim: "profile.family_name"
+      user.attribute: "lastName"
 
 # Login Flow Configuration
 browserFlow: Browser without Password

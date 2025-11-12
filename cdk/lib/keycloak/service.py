@@ -32,6 +32,8 @@ class KeycloakService(Construct):
         version: str,
         hostname: str,
         ssl_certificate_arn: str,
+        keycloak_send_email_addresses: dict[str, str],
+        stage: str,
         **kwargs,
     ) -> None:
         """
@@ -123,6 +125,9 @@ class KeycloakService(Construct):
                     "KC_HOSTNAME": hostname,
                     "KC_HTTP_ENABLED": "true",
                     "KC_HTTP_MANAGEMENT_PORT": str(health_management_port),
+                    "KC_HEALTH_ENABLED": "true",
+                    "KC_SPI_EVENTS_LISTENER_EMAIL_ON_USER_CREATION_STAGE": stage,
+                    **keycloak_send_email_addresses
                 },
                 secrets={
                     # Database credentials
@@ -147,10 +152,27 @@ class KeycloakService(Construct):
             ),
         )
 
-        # TODO: Configure health check on port 9000 with the path '/health'
+        self.alb_service.task_definition.default_container.add_port_mappings(
+            ecs.PortMapping(
+                container_port=health_management_port,  # 9000
+                protocol=ecs.Protocol.TCP,
+            )
+        )
+
         self.alb_service.target_group.configure_health_check(
-            path="/admin/master/console/",
+            path="/health",
+            port=str(health_management_port),  # 9000
+            protocol=elbv2.Protocol.HTTP,
             healthy_threshold_count=3,
+            unhealthy_threshold_count=2,
+            timeout=Duration.seconds(5),
+            interval=Duration.seconds(60),
+        )
+
+        self.alb_service.service.connections.allow_from(
+            load_balancer,
+            ec2.Port.tcp(health_management_port),
+            "Health check on port 9000",
         )
 
         database_instance.connections.allow_default_port_from(self.alb_service.service)

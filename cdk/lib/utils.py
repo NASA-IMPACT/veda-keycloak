@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 import yaml
@@ -29,13 +30,10 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
 
     # List YAML/YML files
     for filename in os.listdir(config_dir):
-        if filename.endswith(".yaml") or filename.endswith(".yml"):
-            file_path = os.path.join(config_dir, filename)
-            try:
-                # Parse the YAML file
-                with open(file_path, "r", encoding="utf-8") as f:
-                    data = yaml.safe_load(f)
+        if not filename.endswith(".yaml") and not filename.endswith(".yml"):
+            logging.debug("Ignoring %s due to filename extension", filename)
 
+<<<<<<< HEAD
                 if data and isinstance(data.get("clients"), list):
                     for client in data["clients"]:
                         # Only collect clients that have a 'secret' field
@@ -55,12 +53,50 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
                                 )
             except Exception as e:
                 print(f"Failed to process file '{filename}': {e}")
+=======
+        # Parse the YAML file
+        file_path = os.path.join(config_dir, filename)
+        with open(file_path, "r", encoding="utf-8") as f:
+            logging.debug("Parsing %s", filename)
+            data = yaml.safe_load(f)
+
+        if data and isinstance(data.get("clients"), list):
+            for client in data["clients"]:
+                # Only collect clients that have a 'secret' field
+                if "secret" in client:
+                    if "clientId" in client:
+                        client_ids.append(
+                            {
+                                "id": client["clientId"],
+                                "realm": data.get("realm", ""),
+                            }
+                        )
+                    else:
+                        logging.warning(
+                            "Missing clientId for client %s in file %s",
+                            client,
+                            filename,
+                        )
+>>>>>>> main
 
     # Validate each extracted clientId
     for client in client_ids:
         validate_client_id(client["id"])
 
     return client_ids
+
+def get_send_email_addresses() -> dict[str, str]:
+    """
+    Extracts send email addresses from environment variables starting with 'KEYCLOAK_SEND_EMAIL_ADDRESS_'.
+    Returns a dictionary mapping each realm to its email address.
+    """
+    send_email_addresses = {}
+    send_email_address_prefix = "KEYCLOAK_SEND_EMAIL_ADDRESS_"
+    for key, value in os.environ.items():
+        if key.startswith(send_email_address_prefix):
+            realm = key.split("_")[-1].upper()
+            send_email_addresses[f"KEYCLOAK_EMAIL_ADDRESS_{realm}"] = str(value)
+    return send_email_addresses
 
 
 def validate_client_id(client_id: str) -> None:

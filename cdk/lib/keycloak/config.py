@@ -33,6 +33,7 @@ class KeycloakConfig(Construct):
         idp_oauth_client_secrets: dict[str, str],
         private_oauth_clients: list[dict[str, str]],
         version: str,
+        stage: str,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -110,7 +111,7 @@ class KeycloakConfig(Construct):
                 "KEYCLOAK_URL": hostname,
                 "KEYCLOAK_AVAILABILITYCHECK_ENABLED": "true",
                 "KEYCLOAK_AVAILABILITYCHECK_TIMEOUT": "120s",
-                "IMPORT_FILES_LOCATIONS": "/config/*",
+                "IMPORT_FILES_LOCATIONS": f"/config/{stage}/*",
                 "IMPORT_CACHE_ENABLED": "false",
                 "IMPORT_VARSUBSTITUTION_ENABLED": "true",
             },
