@@ -53,6 +53,15 @@ if send_email_addresses:
 else:
     logging.warning("No send email addresses found in the environment.")
 
+application_role_arns = get_application_role_arns()
+if application_role_arns:
+    logging.info(
+        "Found application role ARNs in environment: %s",
+        ", ".join(application_role_arns.keys()),
+    )
+else:
+    logging.warning("No application role ARNs found in the environment.")
+
 app = App()
 
 # Optionally set a custom synthesizer if CDK_BOOTSTRAP_QUALIFIER is present
@@ -82,6 +91,7 @@ KeycloakStack(
     keycloak_send_email_addresses=send_email_addresses,
     idp_oauth_client_secrets=idp_oauth_client_secrets,
     private_oauth_clients=private_oauth_clients,
+    application_role_arns=application_role_arns,
     configure_route53=settings.configure_route53,
     is_production=settings.is_production,
     stage=settings.stage,

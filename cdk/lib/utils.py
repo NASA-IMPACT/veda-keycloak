@@ -33,27 +33,6 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
         if not filename.endswith(".yaml") and not filename.endswith(".yml"):
             logging.debug("Ignoring %s due to filename extension", filename)
 
-<<<<<<< HEAD
-                if data and isinstance(data.get("clients"), list):
-                    for client in data["clients"]:
-                        # Only collect clients that have a 'secret' field
-                        if "secret" in client:
-                            if "clientId" in client:
-                                client_ids.append(
-                                    {
-                                        "id": client["clientId"],
-                                        "realm": data.get("realm", ""),
-                                        "application_role_arn": client.get("application_role_arn", ""),
-                                    }
-                                )
-                            else:
-                                print(
-                                    f"Warning: Missing clientId for client {client} "
-                                    f"in file {filename}"
-                                )
-            except Exception as e:
-                print(f"Failed to process file '{filename}': {e}")
-=======
         # Parse the YAML file
         file_path = os.path.join(config_dir, filename)
         with open(file_path, "r", encoding="utf-8") as f:
@@ -77,13 +56,21 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
                             client,
                             filename,
                         )
->>>>>>> main
 
     # Validate each extracted clientId
     for client in client_ids:
         validate_client_id(client["id"])
 
     return client_ids
+
+def get_application_role_arns() -> dict[str, str]:
+    app_role_arn_prefix = "APPLICATION_ROLE_ARN_"
+    app_role_arns = {}
+    for key, value in os.environ.items():
+        if key.startswith(app_role_arn_prefix):
+            app_role_slug = key[len(app_role_arn_prefix) :]
+            app_role_arns[app_role_slug] = value
+    return app_role_arns
 
 def get_send_email_addresses() -> dict[str, str]:
     """

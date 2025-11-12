@@ -32,6 +32,7 @@ class KeycloakConfig(Construct):
         app_dir: str,
         idp_oauth_client_secrets: dict[str, str],
         private_oauth_clients: list[dict[str, str]],
+        application_role_arns: dict[str, str],
         version: str,
         stage: str,
         **kwargs,
@@ -43,7 +44,7 @@ class KeycloakConfig(Construct):
         for client_info in private_oauth_clients:
             client_slug = client_info["id"]
             realm = client_info["realm"]
-            application_role_arn = client_info["application_role_arn"]
+            application_role_arn = application_role_arns.get(client_slug)
             secret = secretsmanager.Secret(
                 self,
                 f"{client_slug}-client-secret",
@@ -73,6 +74,8 @@ class KeycloakConfig(Construct):
                         effect=iam.Effect.ALLOW,
                         principals=[iam.ArnPrincipal(application_role_arn)],
                         actions=["secretsmanager:GetSecretValue"],
+                        resources=[secret.secret_arn],
+                        
                     )
                 )
             created_client_secrets.append((client_slug, secret))

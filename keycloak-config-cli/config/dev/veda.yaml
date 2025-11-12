@@ -188,7 +188,6 @@ clients:
   - clientId: airflow-ingest-api-etl
     name: Airflow Ingest API ETL
     secret: $(env:AIRFLOW_INGEST_API_ETL_CLIENT_SECRET)
-    application_role_arn: $(env:AIRFLOW_INGEST_API_ETL_APPLICATION_ROLE_ARN)
     publicClient: false
     attributes: {}
     protocol: openid-connect
