@@ -179,7 +179,29 @@ clients:
       - roles
       - basic
       - email
-      - groups
+    protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        consentRequired: false
+        config:
+          full.path: "false"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: groups
+          userinfo.token.claim: "true"
+      - name: client-roles-claim
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "false"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          claim.name: roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: jupyterhub
+          usermodel.clientRoleMapping.rolePrefix: ""
 roles:
   client:
     stac:
