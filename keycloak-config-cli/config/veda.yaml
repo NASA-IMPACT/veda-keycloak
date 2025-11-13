@@ -179,6 +179,7 @@ clients:
       - roles
       - basic
       - email
+      - groups
 roles:
   client:
     stac:
@@ -200,7 +201,7 @@ roles:
       - name: Reader
         description: Read-only access to Airflow
       - name: Launcher
-    jupoyterhub:
+    jupyterhub:
       - name: Admin
         description: Can use the JupyterHub Admin Panel
       - name: CPU:XS
