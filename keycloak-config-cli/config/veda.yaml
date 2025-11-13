@@ -162,6 +162,23 @@ clients:
       - basic
       - email
 
+  - jupyterhub:
+    name: JupyterHub
+    rootUrl: ${env.JUPYTERHUB_CLIENT_URL}
+    secret: ${env.JUPYTERHUB_CLIENT_SECRET}
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - ${env.JUPYTERHUB_CLIENT_URL}/hub/oauth_callback
+    webOrigins:
+      - $(env:JUPYTERHUB_CLIENT_URL)
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - profile
+      - roles
+      - basic
+      - email
 roles:
   client:
     stac:
@@ -183,6 +200,25 @@ roles:
       - name: Reader
         description: Read-only access to Airflow
       - name: Launcher
+    jupoyterhub:
+      - name: Admin
+        description: Can use the JupyterHub Admin Panel
+      - name: CPU:XS
+        description: Access to extra small instances (~1.9GB RAM)
+      - name: CPU:S
+        description: Access to small instances (~3.7GB RAM)
+      - name: CPU:M
+        description: Access to medium instances (~7.4GB RAM
+      - name: CPU:L
+        description: Access to large instances (~14.8GB RAM)
+      - name: CPU:XL
+        description: Access to extra large instances (~29.7GB RAM)
+      - name: CPU:XXL
+        description: Access to extra extra large instances (~60.6GB RAM)
+      - name: CPU:XXXL
+        description: Access to extra extra extra large instances (~121GB RAM)
+      - name: GPU:T4
+        description: Access to T4 GPU instances (1 T4 GPU
 
 
 clientScopeMappings:
@@ -308,6 +344,31 @@ groups:
     clientRoles:
       veda-airflow:
         - Launcher
+  
+  - name: JupyterHub Admin
+    clientRoles:
+      jupyterhub:
+        - Admin
+  - name: JupyterHub User
+    clientRoles:
+      jupyterhub:
+        - CPU:XS
+        - CPU:S
+        - CPU:M
+        - CPU:L
+        - CPU:XL
+        - CPU:XXL
+        - CPU:XXXL
+  - name: JupyterHub Basic User
+    clientRoles:
+      jupyterhub:
+        - CPU:XS
+        - CPU:S
+        - CPU:M
+  - name: JupyterHub GPU User
+    clientRoles:
+      jupyterhub:
+        - GPU:T4
 
 identityProviders:
   # GitHub
