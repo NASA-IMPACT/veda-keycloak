@@ -162,7 +162,7 @@ clients:
       - basic
       - email
 
-  - jupyterhub:
+  - clientId: jupyterhub
     name: JupyterHub
     rootUrl: ${env.JUPYTERHUB_CLIENT_URL}
     secret: ${env.JUPYTERHUB_CLIENT_SECRET}
