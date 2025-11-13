@@ -171,7 +171,7 @@ clients:
     redirectUris:
       - ${env.JUPYTERHUB_CLIENT_URL}/hub/oauth_callback
     webOrigins:
-      - $(env:JUPYTERHUB_CLIENT_URL)
+      - ${env.JUPYTERHUB_CLIENT_URL}
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
