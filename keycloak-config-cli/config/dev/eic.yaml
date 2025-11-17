@@ -208,11 +208,9 @@ groups:
         subGroups:
           - name: Admins
             clientRoles:
-              grafana:
-                - GrafanaAdmin
-              stac:
+              eic-stac:
                 - Admin
-              ingest-api:
+              eic-ingest-api:
                 - Admin
           - name: Editors
             clientRoles:
