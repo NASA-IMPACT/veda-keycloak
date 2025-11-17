@@ -1,7 +1,7 @@
 ---
 enabled: true
 realm: eic
-displayName: Applications
+displayName: EIC
 displayNameHtml: eic
 
 clients:
