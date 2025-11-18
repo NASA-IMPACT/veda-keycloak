@@ -179,6 +179,7 @@ clients:
       - roles
       - basic
       - email
+      - groups
     protocolMappers:
       - name: groups
         protocol: openid-connect
@@ -325,6 +326,23 @@ clientScopes:
   - name: dataset:update
     description: Update existing datasets
     protocol: openid-connect
+  - name: groups
+    description: Group membership information
+    protocol: openid-connect
+    attributes:
+      include.in.token.scope: "true"
+      display.on.consent.screen: "true"
+    protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        consentRequired: false
+        config:
+          full.path: "false"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: groups
+          userinfo.token.claim: "true"
 
 groups:
   - name: System Administrators
