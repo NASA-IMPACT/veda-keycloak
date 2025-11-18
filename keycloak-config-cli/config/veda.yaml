@@ -141,7 +141,7 @@ clients:
   - clientId: veda-airflow
     name: Airflow
     rootUrl: $(env:AIRFLOW_CLIENT_URL)
-    secret: $(env:AIRFLOW_CLIENT_SECRET)
+    secret: $(env:VEDA_AIRFLOW_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
