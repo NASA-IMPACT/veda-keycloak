@@ -29,7 +29,7 @@ class KeycloakStack(Stack):
         keycloak_config_cli_app_dir: str,
         idp_oauth_client_secrets: dict,
         private_oauth_clients: list,
-        application_role_arns: dict[str, str],
+        application_role_arns: dict[str, list[str]],
         configure_route53: bool,
         vpc_id: Optional[str] = None,
         rds_snapshot_identifier: Optional[str] = None,

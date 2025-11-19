@@ -63,17 +63,17 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
 
     return client_ids
 
-def get_application_role_arns() -> dict[str, str]:
+def get_application_role_arns() -> dict[str, list[str]]:
     """
     Extracts application role ARNs from environment variables starting with 'APPLICATION_ROLE_ARN_'.
     Returns a dictionary mapping each client id to its app role ARN.
     """
     app_role_arn_prefix = "APPLICATION_ROLE_ARN_"
     app_role_arns = {}
-    for key, value in os.environ.items():
+    for key, value in os.environ.items(): #value can be comma separated list of ARNs
         if key.startswith(app_role_arn_prefix):
             app_role_slug = key[len(app_role_arn_prefix) :]
-            app_role_arns[app_role_slug] = value
+            app_role_arns[app_role_slug] = value.split(",")
     return app_role_arns
 
 def get_send_email_addresses() -> dict[str, str]:

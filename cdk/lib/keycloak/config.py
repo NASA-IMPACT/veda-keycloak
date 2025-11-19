@@ -32,7 +32,7 @@ class KeycloakConfig(Construct):
         app_dir: str,
         idp_oauth_client_secrets: dict[str, str],
         private_oauth_clients: list[dict[str, str]],
-        application_role_arns: dict[str, str],
+        application_role_arns: dict[str, list[str]],
         version: str,
         stage: str,
         **kwargs,
@@ -72,7 +72,7 @@ class KeycloakConfig(Construct):
                 secret.add_to_resource_policy(
                     iam.PolicyStatement(
                         effect=iam.Effect.ALLOW,
-                        principals=[iam.ArnPrincipal(application_role_arn)],
+                        principals=[iam.ArnPrincipal(arn) for arn in application_role_arn],
                         actions=["secretsmanager:GetSecretValue"],
                         resources=[secret.secret_arn],
                         
