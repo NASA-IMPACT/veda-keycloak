@@ -40,7 +40,6 @@ class KeycloakConfig(Construct):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # Customer managed KMS key to encrypt all Keycloak client secrets
         kms_key = kms.Key(
             self,
             "KeycloakKmsKey",
