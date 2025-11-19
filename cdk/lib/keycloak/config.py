@@ -43,6 +43,7 @@ class KeycloakConfig(Construct):
         kms_key = kms.Key(
             self,
             "KeycloakKmsKey",
+            alias="veda-keycloak",
             description="KMS key for encrypting Keycloak OAuth client secrets",
             enable_key_rotation=True,
         )

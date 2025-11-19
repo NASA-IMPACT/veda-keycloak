@@ -57,7 +57,7 @@ application_role_arns = get_application_role_arns()
 if application_role_arns:
     logging.info(
         "Found application role ARNs in environment: %s",
-        ", ".join(application_role_arns.keys()),
+        ", ".join(f"{key}: {', '.join(arns)}" for key, arns in application_role_arns.items()),
     )
 else:
     logging.warning("No application role ARNs found in the environment.")
