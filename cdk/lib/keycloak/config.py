@@ -9,6 +9,7 @@ from aws_cdk import (
     aws_ecs as ecs,
     aws_iam as iam,
     aws_lambda as _lambda,
+    aws_kms as kms,
     aws_secretsmanager as secretsmanager,
 )
 from constructs import Construct
@@ -39,6 +40,14 @@ class KeycloakConfig(Construct):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        # Customer managed KMS key to encrypt all Keycloak client secrets
+        kms_key = kms.Key(
+            self,
+            "KeycloakKmsKey",
+            description="KMS key for encrypting Keycloak OAuth client secrets",
+            enable_key_rotation=True,
+        )
+
         # Create a client secret for each private OAuth client
         created_client_secrets = []
         for client_info in private_oauth_clients:
@@ -51,6 +60,7 @@ class KeycloakConfig(Construct):
                 # WARNING: Changing this construct (name, id, template) will cause new client
                 # secrets to be generated!
                 secret_name=f"{Stack.of(self).stack_name}-client-{client_slug}",
+                encryption_key=kms_key,
                 generate_secret_string=secretsmanager.SecretStringGenerator(
                     exclude_punctuation=True,
                     include_space=False,
@@ -67,7 +77,6 @@ class KeycloakConfig(Construct):
                     password_length=16,
                 ),
             )
-            # Add the policy to the secret if application_role_arn is provided
             if application_role_arn:
                 secret.add_to_resource_policy(
                     iam.PolicyStatement(
@@ -76,6 +85,14 @@ class KeycloakConfig(Construct):
                         actions=["secretsmanager:GetSecretValue"],
                         resources=[secret.secret_arn],
                         
+                    )
+                )
+                kms_key.add_to_resource_policy(
+                    iam.PolicyStatement(
+                        effect=iam.Effect.ALLOW,
+                        principals=[iam.ArnPrincipal(arn) for arn in application_role_arn],
+                        actions=["kms:Decrypt", "kms:DescribeKey"],
+                        resources=[kms_key.key_arn],
                     )
                 )
             created_client_secrets.append((client_slug, secret))
