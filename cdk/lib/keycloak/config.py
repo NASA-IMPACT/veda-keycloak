@@ -83,7 +83,7 @@ class KeycloakConfig(Construct):
                         effect=iam.Effect.ALLOW,
                         principals=[iam.ArnPrincipal(arn) for arn in application_role_arn],
                         actions=["secretsmanager:GetSecretValue"],
-                        resources=[secret.secret_arn],
+                        resources=["*"],
                         
                     )
                 )
@@ -92,7 +92,7 @@ class KeycloakConfig(Construct):
                         effect=iam.Effect.ALLOW,
                         principals=[iam.ArnPrincipal(arn) for arn in application_role_arn],
                         actions=["kms:Decrypt", "kms:DescribeKey"],
-                        resources=[kms_key.key_arn],
+                        resources=["*"],
                     )
                 )
             created_client_secrets.append((client_slug, secret))
