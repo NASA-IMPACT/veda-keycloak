@@ -99,6 +99,34 @@ clients:
 
 </details>
 
+##### Cross Account Secret Access
+
+In cases where another AWS account needs to read a private client secret, resource policies must be added to the secret as well as the application role arn that needs access to the secret. See the [AWS docs](https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access_examples_cross.html) for more details on cross account secret access. In this repo, `cdk/lib/keycloak/config.py` creates a KMS for client secrets and adds resource policies for the specified application roles however you must configure the following:
+
+1) Include a Github Environment variable with the format `APPLICATION_ROLE_ARN_$clientId` for the client secret that needs to be read in another account. You can supply multiple ARNs, comma-separated (for example, `APPLICATION_ROLE_ARN_AIRFLOW_INGEST_API_ET=arn:aws:iam::123456789012:role/ApplicationRole,arn:aws:iam::210987654321:role/AnotherApplicationRole`). 
+
+2) Reference the Github Environment variable in both [deploy.yaml](.github/workflows/deploy.yaml) and [diff.yaml](.github/workflows/diff.yaml)
+
+3) Add an Identity policy to the consuming role in the other account:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": "arn:aws:secretsmanager:REGION:ACCOUNT_A_ID:secret:SECRET_NAME_OR_ARN"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:kms:REGION:ACCOUNT_A_ID:key/KEY_ID"
+    }
+  ]
+}
+```
+
 ##### Scopes, Roles, and Groups
 
 Clients will typically have associated Scopes, Roles, and Groups.
