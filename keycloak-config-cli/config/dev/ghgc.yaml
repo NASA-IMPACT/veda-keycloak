@@ -59,7 +59,7 @@ clients:
     redirectUris:
       - https://dev.ghg.center/api/ingest/*
       - https://staging.earth.gov/ghgcenter/api/ingest/*
-      - https://earth.gov/ghgcenter/api/ingest/docs
+      - https://earth.gov/ghgcenter/api/ingest/*
     webOrigins:
       - https://dev.ghg.center
       - https://staging.earth.gov
