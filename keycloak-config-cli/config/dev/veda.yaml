@@ -297,6 +297,257 @@ clients:
       - basic
       - email
 
+  - clientId: test-veda-backend-resource-server
+    name: VEDA Backend Resource Server
+    publicClient: false
+    secret: $(env:VEDA_BACKEND_CLIENT_SECRET)
+    protocol: openid-connect
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    authorizationServicesEnabled: true
+    protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "true"
+    authorizationSettings:
+      allowRemoteResourceManagement: true
+      policyEnforcementMode: ENFORCING
+      resources:
+        # Public Collections (no tenant owns)
+        - name: Public STAC Collections
+          uri: "stac:collection:public:*"
+          type: "stac-collection"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: Public STAC Items
+          uri: "stac:item:public:*"
+          type: "stac-item"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        # VEDA Tenant Resources
+        - name: VEDA STAC Collections
+          uri: "stac:collection:veda:*"
+          type: "stac-collection"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: VEDA STAC Items
+          uri: "stac:item:veda:*"
+          type: "stac-item"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        # GHGC Tenant Resources
+        - name: GHGC STAC Collections
+          uri: "stac:collection:ghgc:*"
+          type: "stac-collection"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: GHGC STAC Items
+          uri: "stac:item:ghgc:*"
+          type: "stac-item"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        # Disasters Tenant Resources
+        - name: Disasters STAC Collections
+          uri: "stac:collection:disasters:*"
+          type: "stac-collection"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: Disasters STAC Items
+          uri: "stac:item:disasters:*"
+          type: "stac-item"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+      policies:
+        - name: All Authenticated Users
+          type: role
+          logic: POSITIVE
+          roles:
+            - offline_access
+        - name: VEDA Tenant Members
+          type: group
+          logic: POSITIVE
+          groups:
+            - /Tenants/VEDA/Admins
+            - /Tenants/VEDA/Editors
+        - name: GHGC Tenant Members
+          type: group
+          logic: POSITIVE
+          groups:
+            - /Tenants/GHGC/Admins
+            - /Tenants/GHGC/Editors
+        - name: Disasters Tenant Members
+          type: group
+          logic: POSITIVE
+          groups:
+            - /Tenants/Disasters/Admins
+            - /Tenants/Disasters/Editors
+      permissions:
+        - name: Public Collections - Create
+          type: resource
+          resources:
+            - Public STAC Collections
+          policies:
+            - All Authenticated Users
+          scopes:
+            - create
+        - name: VEDA Admins - Collections
+          type: resource
+          resources:
+            - VEDA STAC Collections
+          policies:
+            - VEDA Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: VEDA Editors - Collections
+          type: resource
+          resources:
+            - VEDA STAC Collections
+          policies:
+            - VEDA Tenant Members
+          scopes:
+            - create
+            - update
+        - name: VEDA Admins - Items
+          type: resource
+          resources:
+            - VEDA STAC Items
+          policies:
+            - VEDA Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: VEDA Editors - Items
+          type: resource
+          resources:
+            - VEDA STAC Items
+          policies:
+            - VEDA Tenant Members
+          scopes:
+            - create
+            - update
+        - name: GHGC Admins - Collections
+          type: resource
+          resources:
+            - GHGC STAC Collections
+          policies:
+            - GHGC Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: GHGC Editors - Collections
+          type: resource
+          resources:
+            - GHGC STAC Collections
+          policies:
+            - GHGC Tenant Members
+          scopes:
+            - create
+            - update
+        - name: GHGC Admins - Items
+          type: resource
+          resources:
+            - GHGC STAC Items
+          policies:
+            - GHGC Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: GHGC Editors - Items
+          type: resource
+          resources:
+            - GHGC STAC Items
+          policies:
+            - GHGC Tenant Members
+          scopes:
+            - create
+            - update
+        - name: Disasters Admins - Collections
+          type: resource
+          resources:
+            - Disasters STAC Collections
+          policies:
+            - Disasters Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: Disasters Editors - Collections
+          type: resource
+          resources:
+            - Disasters STAC Collections
+          policies:
+            - Disasters Tenant Members
+          scopes:
+            - create
+            - update
+        - name: Disasters Admins - Items
+          type: resource
+          resources:
+            - Disasters STAC Items
+          policies:
+            - Disasters Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: Disasters Editors - Items
+          type: resource
+          resources:
+            - Disasters STAC Items
+          policies:
+            - Disasters Tenant Members
+          scopes:
+            - create
+            - update
+
 roles:
   client:
     grafana:
