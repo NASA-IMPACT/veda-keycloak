@@ -325,7 +325,7 @@ clients:
       policyEnforcementMode: ENFORCING
       resources:
         # Public Collections (no tenant owns)
-        - name: Public STAC Collections
+        - name: stac:collection:public:*
           uri: "stac:collection:public:*"
           type: "stac-collection"
           ownerManagedAccess: false
@@ -334,7 +334,7 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: Public STAC Items
+        - name: stac:item:public:*
           uri: "stac:item:public:*"
           type: "stac-item"
           ownerManagedAccess: false
@@ -344,7 +344,7 @@ clients:
             - name: "delete"
             - name: "read"
         # VEDA Tenant Resources
-        - name: VEDA STAC Collections
+        - name: stac:collection:veda:*
           uri: "stac:collection:veda:*"
           type: "stac-collection"
           ownerManagedAccess: false
@@ -353,7 +353,7 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: VEDA STAC Items
+        - name: stac:item:veda:*
           uri: "stac:item:veda:*"
           type: "stac-item"
           ownerManagedAccess: false
@@ -363,7 +363,7 @@ clients:
             - name: "delete"
             - name: "read"
         # GHGC Tenant Resources
-        - name: GHGC STAC Collections
+        - name: stac:collection:ghgc:*
           uri: "stac:collection:ghgc:*"
           type: "stac-collection"
           ownerManagedAccess: false
@@ -372,7 +372,7 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: GHGC STAC Items
+        - name: stac:item:ghgc:*
           uri: "stac:item:ghgc:*"
           type: "stac-item"
           ownerManagedAccess: false
@@ -382,7 +382,7 @@ clients:
             - name: "delete"
             - name: "read"
         # Disasters Tenant Resources
-        - name: Disasters STAC Collections
+        - name: stac:collection:disasters:*
           uri: "stac:collection:disasters:*"
           type: "stac-collection"
           ownerManagedAccess: false
@@ -391,7 +391,7 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: Disasters STAC Items
+        - name: stac:item:disasters:*
           uri: "stac:item:disasters:*"
           type: "stac-item"
           ownerManagedAccess: false
@@ -428,7 +428,7 @@ clients:
         - name: Public Collections - Create
           type: resource
           resources:
-            - Public STAC Collections
+            - stac:collection:public:*
           policies:
             - All Authenticated Users
           scopes:
@@ -436,7 +436,7 @@ clients:
         - name: VEDA Admins - Collections
           type: resource
           resources:
-            - VEDA STAC Collections
+            - stac:collection:veda:*
           policies:
             - VEDA Tenant Members
           scopes:
@@ -446,7 +446,7 @@ clients:
         - name: VEDA Editors - Collections
           type: resource
           resources:
-            - VEDA STAC Collections
+            - stac:collection:veda:*
           policies:
             - VEDA Tenant Members
           scopes:
@@ -455,7 +455,7 @@ clients:
         - name: VEDA Admins - Items
           type: resource
           resources:
-            - VEDA STAC Items
+            - stac:item:veda:*
           policies:
             - VEDA Tenant Members
           scopes:
@@ -465,7 +465,7 @@ clients:
         - name: VEDA Editors - Items
           type: resource
           resources:
-            - VEDA STAC Items
+            - stac:item:veda:*
           policies:
             - VEDA Tenant Members
           scopes:
@@ -474,7 +474,7 @@ clients:
         - name: GHGC Admins - Collections
           type: resource
           resources:
-            - GHGC STAC Collections
+            - stac:collection:ghgc:*
           policies:
             - GHGC Tenant Members
           scopes:
@@ -484,7 +484,7 @@ clients:
         - name: GHGC Editors - Collections
           type: resource
           resources:
-            - GHGC STAC Collections
+            - stac:collection:ghgc:*
           policies:
             - GHGC Tenant Members
           scopes:
@@ -493,7 +493,7 @@ clients:
         - name: GHGC Admins - Items
           type: resource
           resources:
-            - GHGC STAC Items
+            - stac:item:ghgc:*
           policies:
             - GHGC Tenant Members
           scopes:
@@ -503,7 +503,7 @@ clients:
         - name: GHGC Editors - Items
           type: resource
           resources:
-            - GHGC STAC Items
+            - stac:item:ghgc:*
           policies:
             - GHGC Tenant Members
           scopes:
@@ -512,7 +512,7 @@ clients:
         - name: Disasters Admins - Collections
           type: resource
           resources:
-            - Disasters STAC Collections
+            - stac:collection:disasters:*
           policies:
             - Disasters Tenant Members
           scopes:
@@ -522,7 +522,7 @@ clients:
         - name: Disasters Editors - Collections
           type: resource
           resources:
-            - Disasters STAC Collections
+            - stac:collection:disasters:*
           policies:
             - Disasters Tenant Members
           scopes:
@@ -531,7 +531,7 @@ clients:
         - name: Disasters Admins - Items
           type: resource
           resources:
-            - Disasters STAC Items
+            - stac:item:disasters:*
           policies:
             - Disasters Tenant Members
           scopes:
@@ -541,7 +541,7 @@ clients:
         - name: Disasters Editors - Items
           type: resource
           resources:
-            - Disasters STAC Items
+            - stac:item:disasters:*
           policies:
             - Disasters Tenant Members
           scopes:
