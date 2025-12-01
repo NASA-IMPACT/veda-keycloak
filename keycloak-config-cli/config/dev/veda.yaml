@@ -410,20 +410,20 @@ clients:
           type: group
           logic: POSITIVE
           groups:
-            - /Tenants/VEDA/Admins
-            - /Tenants/VEDA/Editors
+            - /Tenants/FakeTenant1/Admins
+            - /Tenants/FakeTenant1/Editors
         - name: GHGC Tenant Members
           type: group
           logic: POSITIVE
           groups:
-            - /Tenants/GHGC/Admins
-            - /Tenants/GHGC/Editors
+            - /Tenants/FakeTenant2/Admins
+            - /Tenants/FakeTenant2/Editors
         - name: Disasters Tenant Members
           type: group
           logic: POSITIVE
           groups:
-            - /Tenants/Disasters/Admins
-            - /Tenants/Disasters/Editors
+            - /Tenants/FakeTenant3/Admins
+            - /Tenants/FakeTenant3/Editors
       permissions:
         - name: Public Collections - Create
           type: resource
@@ -433,7 +433,7 @@ clients:
             - All Authenticated Users
           scopes:
             - create
-        - name: VEDA Admins - Collections
+        - name: FakeTenant1 Admins - Collections
           type: resource
           resources:
             - stac:collection:veda:*
@@ -443,107 +443,107 @@ clients:
             - create
             - update
             - delete
-        - name: VEDA Editors - Collections
+        - name: FakeTenant1 Editors - Collections
           type: resource
           resources:
-            - stac:collection:veda:*
+            - stac:collection:faketenant1:*
           policies:
-            - VEDA Tenant Members
+            - FakeTenant1 Tenant Members
           scopes:
             - create
             - update
-        - name: VEDA Admins - Items
+        - name: FakeTenant1 Admins - Items
           type: resource
           resources:
-            - stac:item:veda:*
+            - stac:item:faketenant1:*
           policies:
-            - VEDA Tenant Members
-          scopes:
-            - create
-            - update
-            - delete
-        - name: VEDA Editors - Items
-          type: resource
-          resources:
-            - stac:item:veda:*
-          policies:
-            - VEDA Tenant Members
-          scopes:
-            - create
-            - update
-        - name: GHGC Admins - Collections
-          type: resource
-          resources:
-            - stac:collection:ghgc:*
-          policies:
-            - GHGC Tenant Members
+            - FakeTenant1 Tenant Members
           scopes:
             - create
             - update
             - delete
-        - name: GHGC Editors - Collections
+        - name: FakeTenant1 Editors - Items
           type: resource
           resources:
-            - stac:collection:ghgc:*
+            - stac:item:faketenant1:*
           policies:
-            - GHGC Tenant Members
+            - FakeTenant1 Tenant Members
           scopes:
             - create
             - update
-        - name: GHGC Admins - Items
+        - name: FakeTenant2 Admins - Collections
           type: resource
           resources:
-            - stac:item:ghgc:*
+            - stac:collection:faketenant2:*
           policies:
-            - GHGC Tenant Members
-          scopes:
-            - create
-            - update
-            - delete
-        - name: GHGC Editors - Items
-          type: resource
-          resources:
-            - stac:item:ghgc:*
-          policies:
-            - GHGC Tenant Members
-          scopes:
-            - create
-            - update
-        - name: Disasters Admins - Collections
-          type: resource
-          resources:
-            - stac:collection:disasters:*
-          policies:
-            - Disasters Tenant Members
+            - FakeTenant2 Tenant Members
           scopes:
             - create
             - update
             - delete
-        - name: Disasters Editors - Collections
+        - name: FakeTenant2 Editors - Collections
           type: resource
           resources:
-            - stac:collection:disasters:*
+            - stac:collection:faketenant2:*
           policies:
-            - Disasters Tenant Members
+            - FakeTenant2 Tenant Members
           scopes:
             - create
             - update
-        - name: Disasters Admins - Items
+        - name: FakeTenant2 Admins - Items
           type: resource
           resources:
-            - stac:item:disasters:*
+            - stac:item:faketenant2:*
           policies:
-            - Disasters Tenant Members
+            - FakeTenant2 Tenant Members
           scopes:
             - create
             - update
             - delete
-        - name: Disasters Editors - Items
+        - name: FakeTenant2 Editors - Items
           type: resource
           resources:
-            - stac:item:disasters:*
+            - stac:item:faketenant2:*
           policies:
-            - Disasters Tenant Members
+            - FakeTenant2 Tenant Members
+          scopes:
+            - create
+            - update
+        - name: FakeTenant3 Admins - Collections
+          type: resource
+          resources:
+            - stac:collection:faketenant3:*
+          policies:
+            - FakeTenant3 Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: FakeTenant3 Editors - Collections
+          type: resource
+          resources:
+            - stac:collection:faketenant3:*
+          policies:
+            - FakeTenant3 Tenant Members
+          scopes:
+            - create
+            - update
+        - name: FakeTenant3 Admins - Items
+          type: resource
+          resources:
+            - stac:item:faketenant3:*
+          policies:
+            - FakeTenant3 Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: FakeTenant3 Editors - Items
+          type: resource
+          resources:
+            - stac:item:faketenant3:*
+          policies:
+            - FakeTenant3 Tenant Members
           scopes:
             - create
             - update
@@ -733,7 +733,7 @@ groups:
 
   - name: Tenants
     subGroups:
-      - name: VEDA
+      - name: FakeTenant1
         subGroups:
           - name: Admins
             clientRoles:
@@ -754,7 +754,7 @@ groups:
               ingest-ui:
                 - Editor
 
-      - name: Disasters
+      - name: FakeTenant2
         subGroups:
           - name: Admins
             clientRoles:
@@ -775,7 +775,7 @@ groups:
               ingest-ui:
                 - Editor
 
-      - name: GHGC
+      - name: FakeTenant3
         subGroups:
           - name: Admins
             clientRoles:
