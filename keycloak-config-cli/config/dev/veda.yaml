@@ -297,10 +297,10 @@ clients:
       - basic
       - email
 
-  - clientId: test-veda-backend-resource-server
-    name: VEDA Backend Resource Server
+  - clientId: uma-resource-server
+    name: Authorization Resource Server
     publicClient: false
-    secret: $(env:VEDA_BACKEND_CLIENT_SECRET)
+    secret: $(env:UMA_RESOURCE_SERVER_CLIENT_SECRET)
     protocol: openid-connect
     standardFlowEnabled: false
     implicitFlowEnabled: false
@@ -343,9 +343,9 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        # VEDA Tenant Resources
-        - name: stac:collection:veda:*
-          uri: "stac:collection:veda:*"
+        # FakeTenant1 Resources
+        - name: stac:collection:faketenant1:*
+          uri: "stac:collection:faketenant1:*"
           type: "stac-collection"
           ownerManagedAccess: false
           scopes:
@@ -353,8 +353,8 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: stac:item:veda:*
-          uri: "stac:item:veda:*"
+        - name: stac:item:faketenant1:*
+          uri: "stac:item:faketenant1:*"
           type: "stac-item"
           ownerManagedAccess: false
           scopes:
@@ -362,9 +362,9 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        # GHGC Tenant Resources
-        - name: stac:collection:ghgc:*
-          uri: "stac:collection:ghgc:*"
+        # FakeTenant2 Resources
+        - name: stac:collection:faketenant2:*
+          uri: "stac:collection:faketenant2:*"
           type: "stac-collection"
           ownerManagedAccess: false
           scopes:
@@ -372,8 +372,8 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: stac:item:ghgc:*
-          uri: "stac:item:ghgc:*"
+        - name: stac:item:faketenant2:*
+          uri: "stac:item:faketenant2:*"
           type: "stac-item"
           ownerManagedAccess: false
           scopes:
@@ -381,9 +381,9 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        # Disasters Tenant Resources
-        - name: stac:collection:disasters:*
-          uri: "stac:collection:disasters:*"
+        # FakeTenant3 Resources
+        - name: stac:collection:faketenant3:*
+          uri: "stac:collection:faketenant3:*"
           type: "stac-collection"
           ownerManagedAccess: false
           scopes:
@@ -391,8 +391,8 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: stac:item:disasters:*
-          uri: "stac:item:disasters:*"
+        - name: stac:item:faketenant3:*
+          uri: "stac:item:faketenant3:*"
           type: "stac-item"
           ownerManagedAccess: false
           scopes:
@@ -406,19 +406,19 @@ clients:
           logic: POSITIVE
           roles:
             - offline_access
-        - name: VEDA Tenant Members
+        - name: FakeTenant1 Members
           type: group
           logic: POSITIVE
           groups:
             - /Tenants/FakeTenant1/Admins
             - /Tenants/FakeTenant1/Editors
-        - name: GHGC Tenant Members
+        - name: FakeTenant2 Tenant Members
           type: group
           logic: POSITIVE
           groups:
             - /Tenants/FakeTenant2/Admins
             - /Tenants/FakeTenant2/Editors
-        - name: Disasters Tenant Members
+        - name: FakeTenant3 Tenant Members
           type: group
           logic: POSITIVE
           groups:
