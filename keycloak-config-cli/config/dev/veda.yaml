@@ -297,6 +297,257 @@ clients:
       - basic
       - email
 
+  - clientId: uma-resource-server
+    name: Authorization Resource Server
+    publicClient: false
+    secret: $(env:UMA_RESOURCE_SERVER_CLIENT_SECRET)
+    protocol: openid-connect
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    authorizationServicesEnabled: true
+    protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "true"
+    authorizationSettings:
+      allowRemoteResourceManagement: true
+      policyEnforcementMode: ENFORCING
+      resources:
+        # Public Collections (no tenant owns)
+        - name: stac:collection:public:*
+          uri: "stac:collection:public:*"
+          type: "stac-collection"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:public:*
+          uri: "stac:item:public:*"
+          type: "stac-item"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        # FakeTenant1 Resources
+        - name: stac:collection:faketenant1:*
+          uri: "stac:collection:faketenant1:*"
+          type: "stac-collection"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:faketenant1:*
+          uri: "stac:item:faketenant1:*"
+          type: "stac-item"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        # FakeTenant2 Resources
+        - name: stac:collection:faketenant2:*
+          uri: "stac:collection:faketenant2:*"
+          type: "stac-collection"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:faketenant2:*
+          uri: "stac:item:faketenant2:*"
+          type: "stac-item"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        # FakeTenant3 Resources
+        - name: stac:collection:faketenant3:*
+          uri: "stac:collection:faketenant3:*"
+          type: "stac-collection"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:faketenant3:*
+          uri: "stac:item:faketenant3:*"
+          type: "stac-item"
+          ownerManagedAccess: false
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+      policies:
+        - name: All Authenticated Users
+          type: role
+          logic: POSITIVE
+          roles:
+            - offline_access
+        - name: FakeTenant1 Members
+          type: group
+          logic: POSITIVE
+          groups:
+            - /Tenants/FakeTenant1/Admins
+            - /Tenants/FakeTenant1/Editors
+        - name: FakeTenant2 Tenant Members
+          type: group
+          logic: POSITIVE
+          groups:
+            - /Tenants/FakeTenant2/Admins
+            - /Tenants/FakeTenant2/Editors
+        - name: FakeTenant3 Tenant Members
+          type: group
+          logic: POSITIVE
+          groups:
+            - /Tenants/FakeTenant3/Admins
+            - /Tenants/FakeTenant3/Editors
+      permissions:
+        - name: Public Collections - Create
+          type: resource
+          resources:
+            - stac:collection:public:*
+          policies:
+            - All Authenticated Users
+          scopes:
+            - create
+        - name: FakeTenant1 Admins - Collections
+          type: resource
+          resources:
+            - stac:collection:veda:*
+          policies:
+            - VEDA Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: FakeTenant1 Editors - Collections
+          type: resource
+          resources:
+            - stac:collection:faketenant1:*
+          policies:
+            - FakeTenant1 Tenant Members
+          scopes:
+            - create
+            - update
+        - name: FakeTenant1 Admins - Items
+          type: resource
+          resources:
+            - stac:item:faketenant1:*
+          policies:
+            - FakeTenant1 Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: FakeTenant1 Editors - Items
+          type: resource
+          resources:
+            - stac:item:faketenant1:*
+          policies:
+            - FakeTenant1 Tenant Members
+          scopes:
+            - create
+            - update
+        - name: FakeTenant2 Admins - Collections
+          type: resource
+          resources:
+            - stac:collection:faketenant2:*
+          policies:
+            - FakeTenant2 Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: FakeTenant2 Editors - Collections
+          type: resource
+          resources:
+            - stac:collection:faketenant2:*
+          policies:
+            - FakeTenant2 Tenant Members
+          scopes:
+            - create
+            - update
+        - name: FakeTenant2 Admins - Items
+          type: resource
+          resources:
+            - stac:item:faketenant2:*
+          policies:
+            - FakeTenant2 Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: FakeTenant2 Editors - Items
+          type: resource
+          resources:
+            - stac:item:faketenant2:*
+          policies:
+            - FakeTenant2 Tenant Members
+          scopes:
+            - create
+            - update
+        - name: FakeTenant3 Admins - Collections
+          type: resource
+          resources:
+            - stac:collection:faketenant3:*
+          policies:
+            - FakeTenant3 Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: FakeTenant3 Editors - Collections
+          type: resource
+          resources:
+            - stac:collection:faketenant3:*
+          policies:
+            - FakeTenant3 Tenant Members
+          scopes:
+            - create
+            - update
+        - name: FakeTenant3 Admins - Items
+          type: resource
+          resources:
+            - stac:item:faketenant3:*
+          policies:
+            - FakeTenant3 Tenant Members
+          scopes:
+            - create
+            - update
+            - delete
+        - name: FakeTenant3 Editors - Items
+          type: resource
+          resources:
+            - stac:item:faketenant3:*
+          policies:
+            - FakeTenant3 Tenant Members
+          scopes:
+            - create
+            - update
+
 roles:
   client:
     grafana:
@@ -482,7 +733,7 @@ groups:
 
   - name: Tenants
     subGroups:
-      - name: VEDA
+      - name: FakeTenant1
         subGroups:
           - name: Admins
             clientRoles:
@@ -503,7 +754,7 @@ groups:
               ingest-ui:
                 - Editor
 
-      - name: Disasters
+      - name: FakeTenant2
         subGroups:
           - name: Admins
             clientRoles:
@@ -524,7 +775,7 @@ groups:
               ingest-ui:
                 - Editor
 
-      - name: GHGC
+      - name: FakeTenant3
         subGroups:
           - name: Admins
             clientRoles:
