@@ -326,18 +326,20 @@ clients:
       resources:
         # Public Collections (no tenant owns)
         - name: stac:collection:public:*
-          uri: "stac:collection:public:*"
           type: "stac-collection"
           ownerManagedAccess: false
+          uris:
+            - "stac:collection:public:*"
           scopes:
             - name: "create"
             - name: "update"
             - name: "delete"
             - name: "read"
         - name: stac:item:public:*
-          uri: "stac:item:public:*"
           type: "stac-item"
           ownerManagedAccess: false
+          uris:
+            - "stac:item:public:*"
           scopes:
             - name: "create"
             - name: "update"
@@ -345,18 +347,20 @@ clients:
             - name: "read"
         # FakeTenant1 Resources
         - name: stac:collection:faketenant1:*
-          uri: "stac:collection:faketenant1:*"
           type: "stac-collection"
           ownerManagedAccess: false
+          uris:
+            - "stac:collection:faketenant1:*"
           scopes:
             - name: "create"
             - name: "update"
             - name: "delete"
             - name: "read"
         - name: stac:item:faketenant1:*
-          uri: "stac:item:faketenant1:*"
           type: "stac-item"
           ownerManagedAccess: false
+          uris:
+            - "stac:item:faketenant1:*"
           scopes:
             - name: "create"
             - name: "update"
@@ -364,18 +368,20 @@ clients:
             - name: "read"
         # FakeTenant2 Resources
         - name: stac:collection:faketenant2:*
-          uri: "stac:collection:faketenant2:*"
           type: "stac-collection"
           ownerManagedAccess: false
+          uris:
+            - "stac:collection:faketenant2:*"
           scopes:
             - name: "create"
             - name: "update"
             - name: "delete"
             - name: "read"
         - name: stac:item:faketenant2:*
-          uri: "stac:item:faketenant2:*"
           type: "stac-item"
           ownerManagedAccess: false
+          uris:
+            - "stac:item:faketenant2:*"
           scopes:
             - name: "create"
             - name: "update"
@@ -383,18 +389,20 @@ clients:
             - name: "read"
         # FakeTenant3 Resources
         - name: stac:collection:faketenant3:*
-          uri: "stac:collection:faketenant3:*"
           type: "stac-collection"
           ownerManagedAccess: false
+          uris:
+            - "stac:collection:faketenant3:*"
           scopes:
             - name: "create"
             - name: "update"
             - name: "delete"
             - name: "read"
         - name: stac:item:faketenant3:*
-          uri: "stac:item:faketenant3:*"
           type: "stac-item"
           ownerManagedAccess: false
+          uris:
+            - "stac:item:faketenant3:*"
           scopes:
             - name: "create"
             - name: "update"
@@ -404,150 +412,143 @@ clients:
         - name: All Authenticated Users
           type: js
           logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
           config:
             code: |
               $evaluation.grant();
         - name: FakeTenant1 Members
           type: group
           logic: POSITIVE
+          decisionStrategy: UNANIMOUS
           config:
-            groups: '["/Tenants/FakeTenant1/Admins","/Tenants/FakeTenant1/Editors"]'
-            extendChildren: "true"
+            groups: '[{"path":"/Tenants/FakeTenant1/Admins","extendChildren":false},{"path":"/Tenants/FakeTenant1/Editors","extendChildren":false}]'
         - name: FakeTenant2 Tenant Members
           type: group
           logic: POSITIVE
+          decisionStrategy: UNANIMOUS
           config:
-            groups: '["/Tenants/FakeTenant2/Admins","/Tenants/FakeTenant2/Editors"]'
-            extendChildren: "true"
+            groups: '[{"path":"/Tenants/FakeTenant2/Admins","extendChildren":false},{"path":"/Tenants/FakeTenant2/Editors","extendChildren":false}]'
         - name: FakeTenant3 Tenant Members
           type: group
           logic: POSITIVE
+          decisionStrategy: UNANIMOUS
           config:
-            groups: '["/Tenants/FakeTenant3/Admins","/Tenants/FakeTenant3/Editors"]'
-            extendChildren: "true"
-      permissions:
+            groups: '[{"path":"/Tenants/FakeTenant3/Admins","extendChildren":false},{"path":"/Tenants/FakeTenant3/Editors","extendChildren":false}]'
+        # Permissions (as resource-type policies)
         - name: Public Collections - Create
           type: resource
-          resources:
-            - stac:collection:public:*
-          policies:
-            - All Authenticated Users
-          scopes:
-            - create
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:public:*"]'
+            applyPolicies: '["All Authenticated Users"]'
+            scopes: '["create","update","read"]'
         - name: FakeTenant1 Admins - Collections
           type: resource
-          resources:
-            - stac:collection:veda:*
-          policies:
-            - VEDA Tenant Members
-          scopes:
-            - create
-            - update
-            - delete
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:faketenant1:*"]'
+            applyPolicies: '["FakeTenant1 Members"]'
+            scopes: '["create","update","delete","read"]'
         - name: FakeTenant1 Editors - Collections
           type: resource
-          resources:
-            - stac:collection:faketenant1:*
-          policies:
-            - FakeTenant1 Tenant Members
-          scopes:
-            - create
-            - update
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:faketenant1:*"]'
+            applyPolicies: '["FakeTenant1 Members"]'
+            scopes: '["create","update","read"]'
         - name: FakeTenant1 Admins - Items
           type: resource
-          resources:
-            - stac:item:faketenant1:*
-          policies:
-            - FakeTenant1 Tenant Members
-          scopes:
-            - create
-            - update
-            - delete
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:faketenant1:*"]'
+            applyPolicies: '["FakeTenant1 Members"]'
+            scopes: '["create","update","delete","read"]'
         - name: FakeTenant1 Editors - Items
           type: resource
-          resources:
-            - stac:item:faketenant1:*
-          policies:
-            - FakeTenant1 Tenant Members
-          scopes:
-            - create
-            - update
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:faketenant1:*"]'
+            applyPolicies: '["FakeTenant1 Members"]'
+            scopes: '["create","update","read"]'
         - name: FakeTenant2 Admins - Collections
           type: resource
-          resources:
-            - stac:collection:faketenant2:*
-          policies:
-            - FakeTenant2 Tenant Members
-          scopes:
-            - create
-            - update
-            - delete
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:faketenant2:*"]'
+            applyPolicies: '["FakeTenant2 Tenant Members"]'
+            scopes: '["create","update","delete","read"]'
         - name: FakeTenant2 Editors - Collections
           type: resource
-          resources:
-            - stac:collection:faketenant2:*
-          policies:
-            - FakeTenant2 Tenant Members
-          scopes:
-            - create
-            - update
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:faketenant2:*"]'
+            applyPolicies: '["FakeTenant2 Tenant Members"]'
+            scopes: '["create","update","read"]'
         - name: FakeTenant2 Admins - Items
           type: resource
-          resources:
-            - stac:item:faketenant2:*
-          policies:
-            - FakeTenant2 Tenant Members
-          scopes:
-            - create
-            - update
-            - delete
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:faketenant2:*"]'
+            applyPolicies: '["FakeTenant2 Tenant Members"]'
+            scopes: '["create","update","delete","read"]'
         - name: FakeTenant2 Editors - Items
           type: resource
-          resources:
-            - stac:item:faketenant2:*
-          policies:
-            - FakeTenant2 Tenant Members
-          scopes:
-            - create
-            - update
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:faketenant2:*"]'
+            applyPolicies: '["FakeTenant2 Tenant Members"]'
+            scopes: '["create","update","read"]'
         - name: FakeTenant3 Admins - Collections
           type: resource
-          resources:
-            - stac:collection:faketenant3:*
-          policies:
-            - FakeTenant3 Tenant Members
-          scopes:
-            - create
-            - update
-            - delete
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:faketenant3:*"]'
+            applyPolicies: '["FakeTenant3 Tenant Members"]'
+            scopes: '["create","update","delete","read"]'
         - name: FakeTenant3 Editors - Collections
           type: resource
-          resources:
-            - stac:collection:faketenant3:*
-          policies:
-            - FakeTenant3 Tenant Members
-          scopes:
-            - create
-            - update
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:faketenant3:*"]'
+            applyPolicies: '["FakeTenant3 Tenant Members"]'
+            scopes: '["create","update","read"]'
         - name: FakeTenant3 Admins - Items
           type: resource
-          resources:
-            - stac:item:faketenant3:*
-          policies:
-            - FakeTenant3 Tenant Members
-          scopes:
-            - create
-            - update
-            - delete
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:faketenant3:*"]'
+            applyPolicies: '["FakeTenant3 Tenant Members"]'
+            scopes: '["create","update","delete","read"]'
         - name: FakeTenant3 Editors - Items
           type: resource
-          resources:
-            - stac:item:faketenant3:*
-          policies:
-            - FakeTenant3 Tenant Members
-          scopes:
-            - create
-            - update
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:faketenant3:*"]'
+            applyPolicies: '["FakeTenant3 Tenant Members"]'
+            scopes: '["create","update","read"]'
+      scopes:
+        - name: create
+          displayName: create
+        - name: update
+          displayName: update
+        - name: delete
+          displayName: delete
+        - name: read
+          displayName: read
+      decisionStrategy: UNANIMOUS
 
 roles:
   client:
