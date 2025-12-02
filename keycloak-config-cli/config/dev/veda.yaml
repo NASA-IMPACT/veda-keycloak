@@ -323,110 +323,15 @@ clients:
     authorizationSettings:
       allowRemoteResourceManagement: true
       policyEnforcementMode: ENFORCING
-      resources:
-        # Public Collections (no tenant owns)
-        - name: stac:collection:public:*
-          type: "stac-collection"
-          ownerManagedAccess: false
-          uris:
-            - "stac:collection:public:*"
-          scopes:
-            - name: "create"
-            - name: "update"
-            - name: "delete"
-            - name: "read"
-        - name: stac:item:public:*
-          type: "stac-item"
-          ownerManagedAccess: false
-          uris:
-            - "stac:item:public:*"
-          scopes:
-            - name: "create"
-            - name: "update"
-            - name: "delete"
-            - name: "read"
-        # FakeTenant1 Resources
-        - name: stac:collection:faketenant1:*
-          type: "stac-collection"
-          ownerManagedAccess: false
-          uris:
-            - "stac:collection:faketenant1:*"
-          scopes:
-            - name: "create"
-            - name: "update"
-            - name: "delete"
-            - name: "read"
-        - name: stac:item:faketenant1:*
-          type: "stac-item"
-          ownerManagedAccess: false
-          uris:
-            - "stac:item:faketenant1:*"
-          scopes:
-            - name: "create"
-            - name: "update"
-            - name: "delete"
-            - name: "read"
-        # FakeTenant2 Resources
-        - name: stac:collection:faketenant2:*
-          type: "stac-collection"
-          ownerManagedAccess: false
-          uris:
-            - "stac:collection:faketenant2:*"
-          scopes:
-            - name: "create"
-            - name: "update"
-            - name: "delete"
-            - name: "read"
-        - name: stac:item:faketenant2:*
-          type: "stac-item"
-          ownerManagedAccess: false
-          uris:
-            - "stac:item:faketenant2:*"
-          scopes:
-            - name: "create"
-            - name: "update"
-            - name: "delete"
-            - name: "read"
-        # FakeTenant3 Resources
-        - name: stac:collection:faketenant3:*
-          type: "stac-collection"
-          ownerManagedAccess: false
-          uris:
-            - "stac:collection:faketenant3:*"
-          scopes:
-            - name: "create"
-            - name: "update"
-            - name: "delete"
-            - name: "read"
-        - name: stac:item:faketenant3:*
-          type: "stac-item"
-          ownerManagedAccess: false
-          uris:
-            - "stac:item:faketenant3:*"
-          scopes:
-            - name: "create"
-            - name: "update"
-            - name: "delete"
-            - name: "read"
+      # TODO: Add resources after confirming policies work
       policies:
         - name: All Authenticated Users
           type: js
           logic: POSITIVE
           decisionStrategy: AFFIRMATIVE
           config:
-            code: |
-              $evaluation.grant();
-        # TODO Add group policies after confirming basic structure works
-        # TODO Add resource-type policies (permissions)
-      scopes:
-        - name: create
-          displayName: create
-        - name: update
-          displayName: update
-        - name: delete
-          displayName: delete
-        - name: read
-          displayName: read
+            code: "// Grant access to any authenticated user\n$evaluation.grant();"
+      # TODO: Add scopes after confirming basic structure works
       decisionStrategy: UNANIMOUS
 
 roles:
