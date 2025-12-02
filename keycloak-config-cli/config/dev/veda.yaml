@@ -410,21 +410,21 @@ clients:
         - name: FakeTenant1 Members
           type: group
           logic: POSITIVE
-          groups:
-            - /Tenants/FakeTenant1/Admins
-            - /Tenants/FakeTenant1/Editors
+          config:
+            groups: '["/Tenants/FakeTenant1/Admins","/Tenants/FakeTenant1/Editors"]'
+            extendChildren: "true"
         - name: FakeTenant2 Tenant Members
           type: group
           logic: POSITIVE
-          groups:
-            - /Tenants/FakeTenant2/Admins
-            - /Tenants/FakeTenant2/Editors
+          config:
+            groups: '["/Tenants/FakeTenant2/Admins","/Tenants/FakeTenant2/Editors"]'
+            extendChildren: "true"
         - name: FakeTenant3 Tenant Members
           type: group
           logic: POSITIVE
-          groups:
-            - /Tenants/FakeTenant3/Admins
-            - /Tenants/FakeTenant3/Editors
+          config:
+            groups: '["/Tenants/FakeTenant3/Admins","/Tenants/FakeTenant3/Editors"]'
+            extendChildren: "true"
       permissions:
         - name: Public Collections - Create
           type: resource
