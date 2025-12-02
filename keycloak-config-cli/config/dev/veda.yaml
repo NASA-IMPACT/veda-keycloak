@@ -402,10 +402,11 @@ clients:
             - name: "read"
       policies:
         - name: All Authenticated Users
-          type: role
+          type: js
           logic: POSITIVE
-          roles:
-            - offline_access
+          config:
+            code: |
+              $evaluation.grant();
         - name: FakeTenant1 Members
           type: group
           logic: POSITIVE
