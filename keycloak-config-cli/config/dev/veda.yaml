@@ -486,7 +486,7 @@ clients:
         - name: Public Collections Permission - Delete
           type: scope
           logic: POSITIVE
-          decisionStrategy: UNANIMOUS
+          decisionStrategy: AFFIRMATIVE
           config:
             resources: '["stac:collection:public:*"]'
             scopes: '["delete"]'
@@ -511,7 +511,7 @@ clients:
         - name: Public Items Permission - Delete
           type: scope
           logic: POSITIVE
-          decisionStrategy: UNANIMOUS
+          decisionStrategy: AFFIRMATIVE
           config:
             resources: '["stac:item:public:*"]'
             scopes: '["delete"]'
