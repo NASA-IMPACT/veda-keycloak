@@ -104,11 +104,15 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: Viewer
+        description: Can only view STAC collections and items
     eic-ingest-api:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: No Basic Role
+        description: Has no permissions
 
 clientScopeMappings:
   eic-stac:
@@ -202,6 +206,13 @@ groups:
       eic-ingest-api:
         - Editor
 
+  - name: No Basic Role
+    clientRoles:
+      stac:
+        - Viewer
+      ingest-api:
+        - No Basic Role
+
   - name: Tenants
     subGroups:
       - name: GHGC
@@ -269,70 +280,6 @@ identityProviderMappers:
       claim: "profile.family_name"
       user.attribute: "lastName"
 
-# Login Flow Configuration
-browserFlow: Browser without Password
-authenticationFlows:
-  - alias: Browser without Password
-    description: browser based authentication without username password form
-    providerId: basic-flow
-    topLevel: true
-    builtIn: false
-    authenticationExecutions:
-      - authenticator: auth-cookie
-        authenticatorFlow: false
-        requirement: ALTERNATIVE
-        priority: 10
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticator: auth-spnego
-        authenticatorFlow: false
-        requirement: DISABLED
-        priority: 20
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticatorFlow: true
-        requirement: ALTERNATIVE
-        priority: 30
-        autheticatorFlow: true
-        flowAlias: Browser without Password forms
-        userSetupAllowed: false
-  - alias: Browser without Password forms
-    description: Username, password, otp and other auth forms.
-    providerId: basic-flow
-    topLevel: false
-    builtIn: false
-    authenticationExecutions:
-      - authenticatorConfig: cilogon
-        authenticator: identity-provider-redirector
-        authenticatorFlow: false
-        requirement: REQUIRED
-        priority: 20
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticatorFlow: true
-        requirement: CONDITIONAL
-        priority: 21
-        autheticatorFlow: true
-        flowAlias: Browser without Password Browser - Conditional OTP
-        userSetupAllowed: false
-  - alias: Browser without Password Browser - Conditional OTP
-    description: Flow to determine if the OTP is required for the authentication
-    providerId: basic-flow
-    topLevel: false
-    builtIn: false
-    authenticationExecutions:
-      - authenticator: conditional-user-configured
-        authenticatorFlow: false
-        requirement: REQUIRED
-        priority: 10
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticator: auth-otp-form
-        authenticatorFlow: false
-        requirement: REQUIRED
-        priority: 20
-        autheticatorFlow: false
-        userSetupAllowed: false
 authenticatorConfig:
   - alias: cilogon
     config:
@@ -354,3 +301,5 @@ users:
       eic-ingest-api:
       - Admin
 
+defaultGroups:
+  - name: "/No Basic Role"
