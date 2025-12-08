@@ -111,7 +111,7 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
-      - name: No Basic Role
+      - name: Inactive Role
         description: Has no permissions
 
 clientScopeMappings:
@@ -211,7 +211,7 @@ groups:
       stac:
         - Viewer
       ingest-api:
-        - No Basic Role
+        - Inactive Role
 
   - name: Tenants
     subGroups:
