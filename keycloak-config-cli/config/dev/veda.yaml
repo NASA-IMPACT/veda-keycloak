@@ -673,5 +673,5 @@ eventsListeners:
   - email-on-user-creation
 
 defaultGroups:
-  - name: "/No Basic Role"
+  - "/No Basic Role"
 
