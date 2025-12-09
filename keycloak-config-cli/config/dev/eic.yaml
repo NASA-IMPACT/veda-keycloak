@@ -208,9 +208,9 @@ groups:
 
   - name: No Basic Role
     clientRoles:
-      stac:
+      eic-stac:
         - Viewer
-      ingest-api:
+      eic-ingest-api:
         - No Basic Role
 
   - name: Tenants
