@@ -666,15 +666,11 @@ clients:
             resources: '["stac:item:faketenant3:*"]'
             scopes: '["delete"]'
             applyPolicies: '["Fake Tenant 3 Admins"]'
-          scopes:
+      scopes:
         - name: create
-          displayName: create
         - name: update
-          displayName: update
         - name: delete
-          displayName: delete
         - name: read
-          displayName: read
       decisionStrategy: UNANIMOUS
 
 roles:
