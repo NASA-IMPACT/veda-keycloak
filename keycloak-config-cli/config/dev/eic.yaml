@@ -301,5 +301,5 @@ users:
       eic-ingest-api:
       - Admin
 
-defaultGroups:
-  - "No Basic Role"
+# defaultGroups:
+#   - "No Basic Role"

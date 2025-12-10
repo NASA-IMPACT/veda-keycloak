@@ -672,6 +672,6 @@ eventsListeners:
   - jboss-logging
   - email-on-user-creation
 
-defaultGroups:
-  - "No Basic Role"
+# defaultGroups:
+#   - "No Basic Role"
 
