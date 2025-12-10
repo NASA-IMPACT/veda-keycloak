@@ -302,4 +302,4 @@ users:
       - Admin
 
 defaultGroups:
-  - "/No Basic Role"
+  - "No Basic Role"
