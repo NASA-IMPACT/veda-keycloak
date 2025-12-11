@@ -104,11 +104,15 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: Viewer
+        description: Can only view STAC collections and items
     disasters-ingest-api:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: No Basic Role
+        description: Has no permissions
 
 clientScopeMappings:
   disasters-stac:
@@ -201,6 +205,13 @@ groups:
         - Editor
       disasters-ingest-api:
         - Editor
+  
+  - name: No Basic Role
+    clientRoles:
+      disaster-stac:
+        - Viewer
+      disasters-ingest-api:
+        - No Basic Role
 
   - name: Tenants
     subGroups:
@@ -354,3 +365,5 @@ users:
       disasters-ingest-api:
       - Admin
 
+defaultGroups:
+  - "/No Basic Role"
