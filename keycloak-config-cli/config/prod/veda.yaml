@@ -316,16 +316,22 @@ roles:
         description: Can create, edit, and delete dashboards and data sources in an organization but cannot modify organization or user settings.
       - name: Viewer
         description: Can only view dashboards and panels without the ability to create or modify content.
+      - name: No Basic Role
+        description: Has no permissions
     stac:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: Viewer
+        description: Can only view STAC collections and items
     ingest-api:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: No Basic Role
+        description: Has no permissions
     jupyterhub-disasters:
       - name: Admin
         description: Can use the JupyterHub Admin Panel
@@ -465,6 +471,15 @@ groups:
         - Editor
       ingest-ui:
         - Editor
+  
+  - name: No Basic Role
+    clientRoles:
+      grafana:
+        - No Basic Role
+      stac:
+        - Viewer
+      ingest-api:
+        - No Basic Role
 
   - name: JupyterHub Disasters Admin
     clientRoles:
@@ -688,3 +703,5 @@ users:
       ingest-api:
       - Admin
 
+defaultGroups:
+  - "/No Basic Role"
