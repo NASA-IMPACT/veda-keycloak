@@ -12,8 +12,10 @@ clients:
     attributes: {}
     redirectUris:
       - https://disasters.openveda.cloud/api/stac/*
+      - https://dev.disasters.openveda.cloud/api/stac/*
     webOrigins:
-      - https://disasters.openveda.cloud/api/stac
+      - https://disasters.openveda.cloud
+      - https://dev.disasters.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -58,8 +60,10 @@ clients:
     attributes: {}
     redirectUris:
       - https://disasters.openveda.cloud/api/ingest/*
+      - https://dev.disasters.openveda.cloud/api/ingest/*
     webOrigins:
-      - https://disasters.openveda.cloud/api/ingest
+      - https://disasters.openveda.cloud
+      - https://dev.disasters.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
