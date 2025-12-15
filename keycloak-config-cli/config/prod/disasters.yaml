@@ -101,14 +101,14 @@ clients:
     name: Disasters JupyterHub
     # Staging JupyterHub is at https://staging.hub.disasters.2i2c.cloud
     # Prod JupyterHub is at https://hub.disasters.2i2c.cloud
-    rootUrl: https://staging.hub.disasters.2i2c.cloud
+    rootUrl: https://hub.disasters.2i2c.cloud
     secret: $(env:JUPYTERHUB_DISASTERS_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
-      - https://staging.hub.disasters.2i2c.cloud/hub/oauth_callback/*
+      - https://hub.disasters.2i2c.cloud/hub/oauth_callback/*
     webOrigins:
-      - https://staging.hub.disasters.2i2c.cloud
+      - https://hub.disasters.2i2c.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
