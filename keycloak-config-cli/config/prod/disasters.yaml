@@ -101,6 +101,45 @@ clients:
     defaultClientScopes:
       - roles
 
+  - clientId: disasters-ingest-ui
+    name: Ingest UI
+    rootUrl: https://ingest.disasters.openveda.cloud
+    secret: $(env:DISASTERS_INGEST_UI_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - https://ingest.disasters.openveda.cloud/*
+    webOrigins:
+      - https://ingest.disasters.openveda.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - dataset:create
+      - dataset:update
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "false"
+          usermodel.clientRoleMapping.clientId: ingest-ui
+          usermodel.clientRoleMapping.rolePrefix: ""
+
+
 roles:
   client:
     disasters-stac:
@@ -113,6 +152,9 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+    disasters-ingest-ui:
+      - name: Editor
+        description: Can initiate and update dataset ingests
 
 clientScopeMappings:
   disasters-stac:
@@ -163,6 +205,13 @@ clientScopeMappings:
     - clientScope: stac:collection:delete
       roles:
         - Admin
+  disasters-ingest-ui:
+    - clientScope: dataset:create
+      roles:
+        - Editor
+    - clientScope: dataset:update
+      roles:
+        - Editor
 
 clientScopes:
   - name: stac:item:create
@@ -183,6 +232,12 @@ clientScopes:
   - name: stac:collection:delete
     description: Delete STAC collections
     protocol: openid-connect
+  - name: dataset:create
+    description: Ingest new datasets
+    protocol: openid-connect
+  - name: dataset:update
+    description: Update existing datasets
+    protocol: openid-connect
 
 groups:
   - name: System Administrators
@@ -191,6 +246,8 @@ groups:
         - Admin
       disasters-ingest-api:
         - Admin
+      disasters-ingest-ui:
+        - Editor
 
   - name: Developers
     clientRoles:
@@ -198,12 +255,16 @@ groups:
         - Admin
       disasters-ingest-api:
         - Admin
+      disasters-ingest-ui:
+        - Editor
 
   - name: Data Editors
     clientRoles:
       disasters-stac:
         - Editor
       disasters-ingest-api:
+        - Editor
+      disasters-ingest-ui:
         - Editor
 
   - name: Tenants
