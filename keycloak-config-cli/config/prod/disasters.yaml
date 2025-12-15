@@ -103,7 +103,7 @@ clients:
 
   - clientId: disasters-ingest-ui
     name: Ingest UI
-    rootUrl: https://ingest.disastersopenveda.cloud
+    rootUrl: https://ingest.disasters.openveda.cloud
     secret: $(env:DISASTERS_INGEST_UI_CLIENT_SECRET)
     publicClient: false
     attributes: {}
