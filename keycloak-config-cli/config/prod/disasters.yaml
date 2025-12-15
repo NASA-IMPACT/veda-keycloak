@@ -100,6 +100,38 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
+  
+  - clientId: jupyterhub-disasters
+    name: Disasters JupyterHub
+    # Staging JupyterHub is at https://staging.hub.disasters.2i2c.cloud
+    # Prod JupyterHub is at https://hub.disasters.2i2c.cloud
+    rootUrl: https://hub.disasters.2i2c.cloud
+    secret: $(env:JUPYTERHUB_DISASTERS_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - https://hub.disasters.2i2c.cloud/hub/oauth_callback/*
+    webOrigins:
+      - https://hub.disasters.2i2c.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - basic
+      - profile
+    protocolMappers:
+      - name: client-roles-claim
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "false"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          claim.name: roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: jupyterhub-disasters
+          usermodel.clientRoleMapping.rolePrefix: ""
+
 
 roles:
   client:
@@ -112,7 +144,26 @@ roles:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
-        description: Can create and update STAC collections and items
+        description: Can create and update STAC collections and items\
+    jupyterhub-disasters:
+      - name: Admin
+        description: Can use the JupyterHub Admin Panel
+      - name: CPU:XS
+        description: Access to extra small instances (~1.9GB RAM)
+      - name: CPU:S
+        description: Access to small instances (~3.7GB RAM)
+      - name: CPU:M
+        description: Access to medium instances (~7.4GB RAM)
+      - name: CPU:L
+        description: Access to large instances (~14.8GB RAM)
+      - name: CPU:XL
+        description: Access to extra large instances (~29.7GB RAM)
+      - name: CPU:XXL
+        description: Access to extra extra large instances (~60.6GB RAM)
+      - name: CPU:XXXL
+        description: Access to extra extra extra large instances (~121GB RAM)
+      - name: GPU:T4
+        description: Access to T4 GPU instances (1 T4 GPU)
 
 clientScopeMappings:
   disasters-stac:
@@ -205,6 +256,28 @@ groups:
         - Editor
       disasters-ingest-api:
         - Editor
+  
+  - name: JupyterHub Disasters Admin
+    clientRoles:
+      jupyterhub-disasters:
+        - Admin
+
+  - name: JupyterHub Disasters User
+    clientRoles:
+      jupyterhub-disasters:
+        - CPU:XS
+        - CPU:S
+        - CPU:M
+        - CPU:L
+        - CPU:XL
+        - CPU:XXL
+        - CPU:XXL
+        - CPU:XXXL
+
+  - name: JupyterHub Disasters GPU User
+    clientRoles:
+      jupyterhub-disasters:
+        - GPU:T4
 
   - name: Tenants
     subGroups:
