@@ -343,14 +343,14 @@ authenticatorConfig:
       defaultProvider: cilogon
 
 users:
-  - username: service-account-airflow-stac-etl
+  - username: service-account-disasters-airflow-stac-etl
     emailVerified: true
     enabled: true
     serviceAccountClientId: disasters-airflow-stac-etl
     clientRoles:
       disasters-stac:
       - Admin
-  - username: service-account-airflow-ingest-api-etl
+  - username: service-account-disasters-airflow-ingest-api-etl
     emailVerified: true
     enabled: true
     serviceAccountClientId: disasters-airflow-ingest-api-etl

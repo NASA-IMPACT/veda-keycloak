@@ -350,14 +350,14 @@ authenticatorConfig:
       defaultProvider: cilogon
 
 users:
-  - username: service-account-airflow-stac-etl
+  - username: service-account-eic-airflow-stac-etl
     emailVerified: true
     enabled: true
     serviceAccountClientId: eic-airflow-stac-etl
     clientRoles:
       eic-stac:
       - Admin
-  - username: service-account-airflow-ingest-api-etl
+  - username: service-account-eic-airflow-ingest-api-etl
     emailVerified: true
     enabled: true
     serviceAccountClientId: eic-airflow-ingest-api-etl
