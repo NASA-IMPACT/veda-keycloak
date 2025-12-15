@@ -13,7 +13,7 @@ clients:
     redirectUris:
       - https://staging.earth.gov/api/stac/*
     webOrigins:
-      - https://staging.earth.gov/api/stac
+      - https://staging.earth.gov
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -59,7 +59,7 @@ clients:
     redirectUris:
       - https://staging.earth.gov/api/ingest/*
     webOrigins:
-      - https://staging.earth.gov/api/ingest
+      - https://staging.earth.gov
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
