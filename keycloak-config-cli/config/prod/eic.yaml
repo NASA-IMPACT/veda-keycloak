@@ -13,7 +13,7 @@ clients:
     redirectUris:
       - https://staging.earth.gov/api/stac/*
     webOrigins:
-      - https://staging.earth.gov/api/stac
+      - https://staging.earth.gov
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -59,7 +59,7 @@ clients:
     redirectUris:
       - https://staging.earth.gov/api/ingest/*
     webOrigins:
-      - https://staging.earth.gov/api/ingest
+      - https://staging.earth.gov
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -280,20 +280,84 @@ identityProviderMappers:
       claim: "profile.family_name"
       user.attribute: "lastName"
 
+# Login Flow Configuration
+browserFlow: Browser without Password
+authenticationFlows:
+  - alias: Browser without Password
+    description: browser based authentication without username password form
+    providerId: basic-flow
+    topLevel: true
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: auth-cookie
+        authenticatorFlow: false
+        requirement: ALTERNATIVE
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-spnego
+        authenticatorFlow: false
+        requirement: DISABLED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: ALTERNATIVE
+        priority: 30
+        autheticatorFlow: true
+        flowAlias: Browser without Password forms
+        userSetupAllowed: false
+  - alias: Browser without Password forms
+    description: Username, password, otp and other auth forms.
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticatorConfig: cilogon
+        authenticator: identity-provider-redirector
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: CONDITIONAL
+        priority: 21
+        autheticatorFlow: true
+        flowAlias: Browser without Password Browser - Conditional OTP
+        userSetupAllowed: false
+  - alias: Browser without Password Browser - Conditional OTP
+    description: Flow to determine if the OTP is required for the authentication
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: conditional-user-configured
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-otp-form
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
 authenticatorConfig:
   - alias: cilogon
     config:
       defaultProvider: cilogon
 
 users:
-  - username: service-account-airflow-stac-etl
+  - username: service-account-eic-airflow-stac-etl
     emailVerified: true
     enabled: true
     serviceAccountClientId: eic-airflow-stac-etl
     clientRoles:
       eic-stac:
       - Admin
-  - username: service-account-airflow-ingest-api-etl
+  - username: service-account-eic-airflow-ingest-api-etl
     emailVerified: true
     enabled: true
     serviceAccountClientId: eic-airflow-ingest-api-etl
