@@ -279,7 +279,7 @@ groups:
   
   - name: No Basic Role
     clientRoles:
-      disaster-stac:
+      disasters-stac:
         - Viewer
       disasters-ingest-api:
         - No Basic Role
