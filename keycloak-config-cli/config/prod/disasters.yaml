@@ -159,6 +159,8 @@ roles:
     disasters-ingest-ui:
       - name: Editor
         description: Can initiate and update dataset ingests
+      - name: Limited Access
+        description: Has limited access to the ingest UI features
 
 clientScopeMappings:
   disasters-stac:
@@ -216,6 +218,9 @@ clientScopeMappings:
     - clientScope: dataset:update
       roles:
         - Editor
+    - clientScope: dataset:limited-access
+      roles:
+        - Limited Access
 
 clientScopes:
   - name: stac:item:create
@@ -241,6 +246,9 @@ clientScopes:
     protocol: openid-connect
   - name: dataset:update
     description: Update existing datasets
+    protocol: openid-connect
+  - name: dataset:limited-access
+    description: Limited access to the ingest UI features
     protocol: openid-connect
 
 groups:
@@ -276,7 +284,7 @@ groups:
       disasters-ingest-api:
         - No Basic Role
       disasters-ingest-ui:
-        - Editor
+        - Limited Access
 
   - name: Tenants
     subGroups:
