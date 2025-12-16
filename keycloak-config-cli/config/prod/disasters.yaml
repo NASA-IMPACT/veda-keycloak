@@ -147,14 +147,20 @@ roles:
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: Viewer
+        description: Can only view STAC collections and items
     disasters-ingest-api:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: No Basic Role
+        description: Has no permissions
     disasters-ingest-ui:
       - name: Editor
         description: Can initiate and update dataset ingests
+      - name: Limited Access
+        description: Has limited access to the ingest UI features
 
 clientScopeMappings:
   disasters-stac:
@@ -212,6 +218,9 @@ clientScopeMappings:
     - clientScope: dataset:update
       roles:
         - Editor
+    - clientScope: dataset:limited-access
+      roles:
+        - Limited Access
 
 clientScopes:
   - name: stac:item:create
@@ -237,6 +246,9 @@ clientScopes:
     protocol: openid-connect
   - name: dataset:update
     description: Update existing datasets
+    protocol: openid-connect
+  - name: dataset:limited-access
+    description: Limited access to the ingest UI features
     protocol: openid-connect
 
 groups:
@@ -264,8 +276,15 @@ groups:
         - Editor
       disasters-ingest-api:
         - Editor
+  
+  - name: No Basic Role
+    clientRoles:
+      disaster-stac:
+        - Viewer
+      disasters-ingest-api:
+        - No Basic Role
       disasters-ingest-ui:
-        - Editor
+        - Limited Access
 
   - name: Tenants
     subGroups:
@@ -419,3 +438,5 @@ users:
       disasters-ingest-api:
       - Admin
 
+defaultGroups:
+  - "/No Basic Role"
