@@ -99,10 +99,10 @@ identityProviders:
     authenticateByDefault: false
     linkOnly: false
     config:
-      userInfoUrl: "https://uat.urs.earthdata.nasa.gov/oauth/userInfo"
-      tokenUrl: "https://uat.urs.earthdata.nasa.gov/oauth/token"
-      issuer: "https://uat.urs.earthdata.nasa.gov"
-      authorizationUrl: "https://uat.urs.earthdata.nasa.gov/oauth/authorize"
+      userInfoUrl: "https://urs.earthdata.nasa.gov/oauth/userInfo"
+      tokenUrl: "https://urs.earthdata.nasa.gov/oauth/token"
+      issuer: "https://urs.earthdata.nasa.gov"
+      authorizationUrl: "https://urs.earthdata.nasa.gov/oauth/authorize"
       validateSignature: "false"
       useJwksUrl: "true"
       pkceEnabled: "true"
