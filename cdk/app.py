@@ -110,6 +110,7 @@ SesRelayStack(
     app,
     f"veda-ses-relay-{settings.stage}",
     vpc_id=settings.vpc_id,
+    ses_relay_app_dir=settings.ses_relay_app_dir.as_posix(),
 )
 
 app.synth()

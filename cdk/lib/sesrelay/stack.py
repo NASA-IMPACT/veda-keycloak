@@ -21,6 +21,7 @@ class SesRelayStack(Stack):
         construct_id: str,
         *,
         vpc_id: Optional[str] = None,
+        ses_relay_app_dir: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -50,7 +51,7 @@ class SesRelayStack(Stack):
 
         task_image_options=ecs_patterns.NetworkLoadBalancedTaskImageOptions(
             image=ecs.ContainerImage.from_asset(
-                    directory=".",
+                    directory=ses_relay_app_dir,
                     platform=ecr_assets.Platform.LINUX_AMD64,
                 ),
             container_name="SesRelayContainer",
