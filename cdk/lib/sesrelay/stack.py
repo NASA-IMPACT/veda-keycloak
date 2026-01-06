@@ -9,6 +9,7 @@ from aws_cdk import (
     aws_ecs_patterns as ecs_patterns,
     aws_elasticloadbalancingv2 as elbv2,
     aws_iam as iam,
+    aws_ecr_assets as ecr_assets,
     CfnOutput,
 )
 from constructs import Construct
@@ -48,8 +49,10 @@ class SesRelayStack(Stack):
         )
 
         task_image_options=ecs_patterns.NetworkLoadBalancedTaskImageOptions(
-            image=ecs.ContainerImage.from_registry("loopingz/smtp-relay:v2.2.5"),
-            command=["configs/aws-smtp-relay.jsonc"],
+            image=ecs.ContainerImage.from_asset(
+                    directory=".",
+                    platform=ecr_assets.Platform.LINUX_AMD64,
+                ),
             container_name="SesRelayContainer",
             container_port=25,
             task_role=task_role,
