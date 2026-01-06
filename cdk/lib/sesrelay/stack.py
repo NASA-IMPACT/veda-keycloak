@@ -100,4 +100,4 @@ class SesRelayStack(Stack):
             description="Allow from NLB Security Group"
         )
 
-        CfnOutput(self, "NLB DNS", key="NLB DNS", value=nlb.load_balancer_dns_name)
+        CfnOutput(self, "NLBDNS", key="NLBDNS", value=nlb.load_balancer_dns_name)
