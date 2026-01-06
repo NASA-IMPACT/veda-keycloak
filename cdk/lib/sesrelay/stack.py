@@ -25,7 +25,7 @@ class SesRelayStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
     
-        vpc = ec2.Vpc.from_lookup(
+        vpc = (
             ec2.Vpc.from_lookup(self, "Vpc", vpc_id=vpc_id)
             if vpc_id
             else ec2.Vpc(self, "vpc")
@@ -63,7 +63,7 @@ class SesRelayStack(Stack):
     		allow_all_outbound=True,
 		)
 
-        cidr = vpc.vpc_cidr_block
+        cidr = vpc.vpc_cidr_block # Allow access from the VPC
         nlb_sg.add_ingress_rule(
             peer = ec2.Peer.ipv4(cidr),
             connection = ec2.Port.tcp(25),
