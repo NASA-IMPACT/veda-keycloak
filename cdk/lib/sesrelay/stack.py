@@ -1,4 +1,4 @@
-# Architecture inspired by https://github.com/aws-samples/fargate-ses-relay
+# Architecture adapted from https://github.com/aws-samples/fargate-ses-relay
 
 from typing import Optional
 
@@ -90,7 +90,7 @@ class SesRelayStack(Stack):
             memory_limit_mib=2048,
             cpu=1024,
             listener_port=25,
-            load_balancer=nlb.from_network_load_balancer_attributes(scope=self, id='NLB',load_balancer_arn=nlb.load_balancer_arn, vpc=vpc),
+            load_balancer=nlb,
         )
 
         service.service.connections.security_groups[0].add_ingress_rule(
