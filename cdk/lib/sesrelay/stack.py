@@ -1,3 +1,5 @@
+# Architecture inspired by https://github.com/aws-samples/fargate-ses-relay
+
 from typing import Optional
 
 from aws_cdk import (
@@ -7,6 +9,7 @@ from aws_cdk import (
     aws_ecs_patterns as ecs_patterns,
     aws_elasticloadbalancingv2 as elbv2,
     aws_iam as iam,
+    CfnOutput,
 )
 from constructs import Construct
 
@@ -85,8 +88,7 @@ class SesRelayStack(Stack):
             cpu=1024,
             listener_port=25,
             load_balancer=nlb.from_network_load_balancer_attributes(scope=self, id='NLB',load_balancer_arn=nlb.load_balancer_arn, vpc=vpc),
-
-
+        )
 
         service.service.connections.security_groups[0].add_ingress_rule(
             peer = nlb_sg,
