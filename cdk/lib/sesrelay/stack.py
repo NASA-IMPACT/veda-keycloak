@@ -38,6 +38,7 @@ class SesRelayStack(Stack):
 
         task_role = iam.Role(self, "TaskRole",
             role_name="SesRelayTaskRole",
+            assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
             inline_policies={"SesRelayPolicy": iam.PolicyDocument(
                 statements=[iam.PolicyStatement(
                     actions=["ses:SendRawEmail","ses:SendEmail"],
