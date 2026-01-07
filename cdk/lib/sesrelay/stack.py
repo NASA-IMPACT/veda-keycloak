@@ -3,7 +3,7 @@
 from typing import Optional
 
 from aws_cdk import (
-    Stack,
+    NestedStack,
     aws_ec2 as ec2,
     aws_ecs as ecs,
     aws_ecs_patterns as ecs_patterns,
@@ -14,27 +14,21 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-class SesRelayStack(Stack):
+class SesRelayStack(NestedStack):
     def __init__(
         self,
         scope: Construct,
         construct_id: str,
         *,
-        vpc_id: Optional[str] = None,
+        vpc: ec2.IVpc,
         ses_relay_app_dir: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
     
-        vpc = (
-            ec2.Vpc.from_lookup(self, "Vpc", vpc_id=vpc_id)
-            if vpc_id
-            else ec2.Vpc(self, "vpc")
-        )
-
         cluster = ecs.Cluster(self, "Cluster",
-            cluster_name="ses-relay",
+            cluster_name="veda-keycloak-ses-relay",
             vpc=vpc,
         )
 
@@ -76,7 +70,7 @@ class SesRelayStack(Stack):
 
         nlb = elbv2.NetworkLoadBalancer(
 			scope=self,
-			id='FGNLB',
+			id='FG-NLB',
 			vpc=vpc,
 			security_groups=[nlb_sg],
 			internet_facing=False,
@@ -84,7 +78,7 @@ class SesRelayStack(Stack):
 
         service = ecs_patterns.NetworkLoadBalancedFargateService(
             self, "FargateService",
-            service_name="ses-relay",
+            service_name="veda-keycloak-ses-relay",
             cluster=cluster,
             task_image_options=task_image_options,
             desired_count=1,

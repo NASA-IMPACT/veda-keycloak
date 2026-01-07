@@ -9,7 +9,6 @@ from aws_cdk import (
 )
 
 from lib.keycloak import KeycloakStack
-from lib.sesrelay import SesRelayStack
 from lib.utils import get_oauth_secrets, get_private_client_ids, get_send_email_addresses, get_application_role_arns
 from lib.settings import Settings
 
@@ -89,6 +88,7 @@ KeycloakStack(
     keycloak_app_dir=settings.keycloak_app_dir.as_posix(),
     keycloak_config_cli_version=settings.keycloak_config_cli_version,
     keycloak_config_cli_app_dir=settings.keycloak_config_cli_app_dir.as_posix(),
+    ses_relay_app_dir=settings.ses_relay_app_dir.as_posix(),
     keycloak_send_email_addresses=send_email_addresses,
     idp_oauth_client_secrets=idp_oauth_client_secrets,
     private_oauth_clients=private_oauth_clients,
@@ -106,11 +106,11 @@ KeycloakStack(
     permissions_boundary=permissions_boundary,
 )
 
-SesRelayStack(
-    app,
-    f"veda-ses-relay-{settings.stage}",
-    vpc_id=settings.vpc_id,
-    ses_relay_app_dir=settings.ses_relay_app_dir.as_posix(),
-)
+# ses_relay_construct = SesRelayConstruct(
+#     keycloak_stack,
+#     f"veda-keycloak-ses-relay-{settings.stage}",
+#     vpc=keycloak_stack.vpc,
+#     ses_relay_app_dir=settings.ses_relay_app_dir.as_posix(),
+# )
 
 app.synth()

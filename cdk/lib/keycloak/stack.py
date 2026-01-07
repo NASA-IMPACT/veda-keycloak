@@ -10,6 +10,7 @@ from .database import KeycloakDatabase
 from .service import KeycloakService
 from .config import KeycloakConfig
 from .url import KeycloakUrl
+from lib.sesrelay import SesRelayStack
 
 
 class KeycloakStack(Stack):
@@ -27,6 +28,7 @@ class KeycloakStack(Stack):
         keycloak_app_dir: str,
         keycloak_config_cli_version: str,
         keycloak_config_cli_app_dir: str,
+        ses_relay_app_dir: str,
         idp_oauth_client_secrets: dict,
         private_oauth_clients: list,
         application_role_arns: dict[str, list[str]],
@@ -38,7 +40,7 @@ class KeycloakStack(Stack):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        vpc = (
+        self.vpc = (
             ec2.Vpc.from_lookup(self, "Vpc", vpc_id=vpc_id)
             if vpc_id
             else ec2.Vpc(self, "vpc")
@@ -47,7 +49,7 @@ class KeycloakStack(Stack):
         kc_db = KeycloakDatabase(
             self,
             "database",
-            vpc=vpc,
+            vpc=self.vpc,
             database_name="keycloak",
             is_production=is_production,
             snapshot_identifier=rds_snapshot_identifier,
@@ -56,7 +58,7 @@ class KeycloakStack(Stack):
         kc_service = KeycloakService(
             self,
             "service",
-            vpc=vpc,
+            vpc=self.vpc,
             database_name=kc_db.database_name,
             database_instance=kc_db.database,
             app_dir=keycloak_app_dir,
@@ -76,7 +78,7 @@ class KeycloakStack(Stack):
                 for sg in kc_service.alb_service.service.connections.security_groups
             ],
             hostname=hostname,
-            subnet_ids=[subnet.subnet_id for subnet in vpc.public_subnets],
+            subnet_ids=[subnet.subnet_id for subnet in self.vpc.public_subnets],
             admin_secret=kc_service.admin_secret,
             app_dir=keycloak_config_cli_app_dir,
             idp_oauth_client_secrets=idp_oauth_client_secrets,
@@ -84,6 +86,13 @@ class KeycloakStack(Stack):
             application_role_arns=application_role_arns,
             version=keycloak_config_cli_version,
             stage=stage,
+        )
+
+        ses_relay_stack = SesRelayStack(
+            self,
+            "ses-relay",
+            vpc=self.vpc,
+            ses_relay_app_dir=ses_relay_app_dir,
         )
 
         if configure_route53:
