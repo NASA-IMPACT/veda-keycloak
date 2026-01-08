@@ -49,7 +49,7 @@ class SesRelayStack(NestedStack):
                     platform=ecr_assets.Platform.LINUX_AMD64,
                 ),
             container_name="SesRelayContainer",
-            container_port=25,
+            container_port=10025,
             task_role=task_role,
         )
 
@@ -64,7 +64,7 @@ class SesRelayStack(NestedStack):
         cidr = vpc.vpc_cidr_block # Allow access from the VPC
         nlb_sg.add_ingress_rule(
             peer = ec2.Peer.ipv4(cidr),
-            connection = ec2.Port.tcp(25),
+            connection = ec2.Port.tcp(10025),
             description="Allow from " + cidr
         )
 
@@ -84,13 +84,13 @@ class SesRelayStack(NestedStack):
             desired_count=1,
             memory_limit_mib=2048,
             cpu=1024,
-            listener_port=25,
+            listener_port=10025,
             load_balancer=nlb,
         )
 
         service.service.connections.security_groups[0].add_ingress_rule(
             peer = nlb_sg,
-            connection = ec2.Port.tcp(25),
+            connection = ec2.Port.tcp(10025),
             description="Allow from NLB Security Group"
         )
 
