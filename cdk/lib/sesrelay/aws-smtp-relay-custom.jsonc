@@ -13,7 +13,7 @@
         "outputs": [
           {
             "type": "aws",
-            "ses": {},
+            "ses": true,
             "sendRawEmailOptions": {
               "SourceArn": "arn:aws:ses:us-west-2:444055461661:identity/openveda.cloud"
             }
