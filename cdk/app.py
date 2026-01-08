@@ -106,11 +106,4 @@ KeycloakStack(
     permissions_boundary=permissions_boundary,
 )
 
-# ses_relay_construct = SesRelayConstruct(
-#     keycloak_stack,
-#     f"veda-keycloak-ses-relay-{settings.stage}",
-#     vpc=keycloak_stack.vpc,
-#     ses_relay_app_dir=settings.ses_relay_app_dir.as_posix(),
-# )
-
 app.synth()

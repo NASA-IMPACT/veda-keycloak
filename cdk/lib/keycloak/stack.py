@@ -90,7 +90,7 @@ class KeycloakStack(Stack):
 
         ses_relay_stack = SesRelayStack(
             self,
-            "ses-relay",
+            "veda-keycloak-ses-relay",
             vpc=self.vpc,
             ses_relay_app_dir=ses_relay_app_dir,
         )
