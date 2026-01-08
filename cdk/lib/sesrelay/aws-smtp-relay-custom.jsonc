@@ -15,7 +15,9 @@
             "type": "aws",
             "ses": true,
             "sendRawEmailOptions": {
-              "SourceArn": "arn:aws:ses:us-west-2:444055461661:identity/openveda.cloud"
+              "SourceArn": "arn:aws:ses:us-west-2:444055461661:identity/openveda.cloud",
+              "FromArn": "arn:aws:ses:us-west-2:444055461661:identity/openveda.cloud",
+              "ReturnPathArn": "arn:aws:ses:us-west-2:444055461661:identity/openveda.cloud"
             }
           }
         ]
