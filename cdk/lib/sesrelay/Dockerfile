@@ -1,3 +1,5 @@
 FROM loopingz/smtp-relay:v2.2.5
 
-CMD ["configs/aws-smtp-relay.jsonc"]
+COPY aws-smtp-relay-custom.jsonc configs/aws-smtp-relay-custom.jsonc
+
+CMD ["configs/aws-smtp-relay-custom.jsonc"]
