@@ -50,8 +50,12 @@ clients:
     attributes: {}
     redirectUris:
       - https://dev.openveda.cloud/*
+      - https://sit.openveda.cloud/*
+      - https://staging.openveda.cloud/*
     webOrigins:
       - https://dev.openveda.cloud
+      - https://sit.openveda.cloud
+      - https://staging.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -151,8 +155,12 @@ clients:
     }
     redirectUris:
       - https://dev.openveda.cloud/*
+      - https://sit.openveda.cloud/*
+      - https://staging.openveda.cloud/*
     webOrigins:
       - https://dev.openveda.cloud
+      - https://sit.openveda.cloud
+      - https://staging.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
