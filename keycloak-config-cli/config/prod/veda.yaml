@@ -50,11 +50,9 @@ clients:
     attributes: {}
     redirectUris:
       - https://test.openveda.cloud/*
-      - https://staging.openveda.cloud/*
       - https://openveda.cloud/*
     webOrigins:
       - https://test.openveda.cloud
-      - https://staging.openveda.cloud
       - https://openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
@@ -479,7 +477,7 @@ groups:
         - Editor
       ingest-ui:
         - Editor
-  
+
   - name: No Basic Role
     clientRoles:
       grafana:
