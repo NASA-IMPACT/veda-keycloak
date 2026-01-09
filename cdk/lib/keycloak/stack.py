@@ -10,6 +10,7 @@ from .database import KeycloakDatabase
 from .service import KeycloakService
 from .config import KeycloakConfig
 from .url import KeycloakUrl
+from lib.sesrelay import SesRelayStack
 
 
 class KeycloakStack(Stack):
@@ -27,6 +28,7 @@ class KeycloakStack(Stack):
         keycloak_app_dir: str,
         keycloak_config_cli_version: str,
         keycloak_config_cli_app_dir: str,
+        ses_relay_app_dir: str,
         idp_oauth_client_secrets: dict,
         private_oauth_clients: list,
         application_role_arns: dict[str, list[str]],
@@ -84,6 +86,13 @@ class KeycloakStack(Stack):
             application_role_arns=application_role_arns,
             version=keycloak_config_cli_version,
             stage=stage,
+        )
+
+        ses_relay_stack = SesRelayStack(
+            self,
+            "ses-relay",
+            vpc=vpc,
+            ses_relay_app_dir=ses_relay_app_dir,
         )
 
         if configure_route53:

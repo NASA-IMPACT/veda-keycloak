@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     stage: str = "dev"
     keycloak_version: str = "26.0.5"
     keycloak_app_dir: DirectoryPath = DirectoryPath("keycloak")
+    ses_relay_app_dir: DirectoryPath = DirectoryPath("cdk/lib/sesrelay")
     keycloak_config_cli_version: str = "latest-26"
     keycloak_config_cli_app_dir: DirectoryPath = DirectoryPath("keycloak-config-cli")
     rds_snapshot_identifier: Optional[str] = Field(

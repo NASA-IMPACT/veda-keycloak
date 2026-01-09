@@ -285,6 +285,17 @@ Beyond configuration, customization of Keycloak (e.g. a custom Identity Provider
 > [!TIP]
 > See the theme section in the [Server Developer Guide](https://www.keycloak.org/docs/latest/server_development/#_themes) for more details about how to create custom themes.
 
+### SES Relay
+The AWS account that includes the SES `openveda.cloud` identity does not permit creating SMTP credentials for AWS SES for security reasons. However, Keycloak expects to talk to an SMTP server for sending transactional emails such as verification, password reset, and notification messages.
+
+To bridge this gap, we deploy a small SMTP relay service as an ECS Fargate service into the same VPC as Keycloak:
+
+- **Keycloak → SMTP Relay**: Keycloak is configured to use the relay’s internal NLB endpoint on port `10025` as its SMTP server without SMTP authentication.
+- **SMTP Relay → SES**: The relay authenticates to AWS using IAM (task role) and delivers messages to SES using the SES API (for example, `ses:SendEmail`, `ses:SendRawEmail`), avoiding the need for SES SMTP credentials.
+- **Network Isolation**: The Network Load Balancer for the relay is internal-only; access is restricted to the VPC CIDR (services inside the VPC only).
+
+The relay itself is based on [`loopingz/smtp-relay`](https://github.com/loopingz/smtp-relay/) project, configured to accept SMTP from Keycloak and forward mail to AWS SES.
+
 ## Useful commands
 
 - `npm run build` compile typescript to js
