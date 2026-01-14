@@ -1,7 +1,7 @@
 ---
 enabled: true
 realm: maap
-displayName: Applications
+displayName: MAAP
 displayNameHtml: MAAP 
 
 clients:
@@ -141,3 +141,150 @@ identityProviderMappers:
       syncMode: "IMPORT"
       claim: "last_name"
       user.attribute: "lastName"
+
+eventsListeners:
+  - jboss-logging
+  - email-on-user-creation
+
+org.keycloak.userprofile.UserProfileProvider:
+  - config:
+      kc.user.profile.config:
+        - >
+          {
+            "attributes": [
+              {
+                "name": "username",
+                "displayName": "${username}",
+                "validations": {
+                  "length": { "min": 3, "max": 255 },
+                  "username-prohibited-characters": {},
+                  "up-username-not-idn-homograph": {}
+                },
+                "permissions": {
+                  "view": [ "admin", "user" ],
+                  "edit": [ "admin", "user" ]
+                },
+                "multivalued": false
+              },
+              {
+                "name": "email",
+                "displayName": "${email}",
+                "validations": {
+                  "email": {},
+                  "length": { "max": 255 }
+                },
+                "required": {
+                  "roles": [ "user" ]
+                },
+                "permissions": {
+                  "view": [ "admin", "user" ],
+                  "edit": [ "admin", "user" ]
+                },
+                "multivalued": false
+              },
+              {
+                "name": "firstName",
+                "displayName": "${firstName}",
+                "validations": {
+                  "length": { "max": 255 },
+                  "person-name-prohibited-characters": {}
+                },
+                "required": {
+                  "roles": [ "user" ]
+                },
+                "permissions": {
+                  "view": [ "admin", "user" ],
+                  "edit": [ "admin", "user" ]
+                },
+                "multivalued": false
+              },
+              {
+                "name": "lastName",
+                "displayName": "${lastName}",
+                "validations": {
+                  "length": { "max": 255 },
+                  "person-name-prohibited-characters": {}
+                },
+                "required": {
+                  "roles": [ "user" ]
+                },
+                "permissions": {
+                  "view": [ "admin", "user" ],
+                  "edit": [ "admin", "user" ]
+                },
+                "multivalued": false
+              },
+              {
+                "name": "institution",
+                "displayName": "Institution",
+                "validations": {},
+                "annotations": {
+                  "inputTypePlaceholder": "Institution name"
+                },
+                "permissions": {
+                  "view": [ "admin", "user" ],
+                  "edit": [ "admin", "user" ]
+                },
+                "group": "user-metadata",
+                "multivalued": false
+              },
+              {
+                "name": "project",
+                "displayName": "Project",
+                "validations": {},
+                "annotations": {},
+                "permissions": {
+                  "view": [ "admin", "user" ],
+                  "edit": [ "admin", "user" ]
+                },
+                "group": "user-metadata",
+                "multivalued": false
+              },
+              {
+                "name": "sponsor",
+                "displayName": "Sponsor Name",
+                "validations": {},
+                "annotations": {},
+                "permissions": {
+                  "view": [ "admin", "user" ],
+                  "edit": [ "admin", "user" ]
+                },
+                "group": "user-metadata",
+                "multivalued": false
+              },
+              {
+                "name": "funding",
+                "displayName": "Funding Source",
+                "validations": {},
+                "annotations": {},
+                "permissions": {
+                  "view": [ "admin", "user" ],
+                  "edit": [ "admin", "user" ]
+                },
+                "group": "user-metadata",
+                "multivalued": false
+              },
+              {
+                "name": "additional_details",
+                "displayName": "Additional Details",
+                "validations": {},
+                "annotations": {
+                  "inputTypeRows": "5",
+                  "inputType": "textarea"
+                },
+                "permissions": {
+                  "view": [ "admin", "user" ],
+                  "edit": [ "admin", "user" ]
+                },
+                "group": "user-metadata",
+                "multivalued": false
+              }
+            ],
+            "groups": [
+              {
+                "name": "user-metadata",
+                "displayHeader": "User metadata",
+                "displayDescription": "Attributes, which refer to user metadata"
+              }
+            ]
+          }
