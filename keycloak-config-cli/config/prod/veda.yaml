@@ -50,11 +50,9 @@ clients:
     attributes: {}
     redirectUris:
       - https://test.openveda.cloud/*
-      - https://staging.openveda.cloud/*
       - https://openveda.cloud/*
     webOrigins:
       - https://test.openveda.cloud
-      - https://staging.openveda.cloud
       - https://openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
@@ -316,16 +314,22 @@ roles:
         description: Can create, edit, and delete dashboards and data sources in an organization but cannot modify organization or user settings.
       - name: Viewer
         description: Can only view dashboards and panels without the ability to create or modify content.
+      - name: No Basic Role
+        description: Has no permissions
     stac:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: Viewer
+        description: Can only view STAC collections and items
     ingest-api:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: No Basic Role
+        description: Has no permissions
     jupyterhub-disasters:
       - name: Admin
         description: Can use the JupyterHub Admin Panel
@@ -348,6 +352,8 @@ roles:
     ingest-ui:
       - name: Editor
         description: Can initiate and update dataset ingests
+      - name: Limited Access
+        description: Has limited access to the ingest UI features
 
 clientScopeMappings:
   stac:
@@ -405,6 +411,9 @@ clientScopeMappings:
     - clientScope: dataset:update
       roles:
         - Editor
+    - clientScope: dataset:limited-access
+      roles:
+        - Limited Access
 
 clientScopes:
   - name: stac:item:create
@@ -430,6 +439,9 @@ clientScopes:
     protocol: openid-connect
   - name: dataset:update
     description: Update existing datasets
+    protocol: openid-connect
+  - name: dataset:limited-access
+    description: Limited access to the ingest UI features
     protocol: openid-connect
 
 groups:
@@ -465,6 +477,17 @@ groups:
         - Editor
       ingest-ui:
         - Editor
+
+  - name: No Basic Role
+    clientRoles:
+      grafana:
+        - No Basic Role
+      stac:
+        - Viewer
+      ingest-api:
+        - No Basic Role
+      ingest-ui:
+        - Limited Access
 
   - name: JupyterHub Disasters Admin
     clientRoles:
@@ -688,3 +711,5 @@ users:
       ingest-api:
       - Admin
 
+defaultGroups:
+  - "/No Basic Role"

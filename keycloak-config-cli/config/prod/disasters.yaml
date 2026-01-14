@@ -1,19 +1,21 @@
 ---
 enabled: true
-realm: ghgc
-displayName: Applications
-displayNameHtml: GHGC 
+realm: disasters
+displayName: Disasters
+displayNameHtml: disasters
 
 clients:
-  - clientId: ghgc-stac
-    name: GHGC STAC Catalog
-    rootUrl: https://dev.ghg.center/api/stac
+  - clientId: disasters-stac
+    name: Disasters STAC Catalog
+    rootUrl: https://disasters.openveda.cloud/api/stac
     publicClient: true
     attributes: {}
     redirectUris:
-      - https://dev.ghg.center/api/stac/*
+      - https://disasters.openveda.cloud/api/stac/*
+      - https://dev.disasters.openveda.cloud/api/stac/*
     webOrigins:
-      - https://dev.ghg.center/api/stac
+      - https://disasters.openveda.cloud
+      - https://dev.disasters.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -30,9 +32,9 @@ clients:
       - stac:collection:update
       - stac:collection:delete
 
-  - clientId: ghgc-airflow-stac-etl
-    name: GHGC Airflow STAC ETL
-    secret: $(env:GHGC_AIRFLOW_STAC_ETL_CLIENT_SECRET)
+  - clientId: disasters-airflow-stac-etl
+    name: Disasters Airflow STAC ETL
+    secret: $(env:DISASTERS_AIRFLOW_STAC_ETL_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     protocol: openid-connect
@@ -50,20 +52,18 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
-  
-  - clientId: ghgc-ingest-api
-    name: GHGC Ingest API
-    rootUrl: https://dev.ghg.center/api/ingest
+
+  - clientId: disasters-ingest-api
+    name: Disasters Ingest API
+    rootUrl: https://disasters.openveda.cloud/api/ingest
     publicClient: true
     attributes: {}
     redirectUris:
-      - https://dev.ghg.center/api/ingest/*
-      - https://staging.earth.gov/ghgcenter/api/ingest/*
-      - https://earth.gov/ghgcenter/api/ingest/*
+      - https://disasters.openveda.cloud/api/ingest/*
+      - https://dev.disasters.openveda.cloud/api/ingest/*
     webOrigins:
-      - https://dev.ghg.center
-      - https://staging.earth.gov
-      - https://earth.gov
+      - https://disasters.openveda.cloud
+      - https://dev.disasters.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -80,9 +80,9 @@ clients:
       - stac:collection:update
       - stac:collection:delete
 
-  - clientId: ghgc-airflow-ingest-api-etl
-    name: GHGC Airflow Ingest API ETL
-    secret: $(env:GHGC_AIRFLOW_INGEST_API_ETL_CLIENT_SECRET)
+  - clientId: disasters-airflow-ingest-api-etl
+    name: Disasters Airflow Ingest API ETL
+    secret: $(env:DISASTERS_AIRFLOW_INGEST_API_ETL_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     protocol: openid-connect
@@ -100,26 +100,70 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
-    
+
+  - clientId: disasters-ingest-ui
+    name: Ingest UI
+    rootUrl: https://ingest.disasters.openveda.cloud
+    secret: $(env:DISASTERS_INGEST_UI_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - https://ingest.disasters.openveda.cloud/*
+    webOrigins:
+      - https://ingest.disasters.openveda.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - dataset:create
+      - dataset:update
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "false"
+          usermodel.clientRoleMapping.clientId: ingest-ui
+          usermodel.clientRoleMapping.rolePrefix: ""
+
+
 roles:
   client:
-    ghgc-stac:
+    disasters-stac:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
       - name: Viewer
         description: Can only view STAC collections and items
-    ghgc-ingest-api:
+    disasters-ingest-api:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
       - name: No Basic Role
         description: Has no permissions
+    disasters-ingest-ui:
+      - name: Editor
+        description: Can initiate and update dataset ingests
+      - name: Limited Access
+        description: Has limited access to the ingest UI features
 
 clientScopeMappings:
-  ghgc-stac:
+  disasters-stac:
     - clientScope: stac:item:create
       roles:
         - Admin
@@ -143,7 +187,7 @@ clientScopeMappings:
     - clientScope: stac:collection:delete
       roles:
         - Admin
-  ghgc-ingest-api:
+  disasters-ingest-api:
     - clientScope: stac:item:create
       roles:
         - Admin
@@ -167,6 +211,16 @@ clientScopeMappings:
     - clientScope: stac:collection:delete
       roles:
         - Admin
+  disasters-ingest-ui:
+    - clientScope: dataset:create
+      roles:
+        - Editor
+    - clientScope: dataset:update
+      roles:
+        - Editor
+    - clientScope: dataset:limited-access
+      roles:
+        - Limited Access
 
 clientScopes:
   - name: stac:item:create
@@ -187,35 +241,67 @@ clientScopes:
   - name: stac:collection:delete
     description: Delete STAC collections
     protocol: openid-connect
+  - name: dataset:create
+    description: Ingest new datasets
+    protocol: openid-connect
+  - name: dataset:update
+    description: Update existing datasets
+    protocol: openid-connect
+  - name: dataset:limited-access
+    description: Limited access to the ingest UI features
+    protocol: openid-connect
 
 groups:
   - name: System Administrators
     clientRoles:
-      ghgc-stac:
+      disasters-stac:
         - Admin
-      ghgc-ingest-api:
+      disasters-ingest-api:
         - Admin
+      disasters-ingest-ui:
+        - Editor
 
   - name: Developers
     clientRoles:
-      ghgc-stac:
+      disasters-stac:
         - Admin
-      ghgc-ingest-api:
+      disasters-ingest-api:
         - Admin
+      disasters-ingest-ui:
+        - Editor
 
   - name: Data Editors
     clientRoles:
-      ghgc-stac:
+      disasters-stac:
         - Editor
-      ghgc-ingest-api:
+      disasters-ingest-api:
         - Editor
-
+  
   - name: No Basic Role
     clientRoles:
-      ghgc-stac:
+      disasters-stac:
         - Viewer
-      ghgc-ingest-api:
+      disasters-ingest-api:
         - No Basic Role
+      disasters-ingest-ui:
+        - Limited Access
+
+  - name: Tenants
+    subGroups:
+      - name: Disasters
+        subGroups:
+          - name: Admins
+            clientRoles:
+              disasters-stac:
+                - Admin
+              disasters-ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              disasters-stac:
+                - Editor
+              disasters-ingest-api:
+                - Editor
 
 identityProviders:
   # CILogon
@@ -267,25 +353,89 @@ identityProviderMappers:
       claim: "profile.family_name"
       user.attribute: "lastName"
 
+# Login Flow Configuration
+browserFlow: Browser without Password
+authenticationFlows:
+  - alias: Browser without Password
+    description: browser based authentication without username password form
+    providerId: basic-flow
+    topLevel: true
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: auth-cookie
+        authenticatorFlow: false
+        requirement: ALTERNATIVE
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-spnego
+        authenticatorFlow: false
+        requirement: DISABLED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: ALTERNATIVE
+        priority: 30
+        autheticatorFlow: true
+        flowAlias: Browser without Password forms
+        userSetupAllowed: false
+  - alias: Browser without Password forms
+    description: Username, password, otp and other auth forms.
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticatorConfig: cilogon
+        authenticator: identity-provider-redirector
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: CONDITIONAL
+        priority: 21
+        autheticatorFlow: true
+        flowAlias: Browser without Password Browser - Conditional OTP
+        userSetupAllowed: false
+  - alias: Browser without Password Browser - Conditional OTP
+    description: Flow to determine if the OTP is required for the authentication
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: conditional-user-configured
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-otp-form
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
 authenticatorConfig:
   - alias: cilogon
     config:
       defaultProvider: cilogon
 
 users:
-  - username: service-account-airflow-stac-etl
+  - username: service-account-disasters-airflow-stac-etl
     emailVerified: true
     enabled: true
-    serviceAccountClientId: ghgc-airflow-stac-etl
+    serviceAccountClientId: disasters-airflow-stac-etl
     clientRoles:
-      ghgc-stac:
+      disasters-stac:
       - Admin
-  - username: service-account-airflow-ingest-api-etl
+  - username: service-account-disasters-airflow-ingest-api-etl
     emailVerified: true
     enabled: true
-    serviceAccountClientId: ghgc-airflow-ingest-api-etl
+    serviceAccountClientId: disasters-airflow-ingest-api-etl
     clientRoles:
-      ghgc-ingest-api:
+      disasters-ingest-api:
       - Admin
 
 defaultGroups:

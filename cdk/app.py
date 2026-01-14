@@ -9,7 +9,7 @@ from aws_cdk import (
 )
 
 from lib.keycloak import KeycloakStack
-from lib.utils import get_oauth_secrets, get_private_client_ids, get_send_email_addresses
+from lib.utils import get_oauth_secrets, get_private_client_ids, get_send_email_addresses, get_application_role_arns
 from lib.settings import Settings
 
 logging.basicConfig(
@@ -53,6 +53,15 @@ if send_email_addresses:
 else:
     logging.warning("No send email addresses found in the environment.")
 
+application_role_arns = get_application_role_arns()
+if application_role_arns:
+    logging.info(
+        "Found application role ARNs in environment: %s",
+        ", ".join(f"{key}: {', '.join(arns)}" for key, arns in application_role_arns.items()),
+    )
+else:
+    logging.warning("No application role ARNs found in the environment.")
+
 app = App()
 
 # Optionally set a custom synthesizer if CDK_BOOTSTRAP_QUALIFIER is present
@@ -79,9 +88,11 @@ KeycloakStack(
     keycloak_app_dir=settings.keycloak_app_dir.as_posix(),
     keycloak_config_cli_version=settings.keycloak_config_cli_version,
     keycloak_config_cli_app_dir=settings.keycloak_config_cli_app_dir.as_posix(),
+    ses_relay_app_dir=settings.ses_relay_app_dir.as_posix(),
     keycloak_send_email_addresses=send_email_addresses,
     idp_oauth_client_secrets=idp_oauth_client_secrets,
     private_oauth_clients=private_oauth_clients,
+    application_role_arns=application_role_arns,
     configure_route53=settings.configure_route53,
     is_production=settings.is_production,
     stage=settings.stage,

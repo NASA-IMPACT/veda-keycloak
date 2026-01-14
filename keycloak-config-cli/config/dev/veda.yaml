@@ -50,8 +50,12 @@ clients:
     attributes: {}
     redirectUris:
       - https://dev.openveda.cloud/*
+      - https://sit.openveda.cloud/*
+      - https://staging.openveda.cloud/*
     webOrigins:
       - https://dev.openveda.cloud
+      - https://sit.openveda.cloud
+      - https://staging.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -151,8 +155,12 @@ clients:
     }
     redirectUris:
       - https://dev.openveda.cloud/*
+      - https://sit.openveda.cloud/*
+      - https://staging.openveda.cloud/*
     webOrigins:
       - https://dev.openveda.cloud
+      - https://sit.openveda.cloud
+      - https://staging.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -297,6 +305,382 @@ clients:
       - basic
       - email
 
+  - clientId: uma-resource-server
+    name: Authorization Resource Server
+    publicClient: false
+    secret: $(env:UMA_RESOURCE_SERVER_CLIENT_SECRET)
+    protocol: openid-connect
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    authorizationServicesEnabled: true
+    protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "true"
+    authorizationSettings:
+      allowRemoteResourceManagement: true
+      policyEnforcementMode: ENFORCING
+      resources:
+        - name: stac:collection:public:*
+          type: "stac-collection"
+          ownerManagedAccess: false
+          uris:
+            - "stac:collection:public:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:public:*
+          type: "stac-item"
+          ownerManagedAccess: false
+          uris:
+            - "stac:item:public:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:collection:faketenant1:*
+          type: "stac-collection"
+          ownerManagedAccess: false
+          uris:
+            - "stac:collection:faketenant1:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:faketenant1:*
+          type: "stac-item"
+          ownerManagedAccess: false
+          uris:
+            - "stac:item:faketenant1:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:collection:faketenant2:*
+          type: "stac-collection"
+          ownerManagedAccess: false
+          uris:
+            - "stac:collection:faketenant2:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:faketenant2:*
+          type: "stac-item"
+          ownerManagedAccess: false
+          uris:
+            - "stac:item:faketenant2:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:collection:faketenant3:*
+          type: "stac-collection"
+          ownerManagedAccess: false
+          uris:
+            - "stac:collection:faketenant3:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:faketenant3:*
+          type: "stac-item"
+          ownerManagedAccess: false
+          uris:
+            - "stac:item:faketenant3:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+      policies:
+        - name: Fake Tenant 1 Editors
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/FakeTenant1/Editors","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: Fake Tenant 1 Admins
+          description: Fake Tenant 1 Admins Group Policy
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/FakeTenant1/Admins","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: Fake Tenant 2 Editors
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/FakeTenant2/Editors","extendChildren":false}]'
+            groupsClaim: ""
+        - name: Fake Tenant 2 Admins
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/FakeTenant2/Admins","extendChildren":false}]'
+            groupsClaim: ""
+        - name: Fake Tenant 3 Editors
+          description: Fake Tenant 3 Editors Group Policy
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/FakeTenant3/Editors","extendChildren":false}]'
+            groupsClaim: ""
+        - name: Fake Tenant 3 Admins
+          description: Fake Tenant 3 Admins Group Policy
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/FakeTenant3/Admins","extendChildren":false}]'
+            groupsClaim: ""
+        - name: Developers
+          description: Developers  Group
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Developers","extendChildren":false}]'
+            groupsClaim: ""
+        - name: Data Editors
+          description: Data Editors
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Data Editors","extendChildren":false}]'
+            groupsClaim: ""
+        # Public Collections Permissions
+        - name: Public Collections Permission - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:public:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+        - name: Public Collections Permission - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:public:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+        - name: Public Collections Permission - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:public:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Fake Tenant 3 Admins","Fake Tenant 2 Admins", "Fake Tenant 1 Admins", "Developers"]'
+        # Public Items Permissions
+        - name: Public Items Permission - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:public:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+        - name: Public Items Permission - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:public:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+        - name: Public Items Permission - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:public:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Fake Tenant 3 Admins","Fake Tenant 2 Admins","Fake Tenant 1 Admins","Developers"]'
+        # Tenant1 - Collections Permissions
+        - name: Tenant1 - Collections - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:faketenant1:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Fake Tenant 1 Editors","Fake Tenant 1 Admins"]'
+        - name: Tenant1 - Collections - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:faketenant1:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+        - name: Tenant1 - Collections - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:faketenant1:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Fake Tenant 1 Admins"]'
+        # Tenant1 - Items Permissions
+        - name: Tenant1 - Items - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:faketenant1:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Fake Tenant 1 Editors","Fake Tenant 1 Admins"]'
+        - name: Tenant1 - Items - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:faketenant1:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+        - name: Tenant1 - Items - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:faketenant1:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Fake Tenant 1 Admins"]'
+        # Tenant2 - Collections Permissions
+        - name: Tenant2 - Collections - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:faketenant2:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Fake Tenant 2 Editors", "Fake Tenant 2 Admins"]'
+        - name: Tenant2 - Collections - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:faketenant2:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+        - name: Tenant2 - Collections - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:faketenant2:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Fake Tenant 2 Admins"]'
+        # Tenant2 - Items Permissions
+        - name: Tenant2 - Items - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:faketenant2:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Fake Tenant 2 Admins","Fake Tenant 2 Editors"]'
+        - name: Tenant2 - Items -  Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:faketenant2:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+        - name: Tenant2 - Items - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:faketenant1:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Fake Tenant 2 Admins"]'
+        # Tenant3 - Collections Permissions
+        - name: Tenant3 - Collections - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:faketenant3:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Fake Tenant 3 Admins","Fake Tenant 3 Editors"]'
+        - name: Tenant3 - Collections - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:faketenant3:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+        - name: Tenant3 - Collections - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:faketenant3:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Fake Tenant 3 Admins"]'
+        # Tenant3 - Items Permissions
+        - name: Tenant3 - Items - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:faketenant3:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Fake Tenant 3 Admins","Fake Tenant 3 Editors"]'
+        - name: Tenant3 - Items - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:faketenant3:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+        - name: Tenant3 - Items - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:faketenant3:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Fake Tenant 3 Admins"]'
+      scopes:
+        - name: create
+        - name: update
+        - name: delete
+        - name: read
+      decisionStrategy: UNANIMOUS
+
 roles:
   client:
     grafana:
@@ -308,16 +692,22 @@ roles:
         description: Can create, edit, and delete dashboards and data sources in an organization but cannot modify organization or user settings.
       - name: Viewer
         description: Can only view dashboards and panels without the ability to create or modify content.
+      - name: No Basic Role
+        description: Has no permissions
     stac:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: Viewer
+        description: Can only view STAC collections and items
     ingest-api:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
+      - name: No Basic Role
+        description: Has no permissions
     jupyterhub-disasters:
       - name: Admin
         description: Can use the JupyterHub Admin Panel
@@ -458,6 +848,15 @@ groups:
       ingest-ui:
         - Editor
 
+  - name: No Basic Role
+    clientRoles:
+      grafana:
+        - No Basic Role
+      stac:
+        - Viewer
+      ingest-api:
+        - No Basic Role
+
   - name: JupyterHub Disasters Admin
     clientRoles:
       jupyterhub-disasters:
@@ -482,7 +881,7 @@ groups:
 
   - name: Tenants
     subGroups:
-      - name: VEDA
+      - name: FakeTenant1
         subGroups:
           - name: Admins
             clientRoles:
@@ -503,7 +902,7 @@ groups:
               ingest-ui:
                 - Editor
 
-      - name: Disasters
+      - name: FakeTenant2
         subGroups:
           - name: Admins
             clientRoles:
@@ -524,7 +923,7 @@ groups:
               ingest-ui:
                 - Editor
 
-      - name: GHGC
+      - name: FakeTenant3
         subGroups:
           - name: Admins
             clientRoles:
@@ -595,70 +994,6 @@ identityProviderMappers:
       claim: "profile.family_name"
       user.attribute: "lastName"
 
-# Login Flow Configuration
-browserFlow: Browser without Password
-authenticationFlows:
-  - alias: Browser without Password
-    description: browser based authentication without username password form
-    providerId: basic-flow
-    topLevel: true
-    builtIn: false
-    authenticationExecutions:
-      - authenticator: auth-cookie
-        authenticatorFlow: false
-        requirement: ALTERNATIVE
-        priority: 10
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticator: auth-spnego
-        authenticatorFlow: false
-        requirement: DISABLED
-        priority: 20
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticatorFlow: true
-        requirement: ALTERNATIVE
-        priority: 30
-        autheticatorFlow: true
-        flowAlias: Browser without Password forms
-        userSetupAllowed: false
-  - alias: Browser without Password forms
-    description: Username, password, otp and other auth forms.
-    providerId: basic-flow
-    topLevel: false
-    builtIn: false
-    authenticationExecutions:
-      - authenticatorConfig: cilogon
-        authenticator: identity-provider-redirector
-        authenticatorFlow: false
-        requirement: REQUIRED
-        priority: 20
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticatorFlow: true
-        requirement: CONDITIONAL
-        priority: 21
-        autheticatorFlow: true
-        flowAlias: Browser without Password Browser - Conditional OTP
-        userSetupAllowed: false
-  - alias: Browser without Password Browser - Conditional OTP
-    description: Flow to determine if the OTP is required for the authentication
-    providerId: basic-flow
-    topLevel: false
-    builtIn: false
-    authenticationExecutions:
-      - authenticator: conditional-user-configured
-        authenticatorFlow: false
-        requirement: REQUIRED
-        priority: 10
-        autheticatorFlow: false
-        userSetupAllowed: false
-      - authenticator: auth-otp-form
-        authenticatorFlow: false
-        requirement: REQUIRED
-        priority: 20
-        autheticatorFlow: false
-        userSetupAllowed: false
 authenticatorConfig:
   - alias: cilogon
     config:
@@ -683,3 +1018,7 @@ users:
 eventsListeners:
   - jboss-logging
   - email-on-user-creation
+
+defaultGroups:
+  - "/No Basic Role"
+

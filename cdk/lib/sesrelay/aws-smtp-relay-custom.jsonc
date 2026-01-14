@@ -1,0 +1,32 @@
+// Replace my previous project aws-smtp-relay
+{
+    "$schema": "https://raw.githubusercontent.com/loopingz/smtp-relay/main/config.schema.json",
+    "flows": {
+      "localhost": {
+        "filters": [
+          // Allow any ip to use the SMTP
+          {
+            "type": "whitelist",
+            "ips": ["regexp:.*"]
+          }
+        ],
+        "outputs": [
+          {
+            "type": "aws",
+            "ses": true,
+            "sendRawEmailOptions": {
+              "SourceArn": "arn:aws:ses:us-west-2:444055461661:identity/openveda.cloud",
+              "FromArn": "arn:aws:ses:us-west-2:444055461661:identity/openveda.cloud",
+              "ReturnPathArn": "arn:aws:ses:us-west-2:444055461661:identity/openveda.cloud"
+            }
+          }
+        ]
+      }
+    },
+    "options": {
+      "disableReverseLookup": false,
+      "hideSTARTTLS": true,
+      // Do not require auth
+      "authOptional": true
+    }
+  }

@@ -63,6 +63,21 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
 
     return client_ids
 
+def get_application_role_arns() -> dict[str, list[str]]:
+    """
+    Extracts application role ARNs from environment variables starting with 'APPLICATION_ROLE_ARN_'.
+    Returns a dictionary mapping each client id to its app role ARN.
+    """
+    app_role_arn_prefix = "APPLICATION_ROLE_ARN_"
+    app_role_arns = {}
+    for key, value in os.environ.items(): # value can be comma separated list of ARNs
+        if key.startswith(app_role_arn_prefix):
+            env_suffix = key[len(app_role_arn_prefix) :]
+            client_id = env_suffix.lower().replace("_", "-") # example: convert AIRFLOW_INGEST_API to airflow-ingest-api
+            arns = [arn.strip() for arn in value.split(",") if arn.strip()]
+            app_role_arns[client_id] = arns
+    return app_role_arns
+
 def get_send_email_addresses() -> dict[str, str]:
     """
     Extracts send email addresses from environment variables starting with 'KEYCLOAK_SEND_EMAIL_ADDRESS_'.

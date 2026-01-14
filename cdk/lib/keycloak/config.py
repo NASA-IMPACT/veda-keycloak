@@ -7,7 +7,9 @@ from aws_cdk import (
     Stack,
     aws_ecr_assets as ecr_assets,
     aws_ecs as ecs,
+    aws_iam as iam,
     aws_lambda as _lambda,
+    aws_kms as kms,
     aws_secretsmanager as secretsmanager,
 )
 from constructs import Construct
@@ -31,23 +33,34 @@ class KeycloakConfig(Construct):
         app_dir: str,
         idp_oauth_client_secrets: dict[str, str],
         private_oauth_clients: list[dict[str, str]],
+        application_role_arns: dict[str, list[str]],
         version: str,
         stage: str,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        kms_key = kms.Key(
+            self,
+            "KeycloakKmsKey",
+            alias="veda-keycloak",
+            description="KMS key for encrypting Keycloak OAuth client secrets",
+            enable_key_rotation=True,
+        )
+
         # Create a client secret for each private OAuth client
         created_client_secrets = []
         for client_info in private_oauth_clients:
             client_slug = client_info["id"]
             realm = client_info["realm"]
+            application_role_arn = application_role_arns.get(client_slug)
             secret = secretsmanager.Secret(
                 self,
                 f"{client_slug}-client-secret",
                 # WARNING: Changing this construct (name, id, template) will cause new client
                 # secrets to be generated!
                 secret_name=f"{Stack.of(self).stack_name}-client-{client_slug}",
+                encryption_key=kms_key,
                 generate_secret_string=secretsmanager.SecretStringGenerator(
                     exclude_punctuation=True,
                     include_space=False,
@@ -64,6 +77,24 @@ class KeycloakConfig(Construct):
                     password_length=16,
                 ),
             )
+            if application_role_arn:
+                secret.add_to_resource_policy(
+                    iam.PolicyStatement(
+                        effect=iam.Effect.ALLOW,
+                        principals=[iam.ArnPrincipal(arn) for arn in application_role_arn],
+                        actions=["secretsmanager:GetSecretValue"],
+                        resources=["*"],
+                        
+                    )
+                )
+                kms_key.add_to_resource_policy(
+                    iam.PolicyStatement(
+                        effect=iam.Effect.ALLOW,
+                        principals=[iam.ArnPrincipal(arn) for arn in application_role_arn],
+                        actions=["kms:Decrypt", "kms:DescribeKey"],
+                        resources=["*"],
+                    )
+                )
             created_client_secrets.append((client_slug, secret))
 
         # Import the client secrets for each public clients

@@ -1,19 +1,19 @@
 ---
 enabled: true
-realm: ghgc
-displayName: Applications
-displayNameHtml: GHGC 
+realm: eic
+displayName: EIC
+displayNameHtml: eic
 
 clients:
-  - clientId: ghgc-stac
-    name: GHGC STAC Catalog
-    rootUrl: https://dev.ghg.center/api/stac
+  - clientId: eic-stac
+    name: EIC STAC Catalog
+    rootUrl: https://eic-staging.staging.earth.gov/api/stac
     publicClient: true
     attributes: {}
     redirectUris:
-      - https://dev.ghg.center/api/stac/*
+      - https://eic-staging.staging.earth.gov/api/stac/*
     webOrigins:
-      - https://dev.ghg.center/api/stac
+      - https://eic-staging.staging.earth.gov
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -30,9 +30,9 @@ clients:
       - stac:collection:update
       - stac:collection:delete
 
-  - clientId: ghgc-airflow-stac-etl
-    name: GHGC Airflow STAC ETL
-    secret: $(env:GHGC_AIRFLOW_STAC_ETL_CLIENT_SECRET)
+  - clientId: eic-airflow-stac-etl
+    name: EIC Airflow STAC ETL
+    secret: $(env:EIC_AIRFLOW_STAC_ETL_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     protocol: openid-connect
@@ -50,20 +50,16 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
-  
-  - clientId: ghgc-ingest-api
-    name: GHGC Ingest API
-    rootUrl: https://dev.ghg.center/api/ingest
+
+  - clientId: eic-ingest-api
+    name: EIC Ingest API
+    rootUrl: https://eic-staging.staging.earth.gov/api/ingest
     publicClient: true
     attributes: {}
     redirectUris:
-      - https://dev.ghg.center/api/ingest/*
-      - https://staging.earth.gov/ghgcenter/api/ingest/*
-      - https://earth.gov/ghgcenter/api/ingest/*
+      - https://eic-staging.staging.earth.gov/api/ingest/*
     webOrigins:
-      - https://dev.ghg.center
-      - https://staging.earth.gov
-      - https://earth.gov
+      - https://eic-staging.staging.earth.gov
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -80,9 +76,9 @@ clients:
       - stac:collection:update
       - stac:collection:delete
 
-  - clientId: ghgc-airflow-ingest-api-etl
-    name: GHGC Airflow Ingest API ETL
-    secret: $(env:GHGC_AIRFLOW_INGEST_API_ETL_CLIENT_SECRET)
+  - clientId: eic-airflow-ingest-api-etl
+    name: EIC Airflow Ingest API ETL
+    secret: $(env:EIC_AIRFLOW_INGEST_API_ETL_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     protocol: openid-connect
@@ -100,17 +96,17 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
-    
+
 roles:
   client:
-    ghgc-stac:
+    eic-stac:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
         description: Can create and update STAC collections and items
       - name: Viewer
         description: Can only view STAC collections and items
-    ghgc-ingest-api:
+    eic-ingest-api:
       - name: Admin
         description: Can create, update and delete STAC collections and items
       - name: Editor
@@ -119,7 +115,7 @@ roles:
         description: Has no permissions
 
 clientScopeMappings:
-  ghgc-stac:
+  eic-stac:
     - clientScope: stac:item:create
       roles:
         - Admin
@@ -143,7 +139,7 @@ clientScopeMappings:
     - clientScope: stac:collection:delete
       roles:
         - Admin
-  ghgc-ingest-api:
+  eic-ingest-api:
     - clientScope: stac:item:create
       roles:
         - Admin
@@ -191,31 +187,48 @@ clientScopes:
 groups:
   - name: System Administrators
     clientRoles:
-      ghgc-stac:
+      eic-stac:
         - Admin
-      ghgc-ingest-api:
+      eic-ingest-api:
         - Admin
 
   - name: Developers
     clientRoles:
-      ghgc-stac:
+      eic-stac:
         - Admin
-      ghgc-ingest-api:
+      eic-ingest-api:
         - Admin
 
   - name: Data Editors
     clientRoles:
-      ghgc-stac:
+      eic-stac:
         - Editor
-      ghgc-ingest-api:
+      eic-ingest-api:
         - Editor
 
   - name: No Basic Role
     clientRoles:
-      ghgc-stac:
+      eic-stac:
         - Viewer
-      ghgc-ingest-api:
+      eic-ingest-api:
         - No Basic Role
+
+  - name: Tenants
+    subGroups:
+      - name: GHGC
+        subGroups:
+          - name: Admins
+            clientRoles:
+              eic-stac:
+                - Admin
+              eic-ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              eic-stac:
+                - Editor
+              eic-ingest-api:
+                - Editor
 
 identityProviders:
   # CILogon
@@ -267,25 +280,89 @@ identityProviderMappers:
       claim: "profile.family_name"
       user.attribute: "lastName"
 
+# Login Flow Configuration
+browserFlow: Browser without Password
+authenticationFlows:
+  - alias: Browser without Password
+    description: browser based authentication without username password form
+    providerId: basic-flow
+    topLevel: true
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: auth-cookie
+        authenticatorFlow: false
+        requirement: ALTERNATIVE
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-spnego
+        authenticatorFlow: false
+        requirement: DISABLED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: ALTERNATIVE
+        priority: 30
+        autheticatorFlow: true
+        flowAlias: Browser without Password forms
+        userSetupAllowed: false
+  - alias: Browser without Password forms
+    description: Username, password, otp and other auth forms.
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticatorConfig: cilogon
+        authenticator: identity-provider-redirector
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: CONDITIONAL
+        priority: 21
+        autheticatorFlow: true
+        flowAlias: Browser without Password Browser - Conditional OTP
+        userSetupAllowed: false
+  - alias: Browser without Password Browser - Conditional OTP
+    description: Flow to determine if the OTP is required for the authentication
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: conditional-user-configured
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-otp-form
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
 authenticatorConfig:
   - alias: cilogon
     config:
       defaultProvider: cilogon
 
 users:
-  - username: service-account-airflow-stac-etl
+  - username: service-account-eic-airflow-stac-etl
     emailVerified: true
     enabled: true
-    serviceAccountClientId: ghgc-airflow-stac-etl
+    serviceAccountClientId: eic-airflow-stac-etl
     clientRoles:
-      ghgc-stac:
+      eic-stac:
       - Admin
-  - username: service-account-airflow-ingest-api-etl
+  - username: service-account-eic-airflow-ingest-api-etl
     emailVerified: true
     enabled: true
-    serviceAccountClientId: ghgc-airflow-ingest-api-etl
+    serviceAccountClientId: eic-airflow-ingest-api-etl
     clientRoles:
-      ghgc-ingest-api:
+      eic-ingest-api:
       - Admin
 
 defaultGroups:
