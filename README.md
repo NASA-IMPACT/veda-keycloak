@@ -169,6 +169,30 @@ clients:
 > [!TIP]
 > For a complete multitenant example, see the `uma-resource-server` configuration in [`keycloak-config-cli/config/dev/veda.yaml`](keycloak-config-cli/config/dev/veda.yaml).
 
+##### Resource Access Control
+
+Resource servers support two modes of access control:
+
+- **Policy-Based Access** (`ownerManagedAccess: false`): Access is controlled by policies defined in the configuration. Only administrators can modify access by updating policies.
+
+- **User-Managed Access (UMA)** (`ownerManagedAccess: true`): Resource owners can dynamically grant or revoke permissions on their resources via the Protection API, in addition to any policies defined.
+
+**Enabling UMA:**
+
+To enable UMA for a resource, set `ownerManagedAccess: true` and ensure "User-Managed Access" is enabled in Realm Settings. For example, say we are defining a resource:
+
+```yaml
+resources:
+  - name: example-resource:*
+    type: "stac-collection"
+    ownerManagedAccess: true  # Enable UMA - resource owners can manage access
+    uris:
+      - "stac:collection:public:*"
+    scopes:
+      - name: "read"
+      - name: "create"
+```
+
 ##### Cross Account Secret Access
 
 In cases where another AWS account needs to read a private client secret, resource policies must be added to the secret as well as the application role arn that needs access to the secret. See the [AWS docs](https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access_examples_cross.html) for more details on cross account secret access. In this repo, `cdk/lib/keycloak/config.py` creates a KMS for client secrets and adds resource policies for the specified application roles however you must configure the following:
