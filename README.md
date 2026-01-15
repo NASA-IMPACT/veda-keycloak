@@ -94,16 +94,110 @@ clients:
     fullScopeAllowed: true
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > For the above example, we also must ensure that `GRAFANA_CLIENT_URL` is set within the Github Environment's variables via the Github settings console.
 
 </details>
+
+##### Resource Server Client
+
+A resource server client enables Keycloak's Authorization Services for fine-grained, multitenant authorization of protected resources. This requires `authorizationServicesEnabled: true` and `serviceAccountsEnabled: true`.
+
+This is an example of a resource server configuration definition:
+
+```yaml
+clients:
+  - clientId: uma-resource-server
+    name: Authorization Resource Server
+    publicClient: false
+    secret: $(env:UMA_RESOURCE_SERVER_CLIENT_SECRET)
+    protocol: openid-connect
+    standardFlowEnabled: false
+    serviceAccountsEnabled: true
+    authorizationServicesEnabled: true
+    protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "true"
+    authorizationSettings:
+      allowRemoteResourceManagement: true
+      policyEnforcementMode: ENFORCING
+      resources:
+        - name: resource:tenant1:*
+          type: "custom-resource"
+          ownerManagedAccess: false
+          uris:
+            - "resource:tenant1:*"
+          scopes:
+            - name: "read"
+            - name: "write"
+      policies:
+        - name: Tenant 1 Users
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/Tenant1/Users","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: Tenant 1 - Read Access
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["resource:tenant1:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Tenant 1 Users"]'
+      scopes:
+        - name: read
+        - name: write
+      decisionStrategy: UNANIMOUS
+```
+
+**Key points:**
+
+- **`authorizationServicesEnabled: true`**: Enables authorization services
+- **`serviceAccountsEnabled: true`**: Required for resource server authentication
+- **Protocol Mappers**: Include group mappers for group-based policies
+- **`authorizationSettings`**: Defines resources (what is protected), scopes (actions like read/write), and policies (who can access what)
+
+> [!TIP]
+> For a complete multitenant example, see the `uma-resource-server` configuration in [`keycloak-config-cli/config/dev/veda.yaml`](keycloak-config-cli/config/dev/veda.yaml).
+
+##### Resource Access Control
+
+Resource servers support two modes of access control:
+
+- **Policy-Based Access** (`ownerManagedAccess: false`): Access is controlled by policies defined in the configuration. Only administrators can modify access by updating policies.
+
+- **User-Managed Access (UMA)** (`ownerManagedAccess: true`): Resource owners can dynamically grant or revoke permissions on their resources via the Protection API, in addition to any policies defined.
+
+**Enabling UMA:**
+
+To enable UMA for a resource, set `ownerManagedAccess: true` and ensure "User-Managed Access" is enabled in Realm Settings. For example, say we are defining a resource:
+
+```yaml
+resources:
+  - name: example-resource:*
+    type: "stac-collection"
+    ownerManagedAccess: true  # Enable UMA - resource owners can manage access
+    uris:
+      - "stac:collection:public:*"
+    scopes:
+      - name: "read"
+      - name: "create"
+```
 
 ##### Cross Account Secret Access
 
 In cases where another AWS account needs to read a private client secret, resource policies must be added to the secret as well as the application role arn that needs access to the secret. See the [AWS docs](https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access_examples_cross.html) for more details on cross account secret access. In this repo, `cdk/lib/keycloak/config.py` creates a KMS for client secrets and adds resource policies for the specified application roles however you must configure the following:
 
-1) Include a Github Environment variable with the format `APPLICATION_ROLE_ARN_$clientId` for the client secret that needs to be read in another account. You can supply multiple ARNs, comma-separated (for example, `APPLICATION_ROLE_ARN_AIRFLOW_INGEST_API_ETL=arn:aws:iam::123456789012:role/ApplicationRole,arn:aws:iam::210987654321:role/AnotherApplicationRole`). 
+1) Include a Github Environment variable with the format `APPLICATION_ROLE_ARN_$clientId` for the client secret that needs to be read in another account. You can supply multiple ARNs, comma-separated (for example, `APPLICATION_ROLE_ARN_AIRFLOW_INGEST_API_ETL=arn:aws:iam::123456789012:role/ApplicationRole,arn:aws:iam::210987654321:role/AnotherApplicationRole`).
 
 2) Reference the Github Environment variable in both [deploy.yaml](.github/workflows/deploy.yaml) and [diff.yaml](.github/workflows/diff.yaml)
 
@@ -205,6 +299,88 @@ groups:
 
 > [!NOTE]
 > To associate a client scope with a client, the scope must be referenced in either the `defaultClientScopes` or `optionalClientScopes` properties of the client.
+>
+> **Note for Resource Servers**: Resource server clients use scopes differently than regular clients. In resource servers, scopes represent actions (like `read`, `write`) that are applied to resources through policies, rather than being directly associated with client roles. See the [Resource Server Client](#resource-server-client) section above for more details.
+
+##### Defining Tenant Groups
+
+For multitenant authorization, tenant groups should be organized hierarchically under a parent "Tenants" group. Each tenant should have role-based subgroups (typically "Admins" and "Editors") that are assigned appropriate client roles.
+
+The group path structure follows the pattern `/Tenants/{TenantName}/{Role}`, which is used in resource server policies to grant tenant-specific access.
+
+Example tenant group structure:
+
+```yaml
+groups:
+  - name: Tenants
+    subGroups:
+      - name: Tenant1
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+
+      - name: Tenant2
+        subGroups:
+          - name: Admins
+            clientRoles:
+              grafana:
+                - GrafanaAdmin
+              stac:
+                - Admin
+              ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              grafana:
+                - Editor
+              stac:
+                - Editor
+              ingest-api:
+                - Editor
+              ingest-ui:
+                - Editor
+```
+
+**Key points:**
+
+- **Parent group**: All tenant groups should be nested under a parent "Tenants" group for organization
+- **Tenant subgroups**: Each tenant should have its own subgroup (e.g., `Tenant1`, `Tenant2`)
+- **Role subgroups**: Within each tenant, create role-based subgroups (typically `Admins` and `Editors`)
+- **Client roles**: Assign appropriate client roles to each role subgroup based on the permissions needed
+- **Group paths**: The full path for a group will be `/Tenants/{TenantName}/{Role}` (e.g., `/Tenants/Tenant1/Admins`)
+- **Resource server policies**: When defining group-based policies in resource servers, reference these paths using the `groups` configuration with the full path
+
+**Example resource server policy using tenant groups:**
+
+```yaml
+policies:
+  - name: Tenant 1 Admins
+    type: group
+    logic: POSITIVE
+    decisionStrategy: UNANIMOUS
+    config:
+      groups: '[{"path":"/Tenants/Tenant1/Admins","extendChildren":false}]'
+      groupsClaim: "groups"
+```
+
+> [!TIP]
+> For a complete example of tenant groups with multiple tenants and their integration with resource server policies, see the `groups` section in [`keycloak-config-cli/config/dev/veda.yaml`](keycloak-config-cli/config/dev/veda.yaml).
 
 #### Identity Provider OAuth Clients
 
