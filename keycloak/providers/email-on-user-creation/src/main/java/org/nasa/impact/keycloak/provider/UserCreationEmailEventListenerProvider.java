@@ -102,8 +102,19 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             for (String recipient : recipients) {
                 String trimmedRecipient = recipient.trim();
                 try {
-                    log.infof("Sending email to: %s", trimmedRecipient);
-                    senderProvider.send(session.getContext().getRealm().getSmtpConfig(), trimmedRecipient, "New User Registration with Keycloak", sbtxt.toString(), sbhtml.toString());
+                    String combinedAddress = trimmedRecipient;
+                    if (email != null && !email.isBlank()) {
+                        combinedAddress = trimmedRecipient + "," + email;
+                    }
+
+                    log.infof("Sending email to: %s (including user: %s)", trimmedRecipient, email);
+                    senderProvider.send(
+                        session.getContext().getRealm().getSmtpConfig(),
+                        combinedAddress,  // admin + user
+                        "New User Registration with Keycloak",
+                        sbtxt.toString(),
+                        sbhtml.toString()
+                    );
                 } catch (EmailException e) {
                     log.errorf("Failed to send email to %s: %s", trimmedRecipient, e.getMessage());
                 }
