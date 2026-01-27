@@ -405,6 +405,3 @@ authenticatorConfig:
   - alias: edl
     config:
       defaultProvider: edl
-  - alias: admin-login
-    config: {}
-        userSetupAllowed: false
