@@ -289,3 +289,114 @@ components:
                 }
               ]
             }
+
+# Login Flow Configuration
+browserFlow: browser-no-password
+authenticationFlows:
+  - alias: browser-no-password
+    description: Browser based authentication
+    providerId: basic-flow
+    topLevel: true
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: auth-cookie
+        authenticatorFlow: false
+        requirement: ALTERNATIVE
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-spnego
+        authenticatorFlow: false
+        requirement: DISABLED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorConfig: edl
+        authenticator: identity-provider-redirector
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 25
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: ALTERNATIVE
+        priority: 26
+        autheticatorFlow: true
+        flowAlias: browser-no-password Organization
+        userSetupAllowed: false
+      - authenticatorConfig: admin-login
+        authenticatorFlow: true
+        requirement: ALTERNATIVE
+        priority: 30
+        autheticatorFlow: true
+        flowAlias: browser-no-password forms
+        userSetupAllowed: false
+
+  - alias: browser-no-password Organization
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticatorFlow: true
+        requirement: CONDITIONAL
+        priority: 10
+        autheticatorFlow: true
+        flowAlias: browser-no-password Browser - Conditional Organization
+        userSetupAllowed: false
+
+  - alias: browser-no-password forms
+    description: Username, password, otp and other auth forms.
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: auth-username-password-form
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: CONDITIONAL
+        priority: 20
+        autheticatorFlow: true
+        flowAlias: browser-no-password Browser - Conditional OTP
+        userSetupAllowed: false
+
+  - alias: browser-no-password Browser - Conditional OTP
+    description: Flow to determine if the OTP is required for the authentication
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: conditional-user-configured
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-otp-form
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+
+  - alias: browser-no-password Browser - Conditional Organization
+    description: Flow to determine if the organization identity-first login is to be used
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: conditional-user-configured
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: organization
+        authenticatorFlow: false
+        requirement: ALTERNATIVE
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
