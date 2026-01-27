@@ -46,7 +46,7 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
     @Override
     public void onEvent(Event event) {
         if (EventType.REGISTER.equals(event.getType())) {
-            EmailSenderProvider senderProvider = session.getProvider(EmailSenderProvider.class);
+            EmailSenderProvider senderProvider = session.getProvider(EmailSenderProvider.class, "multi-cc-email");
             String realmName = session.getContext().getRealm().getName();
 
             log.infof("Registration event for realm '%s' detected (stage='%s')", realmName, stage);
@@ -98,12 +98,21 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             if (funding != null) sbhtml.append("<p>Funding: ").append(funding).append("</p>");
             if (additionalDetails != null) sbhtml.append("<p>Additional Details: ").append(additionalDetails).append("</p>");
             
+
+             String subject = "New User Registration with Keycloak"
+                    + (username != null && !username.isBlank() ? " (" + username.trim() + ")" : "");
+
             // Send to each recipient individually
             for (String recipient : recipients) {
                 String trimmedRecipient = recipient.trim();
+                Map<String, String> smtpConfig = new java.util.HashMap<>(session.getContext().getRealm().getSmtpConfig());
+                if (email != null && !email.isBlank()) {
+                    smtpConfig.put("cc", email);  
+                }
+
                 try {
                     log.infof("Sending email to: %s", trimmedRecipient);
-                    senderProvider.send(session.getContext().getRealm().getSmtpConfig(), trimmedRecipient, "New User Registration with Keycloak", sbtxt.toString(), sbhtml.toString());
+                    senderProvider.send(smtpConfig, trimmedRecipient, subject, sbtxt.toString(), sbhtml.toString());
                 } catch (EmailException e) {
                     log.errorf("Failed to send email to %s: %s", trimmedRecipient, e.getMessage());
                 }
