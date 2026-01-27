@@ -17,6 +17,9 @@
 
 package org.nasa.impact.keycloak.email;
 
+import org.keycloak.email.EmailException;
+import org.keycloak.email.EmailSenderProvider;
+
 import jakarta.mail.internet.MimeUtility;
 import org.jboss.logging.Logger;
 import org.keycloak.common.enums.HostnameVerificationPolicy;
@@ -54,12 +57,9 @@ public class MultiCcEmailSenderProvider implements EmailSenderProvider {
     private static final Logger logger = Logger.getLogger(MultiCcEmailSenderProvider.class);
     private static final String SUPPORTED_SSL_PROTOCOLS = getSupportedSslProtocols();
 
-    private final Map<EmailAuthenticator.AuthenticatorType, EmailAuthenticator> authenticators;
-
     private final KeycloakSession session;
 
-    public MultiCcEmailSenderProvider(KeycloakSession session, Map<EmailAuthenticator.AuthenticatorType, EmailAuthenticator> authenticators) {
-        this.authenticators = authenticators;
+    public MultiCcEmailSenderProvider(KeycloakSession session) {
         this.session = session;
     }
 
@@ -74,14 +74,20 @@ public class MultiCcEmailSenderProvider implements EmailSenderProvider {
 
     @Override
     public void send(Map<String, String> config, String address, String subject, String textBody, String htmlBody) throws EmailException {
-        Session session = Session.getInstance(buildEmailProperties(config));
+        Session mailSession = Session.getInstance(buildEmailProperties(config));
 
-        Message message = buildMessage(session, address, subject, config, buildMultipartBody(textBody, htmlBody));
+        Message message = buildMessage(mailSession, address, subject, config, buildMultipartBody(textBody, htmlBody));
 
-        try(Transport transport = session.getTransport("smtp")) {
-
-            EmailAuthenticator selectedAuthenticator = selectAuthenticatorBasedOnConfig(config);
-            selectedAuthenticator.connect(this.session, config, transport);
+        try (Transport transport = mailSession.getTransport("smtp")) {
+            if (isAuthConfigured(config)) {
+                transport.connect(
+                        config.get("host"),
+                        config.get("user"),
+                        config.get("password")
+                );
+            } else {
+                transport.connect();
+            }
 
             transport.sendMessage(message, message.getAllRecipients());
 
@@ -211,15 +217,6 @@ public class MultiCcEmailSenderProvider implements EmailSenderProvider {
         }
 
         return multipart;
-    }
-
-    private EmailAuthenticator selectAuthenticatorBasedOnConfig(Map<String, String> config) {
-        if(isAuthConfigured(config)) {
-            String authType = config.getOrDefault("authType", "basic");
-            return authenticators.get(EmailAuthenticator.AuthenticatorType.valueOf(authType.toUpperCase()));
-        }
-
-        return authenticators.get(EmailAuthenticator.AuthenticatorType.NONE);
     }
 
     private static boolean isStarttlsConfigured(Map<String, String> config) {
