@@ -98,6 +98,10 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             if (funding != null) sbhtml.append("<p>Funding: ").append(funding).append("</p>");
             if (additionalDetails != null) sbhtml.append("<p>Additional Details: ").append(additionalDetails).append("</p>");
             
+
+             String subject = "New User Registration with Keycloak"
+                    + (username != null && !username.isBlank() ? " (" + username.trim() + ")" : "");
+
             // Send to each recipient individually
             for (String recipient : recipients) {
                 String trimmedRecipient = recipient.trim();
@@ -108,7 +112,7 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
 
                 try {
                     log.infof("Sending email to: %s", trimmedRecipient);
-                    senderProvider.send(smtpConfig, trimmedRecipient, "New User Registration with Keycloak", sbtxt.toString(), sbhtml.toString());
+                    senderProvider.send(smtpConfig, trimmedRecipient, subject, sbtxt.toString(), sbhtml.toString());
                 } catch (EmailException e) {
                     log.errorf("Failed to send email to %s: %s", trimmedRecipient, e.getMessage());
                 }
