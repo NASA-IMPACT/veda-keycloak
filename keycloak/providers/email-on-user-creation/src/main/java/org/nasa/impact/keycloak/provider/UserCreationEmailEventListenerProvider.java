@@ -46,7 +46,7 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
     @Override
     public void onEvent(Event event) {
         if (EventType.REGISTER.equals(event.getType())) {
-            EmailSenderProvider senderProvider = session.getProvider(EmailSenderProvider.class);
+            EmailSenderProvider senderProvider = session.getProvider(EmailSenderProvider.class, "multi-cc-email");
             String realmName = session.getContext().getRealm().getName();
 
             log.infof("Registration event for realm '%s' detected (stage='%s')", realmName, stage);
@@ -101,20 +101,14 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             // Send to each recipient individually
             for (String recipient : recipients) {
                 String trimmedRecipient = recipient.trim();
-                try {
-                    String combinedAddress = trimmedRecipient;
-                    if (email != null && !email.isBlank()) {
-                        combinedAddress = trimmedRecipient + "," + email;
-                    }
+                Map<String, String> smtpConfig = new java.util.HashMap<>(session.getContext().getRealm().getSmtpConfig());
+                if (email != null && !email.isBlank()) {
+                    smtpConfig.put("cc", email);  
+                }
 
-                    log.infof("Sending email to: %s (including user: %s)", trimmedRecipient, email);
-                    senderProvider.send(
-                        session.getContext().getRealm().getSmtpConfig(),
-                        combinedAddress,  // admin + user
-                        "New User Registration with Keycloak",
-                        sbtxt.toString(),
-                        sbhtml.toString()
-                    );
+                try {
+                    log.infof("Sending email to: %s", trimmedRecipient);
+                    senderProvider.send(smtpConfig, trimmedRecipient, "New User Registration with Keycloak", sbtxt.toString(), sbhtml.toString());
                 } catch (EmailException e) {
                     log.errorf("Failed to send email to %s: %s", trimmedRecipient, e.getMessage());
                 }
