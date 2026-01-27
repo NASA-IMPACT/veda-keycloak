@@ -453,8 +453,12 @@ For this example, let's imagine we're attempting to insert the Client ID and Cli
 
 Beyond configuration, customization of Keycloak (e.g. a custom Identity Providers) may require development of custom Service Provider Interfaces (SPIs).
 
+VEDA Keycloak includes a custom `EmailSenderProvider` based on Keycloak’s `DefaultEmailSenderProvider` to add a CC recipient to outgoing emails. This has been tested with Keycloak 26.2.5. Upgrading Keycloak may require re-syncing this custom implementation with the upstream `DefaultEmailSenderProvider` and re-testing.
+
 > [!TIP]
 > See the Service Provider Interfaces section in the [Server Developer Guide](https://www.keycloak.org/docs/latest/server_development/#_providers) for more details about how to create custom themes.
+
+
 
 ### Themes
 
