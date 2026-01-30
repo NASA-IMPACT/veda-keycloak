@@ -681,6 +681,44 @@ clients:
         - name: read
       decisionStrategy: UNANIMOUS
 
+  # FIXME: Update URLs when available
+  - clientId: earth-gov-cms
+    name: Earth.gov CMS
+    rootUrl: http://localhost:3000
+    publicClient: false
+    secret: $(env:EARTH_GOV_CMS_CLIENT_SECRET)
+    attributes: {}
+    redirectUris:
+      - http://localhost:3000/api/auth/callback/keycloak
+    webOrigins:
+      - http://localhost:3000
+    protocol: openid-connect
+    fullScopeAllowed: true
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: false
+    protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          full.path: "false"
+          introspection.token.claim: "true"
+          userinfo.token.claim: "true"
+          multivalued: "true"
+          id.token.claim: "true"
+          lightweight.claim: "false"
+          access.token.claim: "true"
+    defaultClientScopes:
+      - acr
+      - basic
+      - email
+      - groups
+      - profile
+      - roles
+      - web-origins
+
 roles:
   client:
     grafana:
@@ -943,6 +981,11 @@ groups:
                 - Editor
               ingest-ui:
                 - Editor
+
+  - name: Earth.gov CMS Editors
+    clientRoles:
+      earth-gov-cms:
+        - earth-gov-cms-editors
 
 identityProviders:
   # CILogon
