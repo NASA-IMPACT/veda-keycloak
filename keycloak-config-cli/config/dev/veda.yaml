@@ -768,6 +768,9 @@ roles:
     ingest-ui:
       - name: Editor
         description: Can initiate and update dataset ingests
+    earth-gov-cms:
+      - name: earth-gov-cms-editors
+        description: Allow editing content for earth.gov via CMS
 
 clientScopeMappings:
   stac:
