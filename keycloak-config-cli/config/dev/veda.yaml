@@ -285,6 +285,33 @@ clients:
           usermodel.clientRoleMapping.clientId: ingest-ui
           usermodel.clientRoleMapping.rolePrefix: ""
 
+  - clientId: eie-demo-access-backend
+    name: EIE Demo Access Backend
+    rootUrl: http://k8s-eiellm-eiellmng-3bfff7cd13-5b11596fb1756b2e.elb.us-west-2.amazonaws.com
+    adminUrl: http://k8s-eiellm-eiellmng-3bfff7cd13-5b11596fb1756b2e.elb.us-west-2.amazonaws.com
+    publicClient: true
+    attributes:
+      access.token.lifespan: "21600"
+    redirectUris:
+      - https://k8s-eiellm-eiellmng-3bfff7cd13-5b11596fb1756b2e.elb.us-west-2.amazonaws.com/*
+      - http://k8s-eiellm-eiellmng-3bfff7cd13-5b11596fb1756b2e.elb.us-west-2.amazonaws.com/*
+    webOrigins:
+      - https://k8s-eiellm-eiellmng-3bfff7cd13-5b11596fb1756b2e.elb.us-west-2.amazonaws.com
+      - http://k8s-eiellm-eiellmng-3bfff7cd13-5b11596fb1756b2e.elb.us-west-2.amazonaws.com
+    protocol: openid-connect
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: true
+    serviceAccountsEnabled: false
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - acr
+      - profile
+      - roles
+      - eie:api
+      - basic
+      - email
+
   - clientId: discourse-forum
     name: Discourse
     rootUrl: https://community.openveda.cloud
@@ -812,6 +839,9 @@ clientScopes:
     protocol: openid-connect
   - name: dataset:update
     description: Update existing datasets
+    protocol: openid-connect
+  - name: eie:api
+    description: EIE API access
     protocol: openid-connect
 
 groups:
