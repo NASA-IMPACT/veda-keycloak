@@ -305,6 +305,40 @@ clients:
       - basic
       - email
 
+  - clientId: airflow-webserver-fab
+    name: Airflow Webserver FAB
+    rootUrl: http://localhost:8080
+    publicClient: false
+    attributes:
+      realm_client: "false"
+      oidc.ciba.grant.enabled: "false"
+      backchannel.logout.session.required: "true"
+      standard.token.exchange.enabled: "false"
+      oauth2.device.authorization.grant.enabled: "false"
+      backchannel.logout.revoke.offline.tokens: "false"
+    redirectUris:
+      - http://localhost:8080/oauth-authorized/keycloak
+    webOrigins:
+      - http://localhost:8080
+    protocol: openid-connect
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: true
+    serviceAccountsEnabled: false
+    fullScopeAllowed: true
+    frontchannelLogout: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - groups
+      - basic
+      - email
+    optionalClientScopes:
+      - dataset:update
+      - dataset:create
+
   - clientId: uma-resource-server
     name: Authorization Resource Server
     publicClient: false
