@@ -400,3 +400,10 @@ authenticationFlows:
         priority: 20
         autheticatorFlow: false
         userSetupAllowed: false
+
+authenticatorConfig:
+  - alias: edl
+    config:
+      defaultProvider: edl
+  - alias: admin-login
+    config: {}
