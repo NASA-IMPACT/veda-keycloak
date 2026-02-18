@@ -907,6 +907,8 @@ groups:
         - Admin
       ingest-ui:
         - Editor
+      airflow-webserver-fab:
+        - Admin
 
   - name: Developers
     clientRoles:
@@ -918,6 +920,9 @@ groups:
         - Admin
       ingest-ui:
         - Editor
+      airflow-webserver-fab:
+        - Admin
+        - Dag_Launcher
 
   - name: Data Editors
     clientRoles:
@@ -938,6 +943,8 @@ groups:
         - Viewer
       ingest-api:
         - No Basic Role
+      airflow-webserver-fab:
+        - Viewer
 
   - name: JupyterHub Disasters Admin
     clientRoles:
