@@ -805,6 +805,13 @@ roles:
     earth-gov-cms:
       - name: earth-gov-cms-editors
         description: Allow editing content for earth.gov via CMS
+    airflow-webserver-fab:
+      - name: Admin
+        description: Has all possible permissions, including granting or revoking permissions from other users
+      - name: Viewer
+        description: Limited read permissions
+      - name: Dag_Launcher
+        description: Programmatic DAG runs
 
 clientScopeMappings:
   stac:
