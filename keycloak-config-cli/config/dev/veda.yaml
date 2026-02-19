@@ -317,9 +317,13 @@ clients:
       oauth2.device.authorization.grant.enabled: "false"
       backchannel.logout.revoke.offline.tokens: "false"
     redirectUris:
-      - http://localhost:8080/oauth-authorized/keycloak
+      - http://sm2a.sit.openveda.cloud/oauth-authorized/keycloak
+      - http://sm2a.dev.openveda.cloud/oauth-authorized/keycloak
+      - http://sm2a.staging.openveda.cloud/oauth-authorized/keycloak
     webOrigins:
-      - http://localhost:8080
+      - https://sm2a.sit.openveda.cloud
+      - https://sm2a.dev.openveda.cloud
+      - https://sm2a.staging.openveda.cloud
     protocol: openid-connect
     standardFlowEnabled: true
     implicitFlowEnabled: false
@@ -808,8 +812,8 @@ roles:
     airflow-webserver-fab:
       - name: Admin
         description: Has all possible permissions, including granting or revoking permissions from other users
-      - name: Viewer
-        description: Limited read permissions
+      - name: Public
+        description: No permissions
       - name: Dag_Launcher
         description: Programmatic DAG runs
 
@@ -922,7 +926,6 @@ groups:
         - Editor
       airflow-webserver-fab:
         - Admin
-        - Dag_Launcher
 
   - name: Data Editors
     clientRoles:
@@ -944,7 +947,7 @@ groups:
       ingest-api:
         - No Basic Role
       airflow-webserver-fab:
-        - Viewer
+        - Public
 
   - name: JupyterHub Disasters Admin
     clientRoles:
@@ -1094,6 +1097,13 @@ authenticatorConfig:
       defaultProvider: cilogon
 
 users:
+  - username: service-account-airflow-webserver-fab
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: airflow-webserver-fab
+    clientRoles:
+      airflow-webserver-fab:
+      - Dag_Launcher
   - username: service-account-airflow-stac-etl
     emailVerified: true
     enabled: true
