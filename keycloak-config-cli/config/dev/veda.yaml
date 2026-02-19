@@ -816,6 +816,8 @@ roles:
         description: No permissions
       - name: Viewer
         description: Limited read permissions
+      - name: User
+        description: Viewer permissions plus additional permissions
       - name: Dag_Launcher
         description: Programmatic DAG runs
 
@@ -927,7 +929,7 @@ groups:
       ingest-ui:
         - Editor
       airflow-webserver-fab:
-        - Viewer
+        - User
 
   - name: Data Editors
     clientRoles:
@@ -939,6 +941,8 @@ groups:
         - Editor
       ingest-ui:
         - Editor
+      airflow-webserver-fab:
+        - User
 
   - name: No Basic Role
     clientRoles:
