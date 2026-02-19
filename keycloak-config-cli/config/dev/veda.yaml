@@ -305,6 +305,44 @@ clients:
       - basic
       - email
 
+  - clientId: airflow-webserver-fab
+    name: Airflow Webserver FAB
+    rootUrl: http://localhost:8080
+    publicClient: false
+    attributes:
+      realm_client: "false"
+      oidc.ciba.grant.enabled: "false"
+      backchannel.logout.session.required: "true"
+      standard.token.exchange.enabled: "false"
+      oauth2.device.authorization.grant.enabled: "false"
+      backchannel.logout.revoke.offline.tokens: "false"
+    redirectUris:
+      - http://sm2a.sit.openveda.cloud/oauth-authorized/keycloak
+      - http://sm2a.dev.openveda.cloud/oauth-authorized/keycloak
+      - http://sm2a.staging.openveda.cloud/oauth-authorized/keycloak
+    webOrigins:
+      - https://sm2a.sit.openveda.cloud
+      - https://sm2a.dev.openveda.cloud
+      - https://sm2a.staging.openveda.cloud
+    protocol: openid-connect
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: true
+    serviceAccountsEnabled: true
+    fullScopeAllowed: true
+    frontchannelLogout: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - groups
+      - basic
+      - email
+    optionalClientScopes:
+      - dataset:update
+      - dataset:create
+
   - clientId: uma-resource-server
     name: Authorization Resource Server
     publicClient: false
@@ -771,6 +809,17 @@ roles:
     earth-gov-cms:
       - name: earth-gov-cms-editors
         description: Allow editing content for earth.gov via CMS
+    airflow-webserver-fab:
+      - name: Admin
+        description: Has all possible permissions, including granting or revoking permissions from other users
+      - name: Public
+        description: No permissions
+      - name: Viewer
+        description: Limited read permissions
+      - name: User
+        description: Viewer permissions plus additional permissions
+      - name: Dag_Launcher
+        description: Programmatic DAG runs
 
 clientScopeMappings:
   stac:
@@ -866,6 +915,8 @@ groups:
         - Admin
       ingest-ui:
         - Editor
+      airflow-webserver-fab:
+        - Admin
 
   - name: Developers
     clientRoles:
@@ -877,6 +928,8 @@ groups:
         - Admin
       ingest-ui:
         - Editor
+      airflow-webserver-fab:
+        - User
 
   - name: Data Editors
     clientRoles:
@@ -888,6 +941,8 @@ groups:
         - Editor
       ingest-ui:
         - Editor
+      airflow-webserver-fab:
+        - User
 
   - name: No Basic Role
     clientRoles:
@@ -897,6 +952,8 @@ groups:
         - Viewer
       ingest-api:
         - No Basic Role
+      airflow-webserver-fab:
+        - Public
 
   - name: JupyterHub Disasters Admin
     clientRoles:
@@ -1046,6 +1103,13 @@ authenticatorConfig:
       defaultProvider: cilogon
 
 users:
+  - username: service-account-airflow-webserver-fab
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: airflow-webserver-fab
+    clientRoles:
+      airflow-webserver-fab:
+      - Dag_Launcher
   - username: service-account-airflow-stac-etl
     emailVerified: true
     enabled: true
