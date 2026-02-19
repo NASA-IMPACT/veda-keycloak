@@ -328,7 +328,7 @@ clients:
     standardFlowEnabled: true
     implicitFlowEnabled: false
     directAccessGrantsEnabled: true
-    serviceAccountsEnabled: false
+    serviceAccountsEnabled: true
     fullScopeAllowed: true
     frontchannelLogout: true
     defaultClientScopes:
@@ -814,6 +814,8 @@ roles:
         description: Has all possible permissions, including granting or revoking permissions from other users
       - name: Public
         description: No permissions
+      - name: Viewer
+        description: Limited read permissions
       - name: Dag_Launcher
         description: Programmatic DAG runs
 
@@ -925,7 +927,7 @@ groups:
       ingest-ui:
         - Editor
       airflow-webserver-fab:
-        - Admin
+        - Viewer
 
   - name: Data Editors
     clientRoles:
