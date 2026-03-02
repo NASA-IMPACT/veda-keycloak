@@ -101,6 +101,36 @@ clients:
     defaultClientScopes:
       - roles
 
+  - clientId: eic-airflow-webserver-fab
+    name: EIC Airflow Webserver FAB
+    rootUrl: http://localhost:8080
+    publicClient: false
+    attributes:
+      realm_client: "false"
+      oidc.ciba.grant.enabled: "false"
+      backchannel.logout.session.required: "true"
+      standard.token.exchange.enabled: "false"
+      oauth2.device.authorization.grant.enabled: "false"
+      backchannel.logout.revoke.offline.tokens: "false"
+    redirectUris:
+      - https://sm2a.eic.earth.gov/oauth-authorized/keycloak
+    webOrigins:
+      - https://sm2a.eic.earth.gov
+    protocol: openid-connect
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: true
+    serviceAccountsEnabled: true
+    fullScopeAllowed: true
+    frontchannelLogout: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+
 roles:
   client:
     eic-stac:
@@ -117,6 +147,17 @@ roles:
         description: Can create and update STAC collections and items
       - name: No Basic Role
         description: Has no permissions
+    eic-airflow-webserver-fab:
+      - name: Admin
+        description: Has all possible permissions, including granting or revoking permissions from other users
+      - name: Public
+        description: No permissions
+      - name: Viewer
+        description: Limited read permissions
+      - name: User
+        description: Viewer permissions plus additional permissions
+      - name: Dag_Launcher
+        description: Programmatic DAG runs
 
 clientScopeMappings:
   eic-stac:
@@ -195,6 +236,8 @@ groups:
         - Admin
       eic-ingest-api:
         - Admin
+      eic-airflow-webserver-fab:
+        - Admin
 
   - name: Developers
     clientRoles:
@@ -202,6 +245,8 @@ groups:
         - Admin
       eic-ingest-api:
         - Admin
+      eic-airflow-webserver-fab:
+        - User
 
   - name: Data Editors
     clientRoles:
@@ -209,6 +254,8 @@ groups:
         - Editor
       eic-ingest-api:
         - Editor
+      eic-airflow-webserver-fab:
+        - User
 
   - name: No Basic Role
     clientRoles:
@@ -216,6 +263,8 @@ groups:
         - Viewer
       eic-ingest-api:
         - No Basic Role
+      eic-airflow-webserver-fab:
+        - Public
 
   - name: Tenants
     subGroups:
@@ -368,6 +417,13 @@ users:
     clientRoles:
       eic-ingest-api:
       - Admin
+  - username: service-account-eic-airflow-webserver-fab
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: eic-airflow-webserver-fab
+    clientRoles:
+      eic-airflow-webserver-fab:
+      - Dag_Launcher
 
 defaultGroups:
   - "/No Basic Role"
