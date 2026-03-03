@@ -100,6 +100,42 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
+  - clientId: eic-ingest-ui
+    name: Ingest UI
+    rootUrl: https://ingest.eic.openveda.cloud
+    secret: $(env:EIC_INGEST_UI_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    redirectUris:
+      - https://ingest.eic.openveda.cloud/*
+    webOrigins:
+      - https://ingest.eic.openveda.cloud
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      - dataset:create
+      - dataset:update
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "false"
+          usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: eic-airflow-webserver-fab
     name: EIC Airflow Webserver FAB
@@ -147,6 +183,9 @@ roles:
         description: Can create and update STAC collections and items
       - name: No Basic Role
         description: Has no permissions
+    eic-ingest-ui:
+      - name: Editor
+        description: Can initiate and update dataset ingests
     eic-airflow-webserver-fab:
       - name: Admin
         description: Has all possible permissions, including granting or revoking permissions from other users
@@ -208,6 +247,13 @@ clientScopeMappings:
     - clientScope: stac:collection:delete
       roles:
         - Admin
+  eic-ingest-ui:
+    - clientScope: dataset:create
+      roles:
+        - Editor
+    - clientScope: dataset:update
+      roles:
+        - Editor
 
 clientScopes:
   - name: stac:item:create
@@ -228,6 +274,12 @@ clientScopes:
   - name: stac:collection:delete
     description: Delete STAC collections
     protocol: openid-connect
+  - name: dataset:create
+    description: Ingest new datasets
+    protocol: openid-connect
+  - name: dataset:update
+    description: Update existing datasets
+    protocol: openid-connect
 
 groups:
   - name: System Administrators
@@ -236,6 +288,8 @@ groups:
         - Admin
       eic-ingest-api:
         - Admin
+      eic-ingest-ui:
+        - Editor
       eic-airflow-webserver-fab:
         - Admin
 
@@ -245,6 +299,8 @@ groups:
         - Admin
       eic-ingest-api:
         - Admin
+      eic-ingest-ui:
+        - Editor
       eic-airflow-webserver-fab:
         - User
 
@@ -253,6 +309,8 @@ groups:
       eic-stac:
         - Editor
       eic-ingest-api:
+        - Editor
+      eic-ingest-ui:
         - Editor
       eic-airflow-webserver-fab:
         - User
