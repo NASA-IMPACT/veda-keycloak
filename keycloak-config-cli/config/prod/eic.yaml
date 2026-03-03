@@ -137,6 +137,7 @@ clients:
           multivalued: "true"
           full.path: "false"
           usermodel.clientRoleMapping.rolePrefix: ""
+          usermodel.clientRoleMapping.clientId: eic-ingest-ui
 
   - clientId: eic-airflow-webserver-fab
     name: EIC Airflow Webserver FAB
