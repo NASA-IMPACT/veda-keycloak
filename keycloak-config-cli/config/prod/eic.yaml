@@ -100,6 +100,7 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
+      
   - clientId: eic-ingest-ui
     name: Ingest UI
     rootUrl: https://ingest.eic.openveda.cloud
