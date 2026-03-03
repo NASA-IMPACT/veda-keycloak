@@ -103,7 +103,7 @@ clients:
 
   - clientId: eic-airflow-webserver-fab
     name: EIC Airflow Webserver FAB
-    rootUrl: http://localhost:8080
+    rootUrl: https://sm2a.eic.earth.gov
     publicClient: false
     attributes:
       realm_client: "false"
