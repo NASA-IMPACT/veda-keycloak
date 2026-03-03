@@ -136,6 +136,7 @@ clients:
           jsonType.label: String
           multivalued: "true"
           full.path: "false"
+          usermodel.clientRoleMapping.clientId: eic-ingest-ui
           usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: eic-airflow-webserver-fab
