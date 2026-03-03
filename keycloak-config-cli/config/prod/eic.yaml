@@ -141,6 +141,7 @@ clients:
     name: EIC Airflow Webserver FAB
     rootUrl: https://sm2a.eic.earth.gov
     publicClient: false
+    secret: $(env:EIC_AIRFLOW_WEB_SERVER_FAB_CLIENT_SECRET)
     attributes:
       realm_client: "false"
       oidc.ciba.grant.enabled: "false"
