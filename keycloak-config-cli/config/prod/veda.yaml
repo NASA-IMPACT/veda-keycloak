@@ -307,7 +307,7 @@ clients:
     name: Airflow Webserver FAB
     rootUrl: https://sm2a.openveda.cloud
     publicClient: false
-    secret: $(env:AIRFLOW_WEB_SERVER_FAB_CLIENT_SECRET)
+    secret: $(env:AIRFLOW_WEBSERVER_FAB_CLIENT_SECRET)
     attributes:
       realm_client: "false"
       oidc.ciba.grant.enabled: "false"
