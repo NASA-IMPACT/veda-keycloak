@@ -728,6 +728,7 @@ clients:
     attributes: {}
     redirectUris:
       - https://dev.earth.gov/api/auth/callback/keycloak
+      - https://dev.earth.gov/admin/index.html
     webOrigins:
       - https://dev.earth.gov
     protocol: openid-connect
