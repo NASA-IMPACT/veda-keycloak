@@ -337,7 +337,6 @@ clients:
       - acr
       - profile
       - roles
-      - groups
       - basic
       - email
     optionalClientScopes:
