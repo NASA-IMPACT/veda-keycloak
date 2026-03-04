@@ -108,7 +108,7 @@ clients:
     publicClient: false
     attributes: {}
     redirectUris:
-      - https://ingest.eic.openveda.cloud/*
+      - https://ingest.eic.earth.gov/*
     webOrigins:
       - https://ingest.eic.openveda.cloud
     protocol: openid-connect
