@@ -103,14 +103,14 @@ clients:
       
   - clientId: eic-ingest-ui
     name: Ingest UI
-    rootUrl: https://ingest.eic.openveda.cloud
+    rootUrl: https://ingest.eic.earth.gov/
     secret: $(env:EIC_INGEST_UI_CLIENT_SECRET)
     publicClient: false
     attributes: {}
     redirectUris:
       - https://ingest.eic.earth.gov/*
     webOrigins:
-      - https://ingest.eic.openveda.cloud
+      - https://ingest.eic.earth.gov
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
