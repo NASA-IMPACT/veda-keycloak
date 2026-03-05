@@ -259,41 +259,41 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: stac:collection:waterinsight:*
+        - name: stac:collection:water-insight:*
           type: "stac-collection"
           ownerManagedAccess: false
           uris:
-            - "stac:collection:waterinsight:*"
+            - "stac:collection:water-insight:*"
           scopes:
             - name: "create"
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: stac:item:waterinsight:*
+        - name: stac:item:water-insight:*
           type: "stac-item"
           ownerManagedAccess: false
           uris:
-            - "stac:item:waterinsight:*"
+            - "stac:item:water-insight:*"
           scopes:
             - name: "create"
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: stac:collection:airquality:*
+        - name: stac:collection:air-quality:*
           type: "stac-collection"
           ownerManagedAccess: false
           uris:
-            - "stac:collection:airquality:*"
+            - "stac:collection:air-quality:*"
           scopes:
             - name: "create"
             - name: "update"
             - name: "delete"
             - name: "read"
-        - name: stac:item:airquality:*
+        - name: stac:item:air-quality:*
           type: "stac-item"
           ownerManagedAccess: false
           uris:
-            - "stac:item:airquality:*"
+            - "stac:item:air-quality:*"
           scopes:
             - name: "create"
             - name: "update"
@@ -335,7 +335,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: UNANIMOUS
           config:
-            groups: '[{"path":"/Tenants/waterinsight/Editors","extendChildren":false}]'
+            groups: '[{"path":"/Tenants/water-insight/Editors","extendChildren":false}]'
             groupsClaim: "groups"
         - name: Water Insight Admins
           description: Water Insight Admins Group Policy
@@ -343,14 +343,14 @@ clients:
           logic: POSITIVE
           decisionStrategy: UNANIMOUS
           config:
-            groups: '[{"path":"/Tenants/waterinsight/Admins","extendChildren":false}]'
+            groups: '[{"path":"/Tenants/water-insight/Admins","extendChildren":false}]'
             groupsClaim: "groups"
         - name: Air Quality Editors
           type: group
           logic: POSITIVE
           decisionStrategy: UNANIMOUS
           config:
-            groups: '[{"path":"/Tenants/airquality/Editors","extendChildren":false}]'
+            groups: '[{"path":"/Tenants/air-quality/Editors","extendChildren":false}]'
             groupsClaim: "groups"
         - name: Air Quality Admins
           description: Air Quality Admins Group Policy
@@ -358,7 +358,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: UNANIMOUS
           config:
-            groups: '[{"path":"/Tenants/airquality/Admins","extendChildren":false}]'
+            groups: '[{"path":"/Tenants/air-quality/Admins","extendChildren":false}]'
             groupsClaim: "groups"
         - name: Developers
           description: Developers Group
@@ -532,7 +532,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: AFFIRMATIVE
           config:
-            resources: '["stac:collection:waterinsight:*"]'
+            resources: '["stac:collection:water-insight:*"]'
             scopes: '["create","update"]'
             applyPolicies: '["Water Insight Admins","Water Insight Editors"]'
         - name: Water Insight - Collections - Read
@@ -540,7 +540,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: AFFIRMATIVE
           config:
-            resources: '["stac:collection:waterinsight:*"]'
+            resources: '["stac:collection:water-insight:*"]'
             scopes: '["read"]'
             applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
         - name: Water Insight - Collections - Delete
@@ -548,7 +548,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: UNANIMOUS
           config:
-            resources: '["stac:collection:waterinsight:*"]'
+            resources: '["stac:collection:water-insight:*"]'
             scopes: '["delete"]'
             applyPolicies: '["Water Insight Admins"]'
         # Water Insight - Items Permissions
@@ -557,7 +557,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: AFFIRMATIVE
           config:
-            resources: '["stac:item:waterinsight:*"]'
+            resources: '["stac:item:water-insight:*"]'
             scopes: '["create","update"]'
             applyPolicies: '["Water Insight Admins","Water Insight Editors"]'
         - name: Water Insight - Items - Read
@@ -565,7 +565,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: AFFIRMATIVE
           config:
-            resources: '["stac:item:waterinsight:*"]'
+            resources: '["stac:item:water-insight:*"]'
             scopes: '["read"]'
             applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
         - name: Water Insight - Items - Delete
@@ -573,7 +573,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: UNANIMOUS
           config:
-            resources: '["stac:item:waterinsight:*"]'
+            resources: '["stac:item:water-insight:*"]'
             scopes: '["delete"]'
             applyPolicies: '["Water Insight Admins"]'
         # Air Quality - Collections Permissions
@@ -582,7 +582,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: AFFIRMATIVE
           config:
-            resources: '["stac:collection:airquality:*"]'
+            resources: '["stac:collection:air-quality:*"]'
             scopes: '["create","update"]'
             applyPolicies: '["Air Quality Admins","Air Quality Editors"]'
         - name: Air Quality - Collections - Read
@@ -590,7 +590,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: AFFIRMATIVE
           config:
-            resources: '["stac:collection:airquality:*"]'
+            resources: '["stac:collection:air-quality:*"]'
             scopes: '["read"]'
             applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
         - name: Air Quality - Collections - Delete
@@ -598,7 +598,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: UNANIMOUS
           config:
-            resources: '["stac:collection:airquality:*"]'
+            resources: '["stac:collection:air-quality:*"]'
             scopes: '["delete"]'
             applyPolicies: '["Air Quality Admins"]'
         # Air Quality - Items Permissions
@@ -607,7 +607,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: AFFIRMATIVE
           config:
-            resources: '["stac:item:airquality:*"]'
+            resources: '["stac:item:air-quality:*"]'
             scopes: '["create","update"]'
             applyPolicies: '["Air Quality Admins","Air Quality Editors"]'
         - name: Air Quality - Items - Read
@@ -615,7 +615,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: AFFIRMATIVE
           config:
-            resources: '["stac:item:airquality:*"]'
+            resources: '["stac:item:air-quality:*"]'
             scopes: '["read"]'
             applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
         - name: Air Quality - Items - Delete
@@ -623,7 +623,7 @@ clients:
           logic: POSITIVE
           decisionStrategy: UNANIMOUS
           config:
-            resources: '["stac:item:airquality:*"]'
+            resources: '["stac:item:air-quality:*"]'
             scopes: '["delete"]'
             applyPolicies: '["Air Quality Admins"]'
       scopes:
@@ -820,7 +820,7 @@ groups:
                 - Editor
               eic-ingest-api:
                 - Editor
-      - name: waterinsight
+      - name: water-insight
         subGroups:
           - name: Admins
             clientRoles:
@@ -834,7 +834,7 @@ groups:
                 - Editor
               eic-ingest-api:
                 - Editor
-      - name: airquality
+      - name: air-quality
         subGroups:
           - name: Admins
             clientRoles:
