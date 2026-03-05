@@ -172,7 +172,7 @@ clients:
       - basic
       - email
 
-  - clientId: uma-resource-server
+  - clientId: eic-uma-resource-server
     name: Authorization Resource Server
     publicClient: false
     secret: $(env:UMA_RESOURCE_SERVER_CLIENT_SECRET)
