@@ -100,7 +100,7 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
-      
+
   - clientId: eic-ingest-ui
     name: Ingest UI
     rootUrl: https://ingest.eic.earth.gov/
@@ -171,6 +171,467 @@ clients:
       - roles
       - basic
       - email
+
+  - clientId: uma-resource-server
+    name: Authorization Resource Server
+    publicClient: false
+    secret: $(env:UMA_RESOURCE_SERVER_CLIENT_SECRET)
+    protocol: openid-connect
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    authorizationServicesEnabled: true
+    protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "true"
+    authorizationSettings:
+      allowRemoteResourceManagement: true
+      policyEnforcementMode: ENFORCING
+      resources:
+        - name: stac:collection:public:*
+          type: "stac-collection"
+          ownerManagedAccess: false
+          uris:
+            - "stac:collection:public:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:public:*
+          type: "stac-item"
+          ownerManagedAccess: false
+          uris:
+            - "stac:item:public:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:collection:ghgc:*
+          type: "stac-collection"
+          ownerManagedAccess: false
+          uris:
+            - "stac:collection:ghgc:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:ghgc:*
+          type: "stac-item"
+          ownerManagedAccess: false
+          uris:
+            - "stac:item:ghgc:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:collection:veda:*
+          type: "stac-collection"
+          ownerManagedAccess: false
+          uris:
+            - "stac:collection:veda:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:veda:*
+          type: "stac-item"
+          ownerManagedAccess: false
+          uris:
+            - "stac:item:veda:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:collection:water-insight:*
+          type: "stac-collection"
+          ownerManagedAccess: false
+          uris:
+            - "stac:collection:water-insight:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:water-insight:*
+          type: "stac-item"
+          ownerManagedAccess: false
+          uris:
+            - "stac:item:water-insight:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:collection:air-quality:*
+          type: "stac-collection"
+          ownerManagedAccess: false
+          uris:
+            - "stac:collection:air-quality:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:air-quality:*
+          type: "stac-item"
+          ownerManagedAccess: false
+          uris:
+            - "stac:item:air-quality:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+      policies:
+        - name: GHGC Editors
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/ghgc/Editors","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: GHGC Admins
+          description: GHGC Admins Group Policy
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/ghgc/Admins","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: VEDA Editors
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/veda/Editors","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: VEDA Admins
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/veda/Admins","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: Water Insight Editors
+          description: Water Insight Editors Group Policy
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/water-insight/Editors","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: Water Insight Admins
+          description: Water Insight Admins Group Policy
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/water-insight/Admins","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: Air Quality Editors
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/air-quality/Editors","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: Air Quality Admins
+          description: Air Quality Admins Group Policy
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/air-quality/Admins","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: Developers
+          description: Developers Group
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Developers","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: Data Editors
+          description: Data Editors
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Data Editors","extendChildren":false}]'
+            groupsClaim: "groups"
+        # Public Collections Permissions
+        - name: Public Collections Permission - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:public:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: Public Collections Permission - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:public:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: Public Collections Permission - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:public:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Air Quality Admins", "Water Insight Admins","VEDA Admins", "GHGC Admins", "Developers"]'
+        # Public Items Permissions
+        - name: Public Items Permission - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:public:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: Public Items Permission - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:public:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: Public Items Permission - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:public:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Air Quality Admins", "Water Insight Admins","VEDA Admins","GHGC Admins","Developers"]'
+        # GHGC - Collections Permissions
+        - name: GHGC - Collections - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:ghgc:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["GHGC Editors","GHGC Admins"]'
+        - name: GHGC - Collections - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:ghgc:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: GHGC - Collections - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:ghgc:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["GHGC Admins"]'
+        # GHGC - Items Permissions
+        - name: GHGC - Items - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:ghgc:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["GHGC Editors","GHGC Admins"]'
+        - name: GHGC - Items - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:ghgc:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: GHGC - Items - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:ghgc:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["GHGC Admins"]'
+        # VEDA - Collections Permissions
+        - name: VEDA - Collections - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:veda:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["VEDA Editors", "VEDA Admins"]'
+        - name: VEDA - Collections - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:veda:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: VEDA - Collections - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:veda:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["VEDA Admins"]'
+        # VEDA - Items Permissions
+        - name: VEDA - Items - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:veda:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["VEDA Admins","VEDA Editors"]'
+        - name: VEDA - Items - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:veda:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: VEDA - Items - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:veda:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["VEDA Admins"]'
+        # Water Insight - Collections Permissions
+        - name: Water Insight - Collections - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:water-insight:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Water Insight Admins","Water Insight Editors"]'
+        - name: Water Insight - Collections - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:water-insight:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: Water Insight - Collections - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:water-insight:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Water Insight Admins"]'
+        # Water Insight - Items Permissions
+        - name: Water Insight - Items - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:water-insight:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Water Insight Admins","Water Insight Editors"]'
+        - name: Water Insight - Items - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:water-insight:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: Water Insight - Items - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:water-insight:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Water Insight Admins"]'
+        # Air Quality - Collections Permissions
+        - name: Air Quality - Collections - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:air-quality:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Air Quality Admins","Air Quality Editors"]'
+        - name: Air Quality - Collections - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:air-quality:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: Air Quality - Collections - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:air-quality:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Air Quality Admins"]'
+        # Air Quality - Items Permissions
+        - name: Air Quality - Items - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:air-quality:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["Air Quality Admins","Air Quality Editors"]'
+        - name: Air Quality - Items - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:air-quality:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+        - name: Air Quality - Items - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:air-quality:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["Air Quality Admins"]'
+      scopes:
+        - name: create
+        - name: update
+        - name: delete
+        - name: read
+      decisionStrategy: UNANIMOUS
 
 roles:
   client:
@@ -331,7 +792,49 @@ groups:
 
   - name: Tenants
     subGroups:
-      - name: GHGC
+      - name: ghgc
+        subGroups:
+          - name: Admins
+            clientRoles:
+              eic-stac:
+                - Admin
+              eic-ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              eic-stac:
+                - Editor
+              eic-ingest-api:
+                - Editor
+      - name: veda
+        subGroups:
+          - name: Admins
+            clientRoles:
+              eic-stac:
+                - Admin
+              eic-ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              eic-stac:
+                - Editor
+              eic-ingest-api:
+                - Editor
+      - name: water-insight
+        subGroups:
+          - name: Admins
+            clientRoles:
+              eic-stac:
+                - Admin
+              eic-ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              eic-stac:
+                - Editor
+              eic-ingest-api:
+                - Editor
+      - name: air-quality
         subGroups:
           - name: Admins
             clientRoles:
