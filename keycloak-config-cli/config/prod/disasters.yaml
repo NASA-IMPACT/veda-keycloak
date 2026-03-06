@@ -135,7 +135,7 @@ clients:
           claim.name: groups
           jsonType.label: String
           multivalued: "true"
-          full.path: "false"
+          full.path: "true"
           usermodel.clientRoleMapping.clientId: disasters-ingest-ui
           usermodel.clientRoleMapping.rolePrefix: ""
 
@@ -276,7 +276,7 @@ groups:
         - Editor
       disasters-ingest-api:
         - Editor
-  
+
   - name: No Basic Role
     clientRoles:
       disasters-stac:

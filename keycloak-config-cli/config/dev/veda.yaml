@@ -189,7 +189,7 @@ clients:
           claim.name: groups
           jsonType.label: String
           multivalued: "true"
-          full.path: "false"
+          full.path: "true"
           usermodel.clientRoleMapping.clientId: ingest-api
           usermodel.clientRoleMapping.rolePrefix: ""
 
@@ -281,7 +281,7 @@ clients:
           claim.name: groups
           jsonType.label: String
           multivalued: "true"
-          full.path: "false"
+          full.path: "true"
           usermodel.clientRoleMapping.clientId: ingest-ui
           usermodel.clientRoleMapping.rolePrefix: ""
 
