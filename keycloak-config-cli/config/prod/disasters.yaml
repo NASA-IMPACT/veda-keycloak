@@ -141,8 +141,6 @@ clients:
 
   - clientId: disasters-jupyterhub-staging
     name: Disasters JupyterHub Staging
-    # Staging JupyterHub is at https://staging.hub.disasters.2i2c.cloud
-    # Prod JupyterHub is at https://hub.disasters.2i2c.cloud
     rootUrl: https://staging.hub.disasters.2i2c.cloud
     secret: $(env:DISASTERS_JUPYTERHUB_STAGING_CLIENT_SECRET)
     publicClient: false
@@ -173,8 +171,6 @@ clients:
 
   - clientId: disasters-jupyterhub
     name: Disasters JupyterHub
-    # Staging JupyterHub is at https://staging.hub.disasters.2i2c.cloud
-    # Prod JupyterHub is at https://hub.disasters.2i2c.cloud
     rootUrl: https://hub.disasters.2i2c.cloud
     secret: $(env:DISASTERS_JUPYTERHUB_CLIENT_SECRET)
     publicClient: false
