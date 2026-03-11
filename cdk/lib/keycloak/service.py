@@ -1,3 +1,5 @@
+from typing import Optional
+
 from constructs import Construct
 from aws_cdk import (
     Duration,
@@ -9,6 +11,7 @@ from aws_cdk import (
     aws_certificatemanager as acm,
     aws_elasticloadbalancingv2 as elbv2,
     aws_rds as rds,
+    aws_s3 as s3,
 )
 
 
@@ -34,6 +37,8 @@ class KeycloakService(Construct):
         ssl_certificate_arn: str,
         keycloak_send_email_addresses: dict[str, str],
         stage: str,
+        alb_access_logs_bucket: Optional[str] = None,
+        alb_access_logs_prefix: Optional[str] = None,
         **kwargs,
     ) -> None:
         """
@@ -92,6 +97,12 @@ class KeycloakService(Construct):
                 subnet_type=ec2.SubnetType.PUBLIC, one_per_az=True
             ),
         )
+
+        if alb_access_logs_bucket:
+            bucket = s3.Bucket.from_bucket_name(
+                self, "AlbLogsBucket", alb_access_logs_bucket
+            )
+            load_balancer.log_access_logs(bucket, alb_access_logs_prefix)
 
         # Fargate Service with ALB, SSL, and Health Check
         kc_major_version = int(version.split(".")[0]) if version else 0

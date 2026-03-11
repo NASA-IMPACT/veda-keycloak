@@ -33,6 +33,8 @@ class KeycloakStack(Stack):
         private_oauth_clients: list,
         application_role_arns: dict[str, list[str]],
         configure_route53: bool,
+        alb_access_logs_bucket: Optional[str] = None,
+        alb_access_logs_prefix: Optional[str] = None,
         vpc_id: Optional[str] = None,
         rds_snapshot_identifier: Optional[str] = None,
         keycloak_send_email_addresses: Optional[dict[str, str]] = None,
@@ -67,6 +69,8 @@ class KeycloakStack(Stack):
             ssl_certificate_arn=ssl_certificate_arn,
             keycloak_send_email_addresses=keycloak_send_email_addresses,
             stage=stage,
+            alb_access_logs_bucket=alb_access_logs_bucket,
+            alb_access_logs_prefix=alb_access_logs_prefix,
         )
 
         KeycloakConfig(
