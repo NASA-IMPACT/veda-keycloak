@@ -234,6 +234,7 @@ clients:
       - email
       - dataset:create
       - dataset:update
+      - stac:collection:update
     protocolMappers:
       # Include user groups in JWT tokens
       - name: groups
