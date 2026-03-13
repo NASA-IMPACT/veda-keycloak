@@ -827,6 +827,10 @@ clientScopeMappings:
     - clientScope: dataset:update
       roles:
         - Editor
+    - clientScope: stac:collection:update
+      roles:
+        - Admin
+        - Editor
 
 clientScopes:
   - name: stac:item:create

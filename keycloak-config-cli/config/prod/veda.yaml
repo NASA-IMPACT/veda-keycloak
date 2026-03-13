@@ -406,6 +406,10 @@ clientScopeMappings:
     - clientScope: dataset:update
       roles:
         - Editor
+    - clientScope: stac:collection:update
+      roles:
+        - Admin
+        - Editor
     - clientScope: dataset:limited-access
       roles:
         - Limited Access
