@@ -94,6 +94,8 @@ KeycloakStack(
     private_oauth_clients=private_oauth_clients,
     application_role_arns=application_role_arns,
     configure_route53=settings.configure_route53,
+    alb_access_logs_bucket=settings.alb_access_logs_bucket,
+    alb_access_logs_prefix=settings.alb_access_logs_prefix,
     is_production=settings.is_production,
     stage=settings.stage,
     rds_snapshot_identifier=settings.rds_snapshot_identifier,
