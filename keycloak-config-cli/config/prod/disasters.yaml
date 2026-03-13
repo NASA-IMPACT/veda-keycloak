@@ -216,7 +216,7 @@ clients:
       - http://sm2a.disasters.openveda.cloud/oauth-authorized/keycloak
       - http://sm2a.dev.disasters.openveda.cloud/oauth-authorized/keycloak
     webOrigins:
-      - https://sm2a.disasters.openveda.cloud
+      - http://sm2a.disasters.openveda.cloud
       - http://sm2a.dev.disasters.openveda.cloud
     protocol: openid-connect
     standardFlowEnabled: true
