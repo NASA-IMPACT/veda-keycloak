@@ -234,6 +234,7 @@ clients:
       - email
       - dataset:create
       - dataset:update
+      - stac:collection:update
     protocolMappers:
       # Include user groups in JWT tokens
       - name: groups
@@ -401,9 +402,15 @@ clientScopeMappings:
   ingest-ui:
     - clientScope: dataset:create
       roles:
+        - Admin
         - Editor
     - clientScope: dataset:update
       roles:
+        - Admin
+        - Editor
+    - clientScope: stac:collection:update
+      roles:
+        - Admin
         - Editor
     - clientScope: dataset:limited-access
       roles:
