@@ -166,7 +166,7 @@ clients:
           claim.name: roles
           jsonType.label: String
           multivalued: "true"
-          usermodel.clientRoleMapping.clientId: jupyterhub-disasters
+          usermodel.clientRoleMapping.clientId: disasters-jupyterhub-staging
           usermodel.clientRoleMapping.rolePrefix: ""
 
 
@@ -196,7 +196,7 @@ clients:
           claim.name: roles
           jsonType.label: String
           multivalued: "true"
-          usermodel.clientRoleMapping.clientId: jupyterhub-disasters
+          usermodel.clientRoleMapping.clientId: disasters-jupyterhub
           usermodel.clientRoleMapping.rolePrefix: ""
 
 roles:
