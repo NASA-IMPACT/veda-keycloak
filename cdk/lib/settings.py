@@ -22,6 +22,8 @@ class Settings(BaseSettings):
         pattern=r"^arn:aws:rds:[a-z0-9-]+:\d{12}:snapshot:.+$",
     )
     configure_route53: Optional[bool] = True
+    alb_access_logs_bucket: Optional[str] = None
+    alb_access_logs_prefix: Optional[str] = None
     
     @field_validator("rds_snapshot_identifier", mode="before")
     @classmethod
