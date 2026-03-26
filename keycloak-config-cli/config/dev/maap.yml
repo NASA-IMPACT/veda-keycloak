@@ -228,6 +228,9 @@ components:
                   "annotations": {
                     "inputTypePlaceholder": "Institution name"
                   },
+                  "required": {
+                    "roles": [ "admin", "user" ]
+                  },
                   "permissions": {
                     "view": [ "admin", "user" ],
                     "edit": [ "admin", "user" ]
@@ -240,6 +243,9 @@ components:
                   "displayName": "Project",
                   "validations": {},
                   "annotations": {},
+                  "required": {
+                    "roles": [ "admin", "user" ]
+                  },
                   "permissions": {
                     "view": [ "admin", "user" ],
                     "edit": [ "admin", "user" ]
@@ -252,6 +258,9 @@ components:
                   "displayName": "Sponsor Name",
                   "validations": {},
                   "annotations": {},
+                  "required": {
+                    "roles": [ "admin", "user" ]
+                  },
                   "permissions": {
                     "view": [ "admin", "user" ],
                     "edit": [ "admin", "user" ]
@@ -264,6 +273,9 @@ components:
                   "displayName": "Funding Source",
                   "validations": {},
                   "annotations": {},
+                  "required": {
+                    "roles": [ "admin", "user" ]
+                  },
                   "permissions": {
                     "view": [ "admin", "user" ],
                     "edit": [ "admin", "user" ]
