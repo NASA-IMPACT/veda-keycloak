@@ -99,11 +99,11 @@ clients:
     defaultClientScopes:
       - roles
 
-  - clientId: airflow-webserver-fab
-    name: Airflow Webserver FAB
+  - clientId: ghgc-airflow-webserver-fab
+    name: GHGC Airflow Webserver FAB
     rootUrl: https://sm2a.dev.ghg.center/
     publicClient: false
-    secret: $(env:AIRFLOW_WEBSERVER_FAB_CLIENT_SECRET)
+    secret: $(env:GHGC_AIRFLOW_WEBSERVER_FAB_CLIENT_SECRET)
     attributes:
       realm_client: "false"
       oidc.ciba.grant.enabled: "false"
@@ -148,7 +148,7 @@ roles:
         description: Can create and update STAC collections and items
       - name: No Basic Role
         description: Has no permissions
-    airflow-webserver-fab:
+    ghgc-airflow-webserver-fab:
       - name: Admin
         description: Has all possible permissions, including granting or revoking permissions from other users
       - name: Public
@@ -237,7 +237,7 @@ groups:
         - Admin
       ghgc-ingest-api:
         - Admin
-      airflow-webserver-fab:
+      ghgc-airflow-webserver-fab:
         - Admin
 
   - name: Developers
@@ -246,7 +246,7 @@ groups:
         - Admin
       ghgc-ingest-api:
         - Admin
-      airflow-webserver-fab:
+      ghgc-airflow-webserver-fab:
         - User
 
   - name: Data Editors
@@ -255,7 +255,7 @@ groups:
         - Editor
       ghgc-ingest-api:
         - Editor
-      airflow-webserver-fab:
+      ghgc-airflow-webserver-fab:
         - User
 
   - name: No Basic Role
@@ -264,7 +264,7 @@ groups:
         - Viewer
       ghgc-ingest-api:
         - No Basic Role
-      airflow-webserver-fab:
+      ghgc-airflow-webserver-fab:
         - Public
 
 identityProviders:
@@ -326,9 +326,9 @@ users:
   - username: service-account-airflow-webserver-fab
     emailVerified: true
     enabled: true
-    serviceAccountClientId: airflow-webserver-fab
+    serviceAccountClientId: ghgc-airflow-webserver-fab
     clientRoles:
-      airflow-webserver-fab:
+      ghgc-airflow-webserver-fab:
       - Dag_Launcher
   - username: service-account-airflow-stac-etl
     emailVerified: true
