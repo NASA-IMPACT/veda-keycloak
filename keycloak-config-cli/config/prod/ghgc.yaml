@@ -1,19 +1,19 @@
 ---
 enabled: true
 realm: ghgc
-displayName: Applications
+displayName: GHGC Applications
 displayNameHtml: GHGC 
 
 clients:
   - clientId: ghgc-stac
     name: GHGC STAC Catalog
-    rootUrl: https://dev.ghg.center/api/stac
+    rootUrl: https://earth.gov
     publicClient: true
     attributes: {}
     redirectUris:
-      - https://dev.ghg.center/api/stac/*
+      - https://earth.gov/ghgcenter/*
     webOrigins:
-      - https://dev.ghg.center/api/stac
+      - https://earth.gov
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -29,6 +29,46 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+    protocolMappers:
+      # Include user groups in JWT tokens with full paths
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "true"
+      - name: stac_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: stac_roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: ghgc-stac
+          usermodel.clientRoleMapping.rolePrefix: ""
+      - name: ingest_roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: ingest_roles
+          jsonType.label: String
+          multivalued: "true"
+          usermodel.clientRoleMapping.clientId: ghgc-ingest-api
+          usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: ghgc-airflow-stac-etl
     name: GHGC Airflow STAC ETL
@@ -53,15 +93,13 @@ clients:
   
   - clientId: ghgc-ingest-api
     name: GHGC Ingest API
-    rootUrl: https://dev.ghg.center/api/ingest
+    rootUrl: https://earth.gov
     publicClient: true
     attributes: {}
     redirectUris:
-      - https://dev.ghg.center/api/ingest/*
-      - https://staging.earth.gov/ghgcenter/api/ingest/*
+      - https://earth.gov/*
     webOrigins:
-      - https://dev.ghg.center
-      - https://staging.earth.gov
+      - https://earth.gov
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -77,6 +115,22 @@ clients:
       - stac:collection:create
       - stac:collection:update
       - stac:collection:delete
+    protocolMappers:
+      # Include user groups in JWT tokens
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          introspection.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
+          multivalued: "true"
+          full.path: "true"
+          usermodel.clientRoleMapping.clientId: ingest-api
+          usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: ghgc-airflow-ingest-api-etl
     name: GHGC Airflow Ingest API ETL
