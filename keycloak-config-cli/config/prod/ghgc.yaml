@@ -152,6 +152,37 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
+
+  - clientId: ghgc-airflow-webserver-fab
+    name: GHGC Airflow Webserver FAB
+    rootUrl: https://sm2a.ghgcenter.earth.gov
+    publicClient: false
+    secret: $(env:GHGC_AIRFLOW_WEBSERVER_FAB_CLIENT_SECRET)
+    attributes:
+      realm_client: "false"
+      oidc.ciba.grant.enabled: "false"
+      backchannel.logout.session.required: "true"
+      standard.token.exchange.enabled: "false"
+      oauth2.device.authorization.grant.enabled: "false"
+      backchannel.logout.revoke.offline.tokens: "false"
+    redirectUris:
+      - https://sm2a.ghgcenter.earth.gov/oauth-authorized/keycloak
+    webOrigins:
+      - https://sm2a.ghgcenter.earth.gov
+    protocol: openid-connect
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: true
+    serviceAccountsEnabled: true
+    fullScopeAllowed: true
+    frontchannelLogout: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
     
 roles:
   client:
@@ -169,6 +200,17 @@ roles:
         description: Can create and update STAC collections and items
       - name: No Basic Role
         description: Has no permissions
+    ghgc-airflow-webserver-fab:
+      - name: Admin
+        description: Has all possible permissions, including granting or revoking permissions from other users
+      - name: Public
+        description: No permissions
+      - name: Viewer
+        description: Limited read permissions
+      - name: User
+        description: Viewer permissions plus additional permissions
+      - name: Dag_Launcher
+        description: Programmatic DAG runs
 
 clientScopeMappings:
   ghgc-stac:
@@ -247,6 +289,8 @@ groups:
         - Admin
       ghgc-ingest-api:
         - Admin
+      ghgc-airflow-webserver-fab:
+        - Admin
 
   - name: Developers
     clientRoles:
@@ -254,6 +298,8 @@ groups:
         - Admin
       ghgc-ingest-api:
         - Admin
+      ghgc-airflow-webserver-fab:
+        - User
 
   - name: Data Editors
     clientRoles:
@@ -261,6 +307,8 @@ groups:
         - Editor
       ghgc-ingest-api:
         - Editor
+      ghgc-airflow-webserver-fab:
+        - User
 
   - name: No Basic Role
     clientRoles:
@@ -268,6 +316,8 @@ groups:
         - Viewer
       ghgc-ingest-api:
         - No Basic Role
+      ghgc-airflow-webserver-fab:
+        - Public
 
 identityProviders:
   # CILogon
@@ -325,6 +375,13 @@ authenticatorConfig:
       defaultProvider: cilogon
 
 users:
+  - username: service-account-airflow-webserver-fab
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: ghgc-airflow-webserver-fab
+    clientRoles:
+      ghgc-airflow-webserver-fab:
+      - Dag_Launcher
   - username: service-account-airflow-stac-etl
     emailVerified: true
     enabled: true
