@@ -377,6 +377,20 @@ clients:
           config:
             groups: '[{"path":"/Data Editors","extendChildren":false}]'
             groupsClaim: "groups"
+        - name: EIC Airflow STAC ETL Service Account
+          description: EIC Airflow STAC ETL service account user policy
+          type: user
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            users: '["service-account-eic-airflow-stac-etl"]'
+        - name: EIC Airflow Ingest API ETL Service Account
+          description: EIC Airflow Ingest API ETL service account user policy
+          type: user
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            users: '["service-account-eic-airflow-ingest-api-etl"]'
         # Public Collections Permissions
         - name: Public Collections Permission - Create, Update
           type: scope
@@ -385,7 +399,7 @@ clients:
           config:
             resources: '["stac:collection:public:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
         - name: Public Collections Permission - Read
           type: scope
           logic: POSITIVE
@@ -401,7 +415,7 @@ clients:
           config:
             resources: '["stac:collection:public:*"]'
             scopes: '["delete"]'
-            applyPolicies: '["Air Quality Admins", "Water Insight Admins","VEDA Admins", "GHGC Admins", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Water Insight Admins","VEDA Admins", "GHGC Admins", "Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
         # Public Items Permissions
         - name: Public Items Permission - Create, Update
           type: scope
@@ -410,7 +424,7 @@ clients:
           config:
             resources: '["stac:item:public:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
         - name: Public Items Permission - Read
           type: scope
           logic: POSITIVE
@@ -426,7 +440,7 @@ clients:
           config:
             resources: '["stac:item:public:*"]'
             scopes: '["delete"]'
-            applyPolicies: '["Air Quality Admins", "Water Insight Admins","VEDA Admins","GHGC Admins","Developers"]'
+            applyPolicies: '["Air Quality Admins", "Water Insight Admins","VEDA Admins","GHGC Admins","Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
         # GHGC - Collections Permissions
         - name: GHGC - Collections - Create, Update
           type: scope

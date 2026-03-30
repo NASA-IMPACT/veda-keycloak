@@ -480,6 +480,20 @@ clients:
           config:
             groups: '[{"path":"/Data Editors","extendChildren":false}]'
             groupsClaim: ""
+        - name: Airflow STAC ETL Service Account
+          description: Airflow STAC ETL service account user policy
+          type: user
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            users: '["service-account-airflow-stac-etl"]'
+        - name: Airflow Ingest API ETL Service Account
+          description: Airflow Ingest API ETL service account user policy
+          type: user
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            users: '["service-account-airflow-ingest-api-etl"]'
         # Public Collections Permissions
         - name: Public Collections Permission - Create, Update
           type: scope
@@ -488,7 +502,7 @@ clients:
           config:
             resources: '["stac:collection:public:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers", "Airflow STAC ETL Service Account", "Airflow Ingest API ETL Service Account"]'
         - name: Public Collections Permission - Read
           type: scope
           logic: POSITIVE
@@ -504,7 +518,7 @@ clients:
           config:
             resources: '["stac:collection:public:*"]'
             scopes: '["delete"]'
-            applyPolicies: '["Fake Tenant 3 Admins","Fake Tenant 2 Admins", "Fake Tenant 1 Admins", "Developers"]'
+            applyPolicies: '["Fake Tenant 3 Admins","Fake Tenant 2 Admins", "Fake Tenant 1 Admins", "Developers", "Airflow STAC ETL Service Account", "Airflow Ingest API ETL Service Account"]'
         # Public Items Permissions
         - name: Public Items Permission - Create, Update
           type: scope
@@ -513,7 +527,7 @@ clients:
           config:
             resources: '["stac:item:public:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Fake Tenant 3 Admins", "Fake Tenant 3 Editors", "Fake Tenant 2 Admins", "Fake Tenant 2 Editors", "Fake Tenant 1 Admins", "Fake Tenant 1 Editors", "Data Editors", "Developers", "Airflow STAC ETL Service Account", "Airflow Ingest API ETL Service Account"]'
         - name: Public Items Permission - Read
           type: scope
           logic: POSITIVE
@@ -529,7 +543,7 @@ clients:
           config:
             resources: '["stac:item:public:*"]'
             scopes: '["delete"]'
-            applyPolicies: '["Fake Tenant 3 Admins","Fake Tenant 2 Admins","Fake Tenant 1 Admins","Developers"]'
+            applyPolicies: '["Fake Tenant 3 Admins","Fake Tenant 2 Admins","Fake Tenant 1 Admins","Developers", "Airflow STAC ETL Service Account", "Airflow Ingest API ETL Service Account"]'
         # Tenant1 - Collections Permissions
         - name: Tenant1 - Collections - Create, Update
           type: scope
