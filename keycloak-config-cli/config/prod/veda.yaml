@@ -306,6 +306,44 @@ clients:
       - dataset:update
       - dataset:create
 
+  - clientId: earth-gov-cms
+    name: Earth.gov CMS
+    rootUrl: https://pre.staging.earth.gov
+    publicClient: false
+    secret: $(env:EARTH_GOV_CMS_CLIENT_SECRET)
+    attributes: {}
+    redirectUris:
+      - https://pre.staging.earth.gov/api/auth/callback/keycloak
+      - https://pre.staging.earth.gov/admin/index.html
+    webOrigins:
+      - https://pre.staging.earth.gov
+    protocol: openid-connect
+    fullScopeAllowed: true
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: false
+    protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        config:
+          full.path: "false"
+          introspection.token.claim: "true"
+          userinfo.token.claim: "true"
+          multivalued: "true"
+          id.token.claim: "true"
+          lightweight.claim: "false"
+          access.token.claim: "true"
+    defaultClientScopes:
+      - acr
+      - basic
+      - email
+      - groups
+      - profile
+      - roles
+      - web-origins
+
 roles:
   client:
     grafana:
@@ -349,6 +387,11 @@ roles:
         description: Viewer permissions plus additional permissions
       - name: Dag_Launcher
         description: Programmatic DAG runs
+    earth-gov-cms:
+      - name: earth-gov-cms-editors
+        description: Allow editing content for earth.gov via CMS
+      - name: earth-gov-cms-publishers
+        description: Allow publishing content for earth.gov via CMS
 
 clientScopeMappings:
   stac:
@@ -559,6 +602,16 @@ groups:
                 - Editor
               ingest-ui:
                 - Editor
+
+  - name: Earth.gov CMS Editors
+    clientRoles:
+      earth-gov-cms:
+        - earth-gov-cms-editors
+    subGroups:
+      - name: Earth.gov CMS Publishers
+        clientRoles:
+          earth-gov-cms:
+            - earth-gov-cms-publishers
 
 identityProviders:
   # CILogon
