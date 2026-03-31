@@ -759,6 +759,8 @@ roles:
     earth-gov-cms:
       - name: earth-gov-cms-editors
         description: Allow editing content for earth.gov via CMS
+      - name: earth-gov-cms-publishers
+        description: Allow publishing content for earth.gov via CMS
     airflow-webserver-fab:
       - name: Admin
         description: Has all possible permissions, including granting or revoking permissions from other users
@@ -977,6 +979,11 @@ groups:
     clientRoles:
       earth-gov-cms:
         - earth-gov-cms-editors
+    subGroups:
+      - name: Earth.gov CMS Publishers
+        clientRoles:
+          earth-gov-cms:
+            - earth-gov-cms-publishers
 
 identityProviders:
   # CILogon
