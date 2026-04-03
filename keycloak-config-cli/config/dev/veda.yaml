@@ -1066,6 +1066,8 @@ users:
     emailVerified: true
     enabled: true
     serviceAccountClientId: airflow-stac-etl
+    groups:
+      - /Data Editors
     clientRoles:
       stac:
       - Admin
@@ -1073,6 +1075,8 @@ users:
     emailVerified: true
     enabled: true
     serviceAccountClientId: airflow-ingest-api-etl
+    groups:
+      - /Data Editors
     clientRoles:
       ingest-api:
       - Admin

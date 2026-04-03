@@ -991,6 +991,8 @@ users:
     emailVerified: true
     enabled: true
     serviceAccountClientId: eic-airflow-stac-etl
+    groups:
+      - /Data Editors
     clientRoles:
       eic-stac:
       - Admin
@@ -998,6 +1000,8 @@ users:
     emailVerified: true
     enabled: true
     serviceAccountClientId: eic-airflow-ingest-api-etl
+    groups:
+      - /Data Editors
     clientRoles:
       eic-ingest-api:
       - Admin
