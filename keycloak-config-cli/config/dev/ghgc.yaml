@@ -112,8 +112,8 @@ clients:
       oauth2.device.authorization.grant.enabled: "false"
       backchannel.logout.revoke.offline.tokens: "false"
     redirectUris:
-      - https://sm2a.dev.ghg.center/oauth-authorized/keycloak
-      - https://sm2a.staging.earth.gov/oauth-authorized/keycloak
+      - http://sm2a.dev.ghg.center/oauth-authorized/keycloak
+      - http://sm2a.staging.earth.gov/oauth-authorized/keycloak
     webOrigins:
       - https://sm2a.dev.ghg.center
       - https://sm2a.staging.earth.gov
