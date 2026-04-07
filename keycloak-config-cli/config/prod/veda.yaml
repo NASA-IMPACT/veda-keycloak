@@ -308,15 +308,15 @@ clients:
 
   - clientId: earth-gov-cms
     name: Earth.gov CMS
-    rootUrl: https://pre.staging.earth.gov
+    rootUrl: https://staging.earth.gov
     publicClient: false
     secret: $(env:EARTH_GOV_CMS_CLIENT_SECRET)
     attributes: {}
     redirectUris:
-      - https://pre.staging.earth.gov/api/auth/callback/keycloak
-      - https://pre.staging.earth.gov/admin/index.html
+      - https://staging.earth.gov/api/auth/callback/keycloak
+      - https://staging.earth.gov/admin/index.html
     webOrigins:
-      - https://pre.staging.earth.gov
+      - https://staging.earth.gov
     protocol: openid-connect
     fullScopeAllowed: true
     standardFlowEnabled: true
