@@ -131,6 +131,9 @@ clients:
       - roles
       - basic
       - email
+    optionalClientScopes:
+      - dataset:update
+      - dataset:create
     
 roles:
   client:
@@ -228,6 +231,12 @@ clientScopes:
     protocol: openid-connect
   - name: stac:collection:delete
     description: Delete STAC collections
+    protocol: openid-connect
+  - name: dataset:create
+    description: Ingest new datasets
+    protocol: openid-connect
+  - name: dataset:update
+    description: Update existing datasets
     protocol: openid-connect
 
 groups:
