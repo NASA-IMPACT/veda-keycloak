@@ -152,6 +152,40 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
+
+  - clientId: ghgc-airflow-webserver-fab
+    name: GHGC Airflow Webserver FAB
+    rootUrl: https://sm2a.ghgcenter.earth.gov
+    publicClient: false
+    secret: $(env:GHGC_AIRFLOW_WEBSERVER_FAB_CLIENT_SECRET)
+    attributes:
+      realm_client: "false"
+      oidc.ciba.grant.enabled: "false"
+      backchannel.logout.session.required: "true"
+      standard.token.exchange.enabled: "false"
+      oauth2.device.authorization.grant.enabled: "false"
+      backchannel.logout.revoke.offline.tokens: "false"
+    redirectUris:
+      - https://sm2a.ghgcenter.earth.gov/oauth-authorized/keycloak
+    webOrigins:
+      - https://sm2a.ghgcenter.earth.gov
+    protocol: openid-connect
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: true
+    serviceAccountsEnabled: true
+    fullScopeAllowed: true
+    frontchannelLogout: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+    optionalClientScopes:
+      - dataset:update
+      - dataset:create
     
 roles:
   client:
@@ -169,6 +203,17 @@ roles:
         description: Can create and update STAC collections and items
       - name: No Basic Role
         description: Has no permissions
+    ghgc-airflow-webserver-fab:
+      - name: Admin
+        description: Has all possible permissions, including granting or revoking permissions from other users
+      - name: Public
+        description: No permissions
+      - name: Viewer
+        description: Limited read permissions
+      - name: User
+        description: Viewer permissions plus additional permissions
+      - name: Dag_Launcher
+        description: Programmatic DAG runs
 
 clientScopeMappings:
   ghgc-stac:
@@ -239,6 +284,12 @@ clientScopes:
   - name: stac:collection:delete
     description: Delete STAC collections
     protocol: openid-connect
+  - name: dataset:create
+    description: Ingest new datasets
+    protocol: openid-connect
+  - name: dataset:update
+    description: Update existing datasets
+    protocol: openid-connect
 
 groups:
   - name: System Administrators
@@ -247,6 +298,8 @@ groups:
         - Admin
       ghgc-ingest-api:
         - Admin
+      ghgc-airflow-webserver-fab:
+        - Admin
 
   - name: Developers
     clientRoles:
@@ -254,6 +307,8 @@ groups:
         - Admin
       ghgc-ingest-api:
         - Admin
+      ghgc-airflow-webserver-fab:
+        - User
 
   - name: Data Editors
     clientRoles:
@@ -261,6 +316,8 @@ groups:
         - Editor
       ghgc-ingest-api:
         - Editor
+      ghgc-airflow-webserver-fab:
+        - User
 
   - name: No Basic Role
     clientRoles:
@@ -268,6 +325,8 @@ groups:
         - Viewer
       ghgc-ingest-api:
         - No Basic Role
+      ghgc-airflow-webserver-fab:
+        - Public
 
 identityProviders:
   # CILogon
@@ -319,12 +378,83 @@ identityProviderMappers:
       claim: "profile.family_name"
       user.attribute: "lastName"
 
+# Login Flow Configuration
+browserFlow: Browser without Password
+authenticationFlows:
+  - alias: Browser without Password
+    description: browser based authentication without username password form
+    providerId: basic-flow
+    topLevel: true
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: auth-cookie
+        authenticatorFlow: false
+        requirement: ALTERNATIVE
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-spnego
+        authenticatorFlow: false
+        requirement: DISABLED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: ALTERNATIVE
+        priority: 30
+        autheticatorFlow: true
+        flowAlias: Browser without Password forms
+        userSetupAllowed: false
+  - alias: Browser without Password forms
+    description: Username, password, otp and other auth forms.
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticatorConfig: cilogon
+        authenticator: identity-provider-redirector
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticatorFlow: true
+        requirement: CONDITIONAL
+        priority: 21
+        autheticatorFlow: true
+        flowAlias: Browser without Password Browser - Conditional OTP
+        userSetupAllowed: false
+  - alias: Browser without Password Browser - Conditional OTP
+    description: Flow to determine if the OTP is required for the authentication
+    providerId: basic-flow
+    topLevel: false
+    builtIn: false
+    authenticationExecutions:
+      - authenticator: conditional-user-configured
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 10
+        autheticatorFlow: false
+        userSetupAllowed: false
+      - authenticator: auth-otp-form
+        authenticatorFlow: false
+        requirement: REQUIRED
+        priority: 20
+        autheticatorFlow: false
+        userSetupAllowed: false
 authenticatorConfig:
   - alias: cilogon
     config:
       defaultProvider: cilogon
 
 users:
+  - username: service-account-airflow-webserver-fab
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: ghgc-airflow-webserver-fab
+    clientRoles:
+      ghgc-airflow-webserver-fab:
+      - Dag_Launcher
   - username: service-account-airflow-stac-etl
     emailVerified: true
     enabled: true
