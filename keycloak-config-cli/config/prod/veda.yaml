@@ -212,6 +212,21 @@ clients:
     defaultClientScopes:
       - roles
 
+  - clientId: veda-airflow-token-exchange
+    name: Airflow token exchange (RFC 8693)
+    secret: $(env:VEDA_AIRFLOW_TOKEN_EXCHANGE_CLIENT_SECRET)
+    publicClient: false
+    attributes:
+      standard.token.exchange.enabled: "true"
+    protocol: openid-connect
+    fullScopeAllowed: false
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    defaultClientScopes:
+      - roles
+
 
   - clientId: ingest-ui
     name: Ingest UI
