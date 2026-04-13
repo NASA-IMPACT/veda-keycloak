@@ -326,7 +326,7 @@ authenticationFlows:
       - authenticatorConfig: edl
         authenticator: identity-provider-redirector
         authenticatorFlow: false
-        requirement: REQUIRED
+        requirement: ALTERNATIVE
         priority: 25
         autheticatorFlow: false
         userSetupAllowed: false
