@@ -327,6 +327,26 @@ clients:
             - name: "update"
             - name: "delete"
             - name: "read"
+        - name: stac:collection:eie:*
+          type: "stac-collection"
+          ownerManagedAccess: false
+          uris:
+            - "stac:collection:eie:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
+        - name: stac:item:eie:*
+          type: "stac-item"
+          ownerManagedAccess: false
+          uris:
+            - "stac:item:eie:*"
+          scopes:
+            - name: "create"
+            - name: "update"
+            - name: "delete"
+            - name: "read"
       policies:
         - name: GHGC Editors
           type: group
@@ -388,6 +408,21 @@ clients:
           config:
             groups: '[{"path":"/Tenants/air-quality/Admins","extendChildren":false}]'
             groupsClaim: "groups"
+        - name: EIE Editors
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/eie/Editors","extendChildren":false}]'
+            groupsClaim: "groups"
+        - name: EIE Admins
+          description: EIE Admins Group Policy
+          type: group
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            groups: '[{"path":"/Tenants/eie/Admins","extendChildren":false}]'
+            groupsClaim: "groups"
         - name: Developers
           description: Developers Group
           type: group
@@ -426,7 +461,7 @@ clients:
           config:
             resources: '["stac:collection:public:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
         - name: Public Collections Permission - Read
           type: scope
           logic: POSITIVE
@@ -434,7 +469,7 @@ clients:
           config:
             resources: '["stac:collection:public:*"]'
             scopes: '["read"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
         - name: Public Collections Permission - Delete
           type: scope
           logic: POSITIVE
@@ -442,7 +477,7 @@ clients:
           config:
             resources: '["stac:collection:public:*"]'
             scopes: '["delete"]'
-            applyPolicies: '["Air Quality Admins", "Water Insight Admins","VEDA Admins", "GHGC Admins", "Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
+            applyPolicies: '["Air Quality Admins", "Water Insight Admins","VEDA Admins", "GHGC Admins", "EIE Admins", "Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
         # Public Items Permissions
         - name: Public Items Permission - Create, Update
           type: scope
@@ -451,7 +486,7 @@ clients:
           config:
             resources: '["stac:item:public:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
         - name: Public Items Permission - Read
           type: scope
           logic: POSITIVE
@@ -459,7 +494,7 @@ clients:
           config:
             resources: '["stac:item:public:*"]'
             scopes: '["read"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
         - name: Public Items Permission - Delete
           type: scope
           logic: POSITIVE
@@ -467,7 +502,7 @@ clients:
           config:
             resources: '["stac:item:public:*"]'
             scopes: '["delete"]'
-            applyPolicies: '["Air Quality Admins", "Water Insight Admins","VEDA Admins","GHGC Admins","Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
+            applyPolicies: '["Air Quality Admins", "Water Insight Admins","VEDA Admins","GHGC Admins","EIE Admins","Developers", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
         # GHGC - Collections Permissions
         - name: GHGC - Collections - Create, Update
           type: scope
@@ -484,7 +519,7 @@ clients:
           config:
             resources: '["stac:collection:ghgc:*"]'
             scopes: '["read"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
         - name: GHGC - Collections - Delete
           type: scope
           logic: POSITIVE
@@ -509,7 +544,7 @@ clients:
           config:
             resources: '["stac:item:ghgc:*"]'
             scopes: '["read"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
         - name: GHGC - Items - Delete
           type: scope
           logic: POSITIVE
@@ -534,7 +569,7 @@ clients:
           config:
             resources: '["stac:collection:veda:*"]'
             scopes: '["read"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
         - name: VEDA - Collections - Delete
           type: scope
           logic: POSITIVE
@@ -559,7 +594,7 @@ clients:
           config:
             resources: '["stac:item:veda:*"]'
             scopes: '["read"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
         - name: VEDA - Items - Delete
           type: scope
           logic: POSITIVE
@@ -584,7 +619,7 @@ clients:
           config:
             resources: '["stac:collection:water-insight:*"]'
             scopes: '["read"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
         - name: Water Insight - Collections - Delete
           type: scope
           logic: POSITIVE
@@ -609,7 +644,7 @@ clients:
           config:
             resources: '["stac:item:water-insight:*"]'
             scopes: '["read"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
         - name: Water Insight - Items - Delete
           type: scope
           logic: POSITIVE
@@ -634,7 +669,7 @@ clients:
           config:
             resources: '["stac:collection:air-quality:*"]'
             scopes: '["read"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
         - name: Air Quality - Collections - Delete
           type: scope
           logic: POSITIVE
@@ -659,7 +694,7 @@ clients:
           config:
             resources: '["stac:item:air-quality:*"]'
             scopes: '["read"]'
-            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "Data Editors", "Developers"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
         - name: Air Quality - Items - Delete
           type: scope
           logic: POSITIVE
@@ -668,6 +703,56 @@ clients:
             resources: '["stac:item:air-quality:*"]'
             scopes: '["delete"]'
             applyPolicies: '["Air Quality Admins"]'
+        # EIE - Collections Permissions
+        - name: EIE - Collections - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:eie:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["EIE Admins","EIE Editors"]'
+        - name: EIE - Collections - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:collection:eie:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
+        - name: EIE - Collections - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:collection:eie:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["EIE Admins"]'
+        # EIE - Items Permissions
+        - name: EIE - Items - Create, Update
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:eie:*"]'
+            scopes: '["create","update"]'
+            applyPolicies: '["EIE Admins","EIE Editors"]'
+        - name: EIE - Items - Read
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: AFFIRMATIVE
+          config:
+            resources: '["stac:item:eie:*"]'
+            scopes: '["read"]'
+            applyPolicies: '["Air Quality Admins", "Air Quality Editors", "Water Insight Admins", "Water Insight Editors", "VEDA Admins", "VEDA Editors", "GHGC Admins", "GHGC Editors", "EIE Admins", "EIE Editors", "Data Editors", "Developers"]'
+        - name: EIE - Items - Delete
+          type: scope
+          logic: POSITIVE
+          decisionStrategy: UNANIMOUS
+          config:
+            resources: '["stac:item:eie:*"]'
+            scopes: '["delete"]'
+            applyPolicies: '["EIE Admins"]'
       scopes:
         - name: create
         - name: update
@@ -883,6 +968,20 @@ groups:
               eic-ingest-api:
                 - Editor
       - name: air-quality
+        subGroups:
+          - name: Admins
+            clientRoles:
+              eic-stac:
+                - Admin
+              eic-ingest-api:
+                - Admin
+          - name: Editors
+            clientRoles:
+              eic-stac:
+                - Editor
+              eic-ingest-api:
+                - Editor
+      - name: eie
         subGroups:
           - name: Admins
             clientRoles:
