@@ -20,6 +20,7 @@ clients:
     defaultClientScopes: &jupyterhub-default-client-scopes
       - basic
       - profile
+      - email
     protocolMappers:
       - name: client-roles-claim
         protocol: openid-connect
