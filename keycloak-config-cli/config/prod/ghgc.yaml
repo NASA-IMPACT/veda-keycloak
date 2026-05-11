@@ -166,7 +166,7 @@ clients:
       oauth2.device.authorization.grant.enabled: "false"
       backchannel.logout.revoke.offline.tokens: "false"
     redirectUris:
-      - https://sm2a.ghgcenter.earth.gov/oauth-authorized/keycloak
+      - http://sm2a.ghgcenter.earth.gov/oauth-authorized/keycloak
     webOrigins:
       - https://sm2a.ghgcenter.earth.gov
     protocol: openid-connect
