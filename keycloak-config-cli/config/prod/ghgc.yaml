@@ -129,7 +129,7 @@ clients:
           jsonType.label: String
           multivalued: "true"
           full.path: "true"
-          usermodel.clientRoleMapping.clientId: ingest-api
+          usermodel.clientRoleMapping.clientId: ghgc-ingest-api
           usermodel.clientRoleMapping.rolePrefix: ""
 
   - clientId: ghgc-airflow-ingest-api-etl
@@ -448,21 +448,21 @@ authenticatorConfig:
       defaultProvider: cilogon
 
 users:
-  - username: service-account-airflow-webserver-fab
+  - username: service-account-ghgc-airflow-webserver-fab
     emailVerified: true
     enabled: true
     serviceAccountClientId: ghgc-airflow-webserver-fab
     clientRoles:
       ghgc-airflow-webserver-fab:
       - Dag_Launcher
-  - username: service-account-airflow-stac-etl
+  - username: service-account-ghgc-airflow-stac-etl
     emailVerified: true
     enabled: true
     serviceAccountClientId: ghgc-airflow-stac-etl
     clientRoles:
       ghgc-stac:
       - Admin
-  - username: service-account-airflow-ingest-api-etl
+  - username: service-account-ghgc-airflow-ingest-api-etl
     emailVerified: true
     enabled: true
     serviceAccountClientId: ghgc-airflow-ingest-api-etl
