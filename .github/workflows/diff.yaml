@@ -20,10 +20,10 @@ jobs:
 
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 #v4.3.1
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a #v4.3.1
         with:
           role-to-assume: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
@@ -31,11 +31,11 @@ jobs:
           role-duration-seconds: 3600
 
       - name: Set up Python 3.13
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c #v4.9.1
         with:
           python-version: "3.13"
 
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
 
       - name: Install dependencies
         run: uv sync -p 3.13
@@ -68,7 +68,7 @@ jobs:
           APPLICATION_ROLE_ARN_GHGC_AIRFLOW_WEBSERVER_FAB: ${{ vars.APPLICATION_ROLE_ARN_GHGC_AIRFLOW_WEBSERVER_FAB }}
           APPLICATION_ROLE_ARN_GHGC_AIRFLOW_INGEST_API_ETL: ${{ vars.APPLICATION_ROLE_ARN_GHGC_AIRFLOW_INGEST_API_ETL }}
       - name: Diff CDK
-        uses: corymhall/cdk-diff-action@v2
+        uses: corymhall/cdk-diff-action@ad67041313333f7f2bd26b33f18fb134610a971e # v2.0.9
         with:
           failOnDestructiveChanges: false
           githubToken: ${{ secrets.GITHUB_TOKEN }}
