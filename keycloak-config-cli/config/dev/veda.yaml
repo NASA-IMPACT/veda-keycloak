@@ -3,6 +3,7 @@ enabled: true
 realm: veda
 displayName: Applications
 displayNameHtml: VEDA Ecosystem
+loginTheme: veda
 
 clients:
   - clientId: grafana
@@ -873,6 +874,19 @@ clientScopes:
     protocol: openid-connect
 
 groups:
+  - name: Realm Admin
+    clientRoles:
+      realm-management:
+        - realm-admin
+
+  - name: User Manager
+    clientRoles:
+      realm-management:
+        - view-realm
+        - view-users
+        - manage-users
+        - manage-groups
+
   - name: System Administrators
     clientRoles:
       grafana:

@@ -2,7 +2,8 @@
 enabled: true
 realm: ghgc
 displayName: Applications
-displayNameHtml: GHGC 
+displayNameHtml: GHGC
+loginTheme: ghgc
 
 clients:
   - clientId: ghgc-stac
@@ -240,6 +241,19 @@ clientScopes:
     protocol: openid-connect
 
 groups:
+  - name: Realm Admin
+    clientRoles:
+      realm-management:
+        - realm-admin
+
+  - name: User Manager
+    clientRoles:
+      realm-management:
+        - view-realm
+        - view-users
+        - manage-users
+        - manage-groups
+
   - name: System Administrators
     clientRoles:
       ghgc-stac:
