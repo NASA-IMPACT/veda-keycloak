@@ -511,7 +511,7 @@ clients:
           config:
             resources: '["stac:collection:ghgc:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["GHGC Editors","GHGC Admins"]'
+            applyPolicies: '["GHGC Editors","GHGC Admins","EIC Airflow STAC ETL Service Account","EIC Airflow Ingest API ETL Service Account"]'
         - name: GHGC - Collections - Read
           type: scope
           logic: POSITIVE
@@ -536,7 +536,7 @@ clients:
           config:
             resources: '["stac:item:ghgc:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["GHGC Editors","GHGC Admins"]'
+            applyPolicies: '["GHGC Editors","GHGC Admins","EIC Airflow STAC ETL Service Account","EIC Airflow Ingest API ETL Service Account"]'
         - name: GHGC - Items - Read
           type: scope
           logic: POSITIVE
@@ -561,7 +561,7 @@ clients:
           config:
             resources: '["stac:collection:veda:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["VEDA Editors", "VEDA Admins"]'
+            applyPolicies: '["VEDA Editors", "VEDA Admins", "EIC Airflow STAC ETL Service Account", "EIC Airflow Ingest API ETL Service Account"]'
         - name: VEDA - Collections - Read
           type: scope
           logic: POSITIVE
@@ -586,7 +586,7 @@ clients:
           config:
             resources: '["stac:item:veda:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["VEDA Admins","VEDA Editors"]'
+            applyPolicies: '["VEDA Admins","VEDA Editors","EIC Airflow STAC ETL Service Account","EIC Airflow Ingest API ETL Service Account"]'
         - name: VEDA - Items - Read
           type: scope
           logic: POSITIVE
@@ -611,7 +611,7 @@ clients:
           config:
             resources: '["stac:collection:water-insight:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["Water Insight Admins","Water Insight Editors"]'
+            applyPolicies: '["Water Insight Admins","Water Insight Editors","EIC Airflow STAC ETL Service Account","EIC Airflow Ingest API ETL Service Account"]'
         - name: Water Insight - Collections - Read
           type: scope
           logic: POSITIVE
@@ -636,7 +636,7 @@ clients:
           config:
             resources: '["stac:item:water-insight:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["Water Insight Admins","Water Insight Editors"]'
+            applyPolicies: '["Water Insight Admins","Water Insight Editors","EIC Airflow STAC ETL Service Account","EIC Airflow Ingest API ETL Service Account"]'
         - name: Water Insight - Items - Read
           type: scope
           logic: POSITIVE
@@ -661,7 +661,7 @@ clients:
           config:
             resources: '["stac:collection:air-quality:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["Air Quality Admins","Air Quality Editors"]'
+            applyPolicies: '["Air Quality Admins","Air Quality Editors","EIC Airflow STAC ETL Service Account","EIC Airflow Ingest API ETL Service Account"]'
         - name: Air Quality - Collections - Read
           type: scope
           logic: POSITIVE
@@ -686,7 +686,7 @@ clients:
           config:
             resources: '["stac:item:air-quality:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["Air Quality Admins","Air Quality Editors"]'
+            applyPolicies: '["Air Quality Admins","Air Quality Editors","EIC Airflow STAC ETL Service Account","EIC Airflow Ingest API ETL Service Account"]'
         - name: Air Quality - Items - Read
           type: scope
           logic: POSITIVE
@@ -711,7 +711,7 @@ clients:
           config:
             resources: '["stac:collection:eie:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["EIE Admins","EIE Editors"]'
+            applyPolicies: '["EIE Admins","EIE Editors","EIC Airflow STAC ETL Service Account","EIC Airflow Ingest API ETL Service Account"]'
         - name: EIE - Collections - Read
           type: scope
           logic: POSITIVE
@@ -736,7 +736,7 @@ clients:
           config:
             resources: '["stac:item:eie:*"]'
             scopes: '["create","update"]'
-            applyPolicies: '["EIE Admins","EIE Editors"]'
+            applyPolicies: '["EIE Admins","EIE Editors","EIC Airflow STAC ETL Service Account","EIC Airflow Ingest API ETL Service Account"]'
         - name: EIE - Items - Read
           type: scope
           logic: POSITIVE
