@@ -1,7 +1,7 @@
 ---
 enabled: true
 realm: veda
-displayName: Applications
+displayName: VEDA
 displayNameHtml: VEDA Ecosystem
 
 clients:
