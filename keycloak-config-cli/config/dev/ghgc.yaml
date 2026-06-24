@@ -1,7 +1,7 @@
 ---
 enabled: true
 realm: ghgc
-displayName: Applications
+displayName: GHGC
 displayNameHtml: GHGC
 loginTheme: ghgc
 
