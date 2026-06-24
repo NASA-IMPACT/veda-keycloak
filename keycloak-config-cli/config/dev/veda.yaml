@@ -885,7 +885,8 @@ groups:
         - view-realm
         - view-users
         - manage-users
-        - manage-groups
+        - query-users
+        - query-groups
 
   - name: System Administrators
     clientRoles:
