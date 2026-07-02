@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-server-spi-private</artifactId>
-            <version>26.0.0</version>
+            <version>26.6.3</version>
             <scope>provided</scope>
         </dependency>
         <!-- Keycloak Social Identity Providers -->
