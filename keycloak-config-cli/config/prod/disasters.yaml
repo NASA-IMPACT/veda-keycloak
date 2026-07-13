@@ -2,7 +2,8 @@
 enabled: true
 realm: disasters
 displayName: Disasters
-displayNameHtml: disasters
+displayNameHtml: Disasters
+loginTheme: disasters
 
 clients:
   - clientId: disasters-stac
@@ -400,6 +401,21 @@ clientScopes:
     protocol: openid-connect
 
 groups:
+
+  - name: Realm Admin
+    clientRoles:
+      realm-management:
+        - realm-admin
+
+  - name: User Manager
+    clientRoles:
+      realm-management:
+        - view-realm
+        - view-users
+        - manage-users
+        - query-users
+        - query-groups
+
   - name: System Administrators
     clientRoles:
       disasters-stac:
