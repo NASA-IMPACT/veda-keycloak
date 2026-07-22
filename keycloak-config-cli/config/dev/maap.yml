@@ -121,6 +121,28 @@ clients:
       - email
       - roles
 
+  # MAAP Console admin service account — the console BFF exchanges these
+  # client credentials for an admin token to read/write JupyterHub group
+  # membership via the Keycloak Admin API (Review User modal). Its
+  # realm-management roles are assigned in the users: section below.
+  - clientId: maap-console-admin
+    name: MAAP Console Admin Service
+    secret: $(env:MAAP_CONSOLE_ADMIN_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    protocol: openid-connect
+    # Full scope so the service account's realm-management roles reach the
+    # token (with fullScopeAllowed=false they are stripped and every Admin
+    # API call 403s). Safe: this client has no browser flows and its service
+    # account holds only the four query/view/manage roles.
+    fullScopeAllowed: true
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    defaultClientScopes:
+      - roles
+
 roles:
   realm:
     # The MAAP API bootstraps each member's EDL (URS) token via Keycloak's
@@ -534,3 +556,17 @@ authenticatorConfig:
       defaultProvider: edl
   - alias: admin-login
     config: {}
+
+users:
+  # Service account for maap-console-admin: minimal realm-management roles for
+  # hub-group administration (user lookup, group listing, membership writes).
+  - username: service-account-maap-console-admin
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: maap-console-admin
+    clientRoles:
+      realm-management:
+        - query-groups
+        - query-users
+        - view-users
+        - manage-users
