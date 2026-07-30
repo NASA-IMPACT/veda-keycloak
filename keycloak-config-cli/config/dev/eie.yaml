@@ -16,7 +16,7 @@ verifyEmail: true
 
 bruteForceProtected: true
 permanentLockout: false
-failureFactor: 30
+failureFactor: 10
 waitIncrementSeconds: 60
 maxFailureWaitSeconds: 900
 minimumQuickLoginWaitSeconds: 60
