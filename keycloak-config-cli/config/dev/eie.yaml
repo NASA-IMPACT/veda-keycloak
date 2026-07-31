@@ -1,0 +1,278 @@
+---
+enabled: true
+realm: eie
+displayName: Earth Information Explorer
+displayNameHtml: <div class="kc-logo-text"><span>Earth Information Explorer</span></div>
+loginTheme: eie
+
+registrationAllowed: true
+registrationEmailAsUsername: true
+loginWithEmailAllowed: true
+duplicateEmailsAllowed: false
+resetPasswordAllowed: true
+rememberMe: true
+editUsernameAllowed: false
+verifyEmail: true
+
+bruteForceProtected: true
+permanentLockout: false
+failureFactor: 10
+waitIncrementSeconds: 60
+maxFailureWaitSeconds: 900
+minimumQuickLoginWaitSeconds: 60
+quickLoginCheckMilliSeconds: 1000
+maxDeltaTimeSeconds: 43200
+
+accessTokenLifespan: 300
+accessCodeLifespan: 60
+accessCodeLifespanUserAction: 300
+actionTokenGeneratedByUserLifespan: 300
+ssoSessionIdleTimeout: 1800
+ssoSessionMaxLifespan: 36000
+offlineSessionMaxLifespanEnabled: false
+oauth2DeviceCodeLifespan: 600
+
+eventsListeners:
+  - jboss-logging
+
+smtpServer:
+  host: $(env:EIE_SMTP_HOST:-mailpit)
+  port: $(env:EIE_SMTP_PORT:-1025)
+  from: $(env:EIE_SMTP_FROM:-no-reply@earth.gov)
+  fromDisplayName: Earth Information Explorer
+  ssl: "false"
+  starttls: "false"
+  auth: "false"
+
+components:
+  org.keycloak.userprofile.UserProfileProvider:
+    - providerId: declarative-user-profile
+      config:
+        kc.user.profile.config:
+          - |
+            {
+              "attributes": [
+                {
+                  "name": "username",
+                  "displayName": "${username}",
+                  "validations": {
+                    "length": { "min": 3, "max": 255 },
+                    "username-prohibited-characters": {},
+                    "up-username-not-idn-homograph": {}
+                  },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "email",
+                  "displayName": "${email}",
+                  "validations": {
+                    "email": {},
+                    "length": { "max": 255 }
+                  },
+                  "required": { "roles": [ "user" ] },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "firstName",
+                  "displayName": "${firstName}",
+                  "validations": {
+                    "length": { "max": 255 },
+                    "person-name-prohibited-characters": {}
+                  },
+                  "required": { "roles": [ "user" ] },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "lastName",
+                  "displayName": "${lastName}",
+                  "validations": {
+                    "length": { "max": 255 },
+                    "person-name-prohibited-characters": {}
+                  },
+                  "required": { "roles": [ "user" ] },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "organization",
+                  "displayName": "Organization",
+                  "validations": { "length": { "max": 255 } },
+                  "required": { "roles": [ "user" ] },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "jobTitle",
+                  "displayName": "Job title",
+                  "validations": { "length": { "max": 255 } },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "role",
+                  "displayName": "Role",
+                  "validations": { "length": { "max": 255 } },
+                  "required": { "roles": [ "user" ] },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "country",
+                  "displayName": "Country",
+                  "validations": { "length": { "max": 255 } },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "dataFamiliarity",
+                  "displayName": "Data familiarity",
+                  "validations": { "length": { "max": 255 } },
+                  "required": { "roles": [ "user" ] },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "topics",
+                  "displayName": "Earth science topics",
+                  "multivalued": true,
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  }
+                },
+                {
+                  "name": "region",
+                  "displayName": "Primary geographic region",
+                  "validations": { "length": { "max": 255 } },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "useCase",
+                  "displayName": "Intended use cases",
+                  "multivalued": true,
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  }
+                },
+                {
+                  "name": "updatesOptIn",
+                  "displayName": "Updates opt-in",
+                  "validations": { "length": { "max": 10 } },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                },
+                {
+                  "name": "contactOptIn",
+                  "displayName": "Contact opt-in",
+                  "validations": { "length": { "max": 10 } },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
+                }
+              ],
+              "groups": [],
+              "unmanagedAttributePolicy": "ENABLED"
+            }
+
+roles:
+  realm:
+    - name: user
+      description: Standard EIE user
+    - name: admin
+      description: EIE administrator
+
+clients:
+  - clientId: eie-api
+    name: EIE Backend API
+    description: Earth Information Explorer backend API client
+    publicClient: false
+    secret: $(env:EIE_API_CLIENT_SECRET)
+    protocol: openid-connect
+    rootUrl: $(env:EIE_API_CLIENT_URL:-http://localhost:3000)
+    redirectUris:
+      - $(env:EIE_API_CLIENT_URL:-http://localhost:3000)/*
+      - http://localhost:8000/*
+    webOrigins:
+      - $(env:EIE_API_CLIENT_URL:-http://localhost:3000)
+      - http://localhost:8000
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: false
+    fullScopeAllowed: true
+    frontchannelLogout: true
+    attributes:
+      access.token.lifespan: "300"
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+    optionalClientScopes:
+      - address
+      - phone
+      - offline_access
+      - microprofile-jwt
+    protocolMappers:
+      - name: roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-realm-role-mapper
+        config:
+          multivalued: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: roles
+          jsonType.label: String
+      - name: organization
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-attribute-mapper
+        config:
+          user.attribute: organization
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: organization
+          jsonType.label: String
