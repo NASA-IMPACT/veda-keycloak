@@ -45,6 +45,19 @@ clients:
           multivalued: "true"
           usermodel.clientRoleMapping.clientId: jupyterhub-maap
           usermodel.clientRoleMapping.rolePrefix: ""
+      # Unconditionally stamp the MAAP API audience (its KEYCLOAK_CLIENT_ID) into
+      # access tokens. The roles-scope audience-resolve mapper only adds
+      # jupyterhub-maap when the user already holds a client role here, so a
+      # brand-new role-less user's token omits it and the API's
+      # jwt.decode(audience=jupyterhub-maap) 401s — which breaks the hub
+      # post-auth webhook that auto-creates the pending member.
+      - name: maap-api-audience
+        protocol: openid-connect
+        protocolMapper: oidc-audience-mapper
+        config:
+          included.client.audience: jupyterhub-maap
+          access.token.claim: "true"
+          id.token.claim: "false"
 
   # MAAP WordPress (uat.maap-project.org) — replaces the legacy CAS SSO
   # integration. WordPress sends this client's access tokens to the MAAP API
@@ -120,6 +133,17 @@ clients:
       - profile
       - email
       - roles
+    protocolMappers:
+      # Same audience fix as jupyterhub-maap: without this, a role-less user's
+      # console token omits the jupyterhub-maap audience and 401s against the
+      # MAAP API (e.g. the members/self call that auto-creates the member).
+      - name: maap-api-audience
+        protocol: openid-connect
+        protocolMapper: oidc-audience-mapper
+        config:
+          included.client.audience: jupyterhub-maap
+          access.token.claim: "true"
+          id.token.claim: "false"
 
   # MAAP Console admin service account — the console BFF exchanges these
   # client credentials for an admin token to read/write JupyterHub group
