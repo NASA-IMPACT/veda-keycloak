@@ -16,7 +16,13 @@
         </div>
 
         <#if !messageHeader??>
-            <p class="eie-subtitle">${message.summary}</p>
+            <#-- The header already shows the summary. On the "Email verified"
+                 page, use the body to say what happens next instead. -->
+            <#if message.summary == msg("emailVerified")>
+                <p class="eie-subtitle">${msg("eieAccountUnderReview")}</p>
+            <#else>
+                <p class="eie-subtitle">${message.summary}</p>
+            </#if>
         </#if>
 
         <#if requiredActions??>
