@@ -31,7 +31,7 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-services</artifactId>
-            <version>26.0.0</version>
+            <version>26.7.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- Provides jakarta.ws.rs.core.UriBuilder, used to build the sign-in link -->
