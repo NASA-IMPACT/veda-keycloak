@@ -1,25 +1,35 @@
+<#--
+  Shown while the VERIFY_EMAIL required action is pending, i.e. straight after
+  registration. At this point the account is neither confirmed nor approved, so
+  this page only tells the user what to do next: confirm the address, then wait
+  for the approval email sent by the email-on-approval listener.
+-->
 <#import "template.ftl" as layout>
-<@layout.registrationLayout bodyClass="eie-center" displayMessage=false; section>
+<#-- displayMessage=false: Keycloak's stock "you need to verify your email"
+     warning is redundant here, and it re-renders unchanged after a re-send. -->
+<@layout.registrationLayout bodyClass="eie-center" displayMessage=false displayInfo=true; section>
     <#if section = "header">
-        You&#39;re all set
+        Check your email
     <#elseif section = "subheader">
     <#elseif section = "form">
         <div class="eie-status-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 6 9 17l-5-5"/>
+                <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
             </svg>
         </div>
 
-        <p class="eie-subtitle" style="text-align:center;">
-            We&#39;ve loaded a default layer to get you started. Ask EIE to find the right dataset for what you&#39;re looking at, and it&#39;ll surface quick summary stats.
+        <p class="eie-subtitle">
+            <#if user?? && user.email?has_content>
+                We sent a confirmation link to <strong>${user.email}</strong>. Open it to confirm your email address.
+            <#else>
+                We sent a confirmation link to your email address. Open it to confirm the address.
+            </#if>
         </p>
 
-        <#if client?? && client.baseUrl?has_content>
-            <a href="${client.baseUrl}" class="eie-btn-primary">Open Earth Information Explorer &rarr;</a>
-        <#else>
-            <a href="${url.loginUrl}" class="eie-btn-primary">Open Earth Information Explorer &rarr;</a>
-        </#if>
-
-        <p class="eie-footer">You have <strong>20 free queries</strong> in the internal preview. Usage resets monthly.</p>
+        <p class="eie-subtitle">
+            After that, an Earth Information Explorer administrator reviews your request, usually within two business days. We will email you as soon as your account is approved.
+        </p>
+    <#elseif section = "info">
+        Did not get the email? <a href="${url.loginAction}">Send it again</a>.
     </#if>
 </@layout.registrationLayout>

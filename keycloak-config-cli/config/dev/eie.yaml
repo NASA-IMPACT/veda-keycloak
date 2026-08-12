@@ -4,6 +4,7 @@ realm: eie
 displayName: Earth Information Explorer
 displayNameHtml: <div class="kc-logo-text"><span>Earth Information Explorer</span></div>
 loginTheme: eie
+emailTheme: eie
 
 registrationAllowed: true
 registrationEmailAsUsername: true
@@ -34,6 +35,8 @@ oauth2DeviceCodeLifespan: 600
 
 eventsListeners:
   - jboss-logging
+  # Emails the user when an admin grants them the eie-approved role
+  - email-on-approval
 
 smtpServer:
   host: $(env:EIE_SMTP_HOST:-mailpit)
@@ -220,6 +223,8 @@ roles:
       description: Standard EIE user
     - name: admin
       description: EIE administrator
+    - name: eie-approved
+      description: Access approved by an administrator; granting it emails the user that they can sign in.
 
 clients:
   - clientId: eie-api
