@@ -289,10 +289,10 @@ clients:
     # Both http and https needed during SM2A upgrade rollout (v0.21.4-dev.1 adds https redirect support).
     # Remove http entries once all instances are upgraded.
     redirectUris:
-      - http://sm2a.sit.openveda.cloud/oauth-authorized/keycloak
       - http://sm2a.sit.openveda.cloud/auth/oauth-authorized/keycloak
-      - http://sm2a.dev.openveda.cloud/oauth-authorized/keycloak
-      - https://sm2a.dev.openveda.cloud/oauth-authorized/keycloak
+      - https://sm2a.sit.openveda.cloud/auth/oauth-authorized/keycloak
+      - http://sm2a.dev.openveda.cloud/auth/oauth-authorized/keycloak
+      - https://sm2a.dev.openveda.cloud/auth/oauth-authorized/keycloak
       - http://sm2a.staging.openveda.cloud/oauth-authorized/keycloak
     webOrigins:
       - https://sm2a.sit.openveda.cloud
