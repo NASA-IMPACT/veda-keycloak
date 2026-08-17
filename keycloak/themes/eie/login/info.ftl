@@ -18,7 +18,7 @@
         <#if !messageHeader??>
             <#-- The header already shows the summary. On the "Email verified"
                  page, use the body to say what happens next instead. -->
-            <#if message.summary == msg("emailVerified")>
+            <#if message.summary == msg("emailVerified") || message.summary == msg("emailAlreadyVerified")>
                 <p class="eie-subtitle">${msg("eieAccountUnderReview")}</p>
             <#else>
                 <p class="eie-subtitle">${message.summary}</p>
