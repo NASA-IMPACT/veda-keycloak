@@ -68,11 +68,7 @@
                         <input type="hidden" id="id-hidden-input" name="credentialId" <#if auth.selectedCredential?has_content>value="${auth.selectedCredential}"</#if>/>
 
                         <div class="eie-row-actions">
-                            <#if realm.password && realm.registrationAllowed && !registrationDisabled??>
-                                <a href="${url.registrationUrl}">Create an account</a>
-                            <#else>
-                                <span></span>
-                            </#if>
+                            <span></span>
                             <button tabindex="4" class="eie-btn-primary" name="login" id="kc-login" type="submit">Sign in &rarr;</button>
                         </div>
                     </form>
