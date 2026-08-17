@@ -180,7 +180,7 @@
                 </div>
 
                 <div class="eie-row-actions">
-                    <a href="${url.loginUrl}" class="eie-btn-secondary">&larr; Back to sign in</a>
+                    <a href="${(url.loginRestartFlowUrl!'')?has_content?then(url.loginRestartFlowUrl, url.loginUrl)}" class="eie-btn-secondary">&larr; Back to sign in</a>
                     <button type="button" class="eie-btn-primary" data-wizard-next="2">Continue &rarr;</button>
                 </div>
             </div>
