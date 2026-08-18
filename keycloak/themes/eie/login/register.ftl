@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="eie-field">
-                    <label for="email">Email address</label>
+                    <label for="email">Email address <span class="eie-required">*</span></label>
                     <input type="email" id="email" name="email" required class="eie-input-muted"
                            value="${(register.formData.email!'')}" autocomplete="email"
                            placeholder="you@nasa.gov"
