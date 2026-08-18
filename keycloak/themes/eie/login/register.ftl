@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="eie-field">
-                    <label for="email">Email address</label>
+                    <label for="email">Email address <span class="eie-required">*</span></label>
                     <input type="email" id="email" name="email" required class="eie-input-muted"
                            value="${(register.formData.email!'')}" autocomplete="email"
                            placeholder="you@nasa.gov"
@@ -180,7 +180,7 @@
                 </div>
 
                 <div class="eie-row-actions">
-                    <a href="${url.loginUrl}" class="eie-btn-secondary">&larr; Back to sign in</a>
+                    <a href="${(url.loginRestartFlowUrl!'')?has_content?then(url.loginRestartFlowUrl, url.loginUrl)}" class="eie-btn-secondary">&larr; Back to sign in</a>
                     <button type="button" class="eie-btn-primary" data-wizard-next="2">Continue &rarr;</button>
                 </div>
             </div>
@@ -247,7 +247,7 @@
 
                 <div class="eie-row-actions">
                     <button type="button" class="eie-btn-secondary" data-wizard-back="1">&larr; Back</button>
-                    <button class="eie-btn-primary" type="submit">Start exploring &rarr;</button>
+                    <button class="eie-btn-primary" type="submit">Complete &rarr;</button>
                 </div>
             </div>
         </form>
