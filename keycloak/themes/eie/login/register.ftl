@@ -247,7 +247,7 @@
 
                 <div class="eie-row-actions">
                     <button type="button" class="eie-btn-secondary" data-wizard-back="1">&larr; Back</button>
-                    <button class="eie-btn-primary" type="submit">Start exploring &rarr;</button>
+                    <button class="eie-btn-primary" type="submit">Complete &rarr;</button>
                 </div>
             </div>
         </form>
