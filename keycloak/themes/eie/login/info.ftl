@@ -1,5 +1,5 @@
 <#import "template.ftl" as layout>
-<@layout.registrationLayout displayMessage=false; section>
+<@layout.registrationLayout bodyClass="eie-center" displayMessage=false; section>
     <#if section = "header">
         <#if messageHeader??>
             ${messageHeader}
