@@ -16,7 +16,7 @@ clients:
       # post_logout_redirect_uri on the paired web env. Without this the
       # Keycloak session survives hub logout and oauth_login silently
       # re-authenticates.
-      post.logout.redirect.uris: https://www.maap-project.org/*
+      post.logout.redirect.uris: https://maap-project.org/*
     redirectUris:
       - https://hub.maap-project.org/hub/oauth_callback/*
     webOrigins:
