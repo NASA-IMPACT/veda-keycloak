@@ -3,16 +3,33 @@ name: Diff CDK Stack
 on:
   pull_request:
 
-permissions:
-  id-token: write # Required for OIDC authentication w/ AWS
-  contents: read
-
 run-name: Diff ${{ github.ref }}
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    environment: dev
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
+
+      - name: Setup UV
+        uses: astral-sh/setup-uv@ae62891fec2bb8e7d6c99fc78c9fec3a63790f8d # v10.0.0
+
+      - name: Install dependencies
+        run: |
+          uv sync --locked
+      
+      - name: Run pre-commit
+        run: |
+          uv run pre-commit run --all-files
   diff:
     runs-on: ubuntu-latest
     environment: dev
+    needs: [lint]
     permissions:
       contents: read
       pull-requests: write
