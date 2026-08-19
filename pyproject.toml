@@ -48,3 +48,6 @@ docstring-code-line-length = "dynamic"
 
 [tool.markdownlint-cli2.config]
 MD013 = false
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
