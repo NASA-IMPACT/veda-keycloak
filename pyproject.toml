@@ -10,13 +10,19 @@ dependencies = [
     "pydantic-settings>=2.8.1",
     "pyyaml>=6.0.2",
 ]
+[dependency-groups]
+dev = [
+    "pre-commit==4.6.2"
+]
+
+[tool.uv]
+default-groups = ["dev"]
 
 [tool.ruff]
 line-length = 88
 
 [tool.ruff.lint]
 select = [
-    "AIR",  # apache-airflow
     "E",    # pycodestyle errors
     "W",    # pycodestyle warnings
     "F",    # Pyflakes
