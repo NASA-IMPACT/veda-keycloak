@@ -195,7 +195,7 @@ class KeycloakConfig(Construct):
             "ApplyConfigLambda",
             code=_lambda.Code.from_inline(textwrap.dedent(code).strip()),
             handler="index.handler",
-            runtime=_lambda.Runtime.NODEJS_24_X,
+            runtime=_lambda.Runtime.NODEJS_22_X,
             timeout=Duration.minutes(5),
         )
 
