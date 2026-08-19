@@ -1,13 +1,12 @@
-from constructs import Construct
 from aws_cdk import (
     RemovalPolicy,
-    aws_rds as rds,
     aws_ec2 as ec2,
+    aws_rds as rds,
 )
+from constructs import Construct
 
 
 class KeycloakDatabase(Construct):
-
     def __init__(
         self,
         scope: Construct,
@@ -27,7 +26,8 @@ class KeycloakDatabase(Construct):
         :param database_name: Name of the database to create
         :param instance_identifier: Optional identifier for the RDS instance
         :param is_production: Whether the database is in production
-        :param kwargs: Additional DatabaseInstanceProps (except 'engine', which is set to Postgres)
+        :param kwargs: Additional DatabaseInstanceProps
+            (except 'engine', which is set to Postgres)
         """
         super().__init__(scope, construct_id)
 

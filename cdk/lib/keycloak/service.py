@@ -1,18 +1,16 @@
-from typing import Optional
-
-from constructs import Construct
 from aws_cdk import (
     Duration,
+    aws_certificatemanager as acm,
     aws_ec2 as ec2,
+    aws_ecr_assets as ecr_assets,
     aws_ecs as ecs,
     aws_ecs_patterns as ecs_patterns,
-    aws_ecr_assets as ecr_assets,
-    aws_secretsmanager as secretsmanager,
-    aws_certificatemanager as acm,
     aws_elasticloadbalancingv2 as elbv2,
     aws_rds as rds,
     aws_s3 as s3,
+    aws_secretsmanager as secretsmanager,
 )
+from constructs import Construct
 
 
 class KeycloakService(Construct):
@@ -37,8 +35,8 @@ class KeycloakService(Construct):
         ssl_certificate_arn: str,
         keycloak_send_email_addresses: dict[str, str],
         stage: str,
-        alb_access_logs_bucket: Optional[str] = None,
-        alb_access_logs_prefix: Optional[str] = None,
+        alb_access_logs_bucket: str | None = None,
+        alb_access_logs_prefix: str | None = None,
         **kwargs,
     ) -> None:
         """
@@ -87,7 +85,7 @@ class KeycloakService(Construct):
 
         # Production has a public NAT Gateway subnet, which causes the default load
         # balancer creation to fail with too many subnets being selected per AZ. We
-        # create our own load balancer to allow us to select subnets and avoid the issue.
+        # create our own load balancer to allow us to select subnets and avoid the issue
         load_balancer = elbv2.ApplicationLoadBalancer(
             self,
             "LoadBalancer",
@@ -138,7 +136,7 @@ class KeycloakService(Construct):
                     "KC_HTTP_MANAGEMENT_PORT": str(health_management_port),
                     "KC_HEALTH_ENABLED": "true",
                     "KC_SPI_EVENTS_LISTENER_EMAIL_ON_USER_CREATION_STAGE": stage,
-                    **keycloak_send_email_addresses
+                    **keycloak_send_email_addresses,
                 },
                 secrets={
                     # Database credentials

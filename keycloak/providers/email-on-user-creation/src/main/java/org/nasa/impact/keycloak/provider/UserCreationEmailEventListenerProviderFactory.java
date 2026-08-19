@@ -43,13 +43,13 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
     public void init(Config.Scope config) {
         this.stage = config.get("stage");
         log.infof("stage from Keycloak config scope: '%s'", this.stage);
-        
+
         Map<String, String> mapping = new HashMap<>();
-        
+
         // Dynamically discover realm email configurations from environment variables
         // Pattern: KEYCLOAK_EMAIL_ADDRESS_<REALM>
         String envPrefix = "KEYCLOAK_EMAIL_ADDRESS_";
-        
+
         Map<String, String> envVars = System.getenv();
         for (Map.Entry<String, String> entry : envVars.entrySet()) {
             String envKey = entry.getKey();
@@ -58,14 +58,14 @@ public class UserCreationEmailEventListenerProviderFactory implements EventListe
                 String realmUpper = envKey.substring(envPrefix.length());
                 String realm = realmUpper.toLowerCase();
                 String email = entry.getValue();
-                
+
                 if (!realm.isEmpty() && email != null && !email.isBlank()) {
                     mapping.put(realm, email);
                     log.infof("Found %s: configured email notification(s) for realm '%s' to '%s'", envKey, realm, email);
                 }
             }
         }
-        
+
         this.realmToEmail = mapping;
         log.infof("User creation listener configured with realm-to-email map: %s", this.realmToEmail);
     }

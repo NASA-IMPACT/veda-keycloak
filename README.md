@@ -51,11 +51,11 @@ For a private client (ie a client that runs within the frontend, such as single 
 
 The generated client secret will be stored in AWS Secrets Manager in the same account & region as the deployment. The name of this secret will follow the following convention: `veda-keycloak-$stage-client-$clientId` (eg a Grafana client in the production deployment will generate the following secret: `veda-keycloak-prod-client-grafana`).  The generated secret contains the following information:
 
-* `id`: OAuth Client ID
-* `secret`: OAuth Client Secret
-* `auth_url`: URL of the OAuth [authorization endpoint](https://datatracker.ietf.org/doc/html/rfc6749#section-3.1)
-* `token_url`: URL of the OAuth [token endpoint](https://datatracker.ietf.org/doc/html/rfc6749#section-3.2)
-* `userinfo_url`: URL of the OIDC [user info endpoint](https://openid.net/specs/openid-connect-core-1_0.html#UserInfo)
+- `id`: OAuth Client ID
+- `secret`: OAuth Client Secret
+- `auth_url`: URL of the OAuth [authorization endpoint](https://datatracker.ietf.org/doc/html/rfc6749#section-3.1)
+- `token_url`: URL of the OAuth [token endpoint](https://datatracker.ietf.org/doc/html/rfc6749#section-3.2)
+- `userinfo_url`: URL of the OIDC [user info endpoint](https://openid.net/specs/openid-connect-core-1_0.html#UserInfo)
 
 A minimum example of a private client (note `publicClient: false` and `secret`):
 
@@ -77,7 +77,6 @@ clients:
 <details>
 
 <summary>Consider also using an environment variable for URLs for greater flexibility</summary>
-
 
 ```yaml
 clients:
@@ -458,14 +457,13 @@ VEDA Keycloak includes a custom `EmailSenderProvider` based on Keycloak’s `Def
 > [!TIP]
 > See the Service Provider Interfaces section in the [Server Developer Guide](https://www.keycloak.org/docs/latest/server_development/#_providers) for more details about how to create custom themes.
 
-
-
 ### Themes
 
 > [!TIP]
 > See the theme section in the [Server Developer Guide](https://www.keycloak.org/docs/latest/server_development/#_themes) for more details about how to create custom themes.
 
 ### SES Relay
+
 The AWS account that includes the SES `openveda.cloud` identity does not permit creating SMTP credentials for AWS SES for security reasons. However, Keycloak expects to talk to an SMTP server for sending transactional emails such as verification, password reset, and notification messages.
 
 To bridge this gap, we deploy a small SMTP relay service as an ECS Fargate service into the same VPC as Keycloak:
