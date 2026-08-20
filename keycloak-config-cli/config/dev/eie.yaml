@@ -241,6 +241,7 @@ clients:
     webOrigins:
       - $(env:EIE_API_CLIENT_URL:-http://localhost:3000)
       - https://earth.gov/earth-information-explorer
+      - https://llm.dev.openveda.cloud/*
     standardFlowEnabled: true
     implicitFlowEnabled: false
     directAccessGrantsEnabled: false
