@@ -17,7 +17,7 @@
                 </div>
             <#else>
                 <div class="eie-footer" style="margin-top:1rem;">
-                    <a href="${url.loginUrl}">&larr; Back to sign in</a>
+                    <a href="${(url.loginRestartFlowUrl!'')?has_content?then(url.loginRestartFlowUrl, url.loginUrl)}">&larr; Back to sign in</a>
                 </div>
             </#if>
         </#if>
