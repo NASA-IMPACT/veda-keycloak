@@ -190,9 +190,9 @@
                     <label>Earth science topics <span class="eie-optional">(choose all that apply)</span></label>
                     <span class="eie-field-hint">These become your default dataset suggestions in the chat.</span>
                     <div class="eie-chip-group" role="group" aria-label="Earth science topics">
-                        <#list ["Climate & temperature","Wildfires","Sea ice & polar regions","Oceans & coastlines","Land use & agriculture","Air quality & atmosphere","Vegetation & ecosystems","Water & drought","Terrain & geology","Urban & population"] as topic>
+                        <#list ["Agriculture","Air quality","Biodiversity","Disasters","Energy","Greenhouse gases","Sea level change","Water resources","Wildfires"] as topic>
                             <label class="eie-chip">
-                                <input type="checkbox" name="topics" value="${topic}" <#if topic == "Climate & temperature">checked</#if> />
+                                <input type="checkbox" name="topics" value="${topic}" <#if topic == "Agriculture">checked</#if> />
                                 <span>${topic}</span>
                             </label>
                         </#list>
@@ -215,9 +215,9 @@
                 <div class="eie-field">
                     <label>How do you plan to use EIE? <span class="eie-optional">(optional)</span></label>
                     <div class="eie-chip-group" role="group" aria-label="How do you plan to use EIE">
-                        <#list ["Exploring & learning","Research & analysis","Policy & reporting","Science communication","Education & teaching","Tool development / testing"] as useCase>
+                        <#list ["Search and discovery","Tool Development and Testing","Research & analysis","Teaching and Learning","Personal / lifestyle decisions","Planning & risk assessment"] as useCase>
                             <label class="eie-chip">
-                                <input type="checkbox" name="useCase" value="${useCase}" <#if useCase == "Exploring & learning">checked</#if> />
+                                <input type="checkbox" name="useCase" value="${useCase}" <#if useCase == "Search and discovery">checked</#if> />
                                 <span>${useCase}</span>
                             </label>
                         </#list>
