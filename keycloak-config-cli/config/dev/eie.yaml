@@ -40,8 +40,8 @@ eventsListeners:
 
 smtpServer:
   host: $(env:EIE_SMTP_HOST:-mailpit)
-  port: $(env:EIE_SMTP_PORT:-1025)
-  from: $(env:EIE_SMTP_FROM:-no-reply@earth.gov)
+  port: $(env:EIE_SMTP_PORT:-10025)
+  from: $(env:EIE_SMTP_FROM:-no-reply@mail.openveda.cloud)
   fromDisplayName: Earth Information Explorer
   ssl: "false"
   starttls: "false"
@@ -233,13 +233,15 @@ clients:
     publicClient: false
     secret: $(env:EIE_API_CLIENT_SECRET)
     protocol: openid-connect
-    rootUrl: $(env:EIE_API_CLIENT_URL:-http://localhost:3000)
+    rootUrl: $(env:EIE_API_CLIENT_URL:-https://earth.gov/earth-information-explorer)
     redirectUris:
       - $(env:EIE_API_CLIENT_URL:-http://localhost:3000)/*
-      - http://localhost:8000/*
+      - https://earth.gov/earth-information-explorer/*
+      - https://llm.dev.openveda.cloud/*
     webOrigins:
       - $(env:EIE_API_CLIENT_URL:-http://localhost:3000)
-      - http://localhost:8000
+      - https://earth.gov/earth-information-explorer
+      - https://llm.dev.openveda.cloud/*
     standardFlowEnabled: true
     implicitFlowEnabled: false
     directAccessGrantsEnabled: false
