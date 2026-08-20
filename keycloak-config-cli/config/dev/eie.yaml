@@ -40,7 +40,7 @@ eventsListeners:
 
 smtpServer:
   host: $(env:EIE_SMTP_HOST:-mailpit)
-  port: $(env:EIE_SMTP_PORT:-1025)
+  port: $(env:EIE_SMTP_PORT:-10025)
   from: $(env:EIE_SMTP_FROM:-no-reply@mail.openveda.cloud)
   fromDisplayName: Earth Information Explorer
   ssl: "false"
