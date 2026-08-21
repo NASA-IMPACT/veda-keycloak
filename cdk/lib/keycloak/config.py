@@ -84,7 +84,7 @@ class KeycloakConfig(Construct):
                         principals=[iam.ArnPrincipal(arn) for arn in application_role_arn],
                         actions=["secretsmanager:GetSecretValue"],
                         resources=["*"],
-                        
+
                     )
                 )
                 kms_key.add_to_resource_policy(
@@ -195,7 +195,7 @@ class KeycloakConfig(Construct):
             "ApplyConfigLambda",
             code=_lambda.Code.from_inline(textwrap.dedent(code).strip()),
             handler="index.handler",
-            runtime=_lambda.Runtime.NODEJS_LATEST,
+            runtime=_lambda.Runtime.NODEJS_22_X,
             timeout=Duration.minutes(5),
         )
 

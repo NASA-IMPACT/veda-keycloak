@@ -24,7 +24,7 @@
             </div>
 
             <div class="eie-row-actions">
-                <a href="${url.loginUrl}" class="eie-btn-secondary">&larr; Back to sign in</a>
+                <a href="${(url.loginRestartFlowUrl!'')?has_content?then(url.loginRestartFlowUrl, url.loginUrl)}" class="eie-btn-secondary">&larr; Back to sign in</a>
                 <button class="eie-btn-primary" type="submit">Send reset link &rarr;</button>
             </div>
         </form>

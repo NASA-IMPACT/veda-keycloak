@@ -1,5 +1,5 @@
 <#import "template.ftl" as layout>
-<@layout.registrationLayout displayMessage=false; section>
+<@layout.registrationLayout bodyClass="eie-center" displayMessage=false; section>
     <#if section = "header">
         <#if messageHeader??>
             ${messageHeader}
@@ -18,7 +18,7 @@
         <#if !messageHeader??>
             <#-- The header already shows the summary. On the "Email verified"
                  page, use the body to say what happens next instead. -->
-            <#if message.summary == msg("emailVerified")>
+            <#if message.summary == msg("emailVerified") || message.summary == msg("emailAlreadyVerified")>
                 <p class="eie-subtitle">${msg("eieAccountUnderReview")}</p>
             <#else>
                 <p class="eie-subtitle">${message.summary}</p>
@@ -43,7 +43,7 @@
         </#if>
 
         <div class="eie-footer">
-            <a href="${url.loginUrl}">&larr; Back to sign in</a>
+            <a href="${(url.loginRestartFlowUrl!'')?has_content?then(url.loginRestartFlowUrl, url.loginUrl)}">&larr; Back to sign in</a>
         </div>
     </#if>
 </@layout.registrationLayout>
