@@ -27,7 +27,7 @@ maxDeltaTimeSeconds: 43200
 accessTokenLifespan: 300
 accessCodeLifespan: 60
 accessCodeLifespanUserAction: 300
-actionTokenGeneratedByUserLifespan: 300
+actionTokenGeneratedByUserLifespan: 3600
 ssoSessionIdleTimeout: 1800
 ssoSessionMaxLifespan: 36000
 offlineSessionMaxLifespanEnabled: false
