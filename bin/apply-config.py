@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
 
 """
-This script invokes a Lambda function to apply ECS configuration changes, waits for the ECS task
-to finish, and fetches its logs from CloudWatch Logs.
+This script invokes a Lambda function to apply ECS configuration changes,
+waits for the ECS task to finish, and fetches its logs from CloudWatch Logs.
 
 Usage:
     python apply_config.py <lambdaArn> <configEnvironmentJson>
 
 Example:
-    python apply_config.py arn:aws:lambda:us-east-1:123456789012:function:applyConfig '{"key":"value"}'
+    python apply_config.py \
+        arn:aws:lambda:us-east-1:123456789012:function:applyConfig '{"key":"value"}'
 """
 
-import sys
 import json
+import sys
 import time
 import traceback
+
 import boto3
 
 

@@ -14,10 +14,6 @@ on:
         description: "Environment to deploy to"
         type: environment
 
-permissions:
-  id-token: write # Required for OIDC authentication w/ AWS
-  contents: read
-
 concurrency:
   group: ${{ inputs.environment }}
   cancel-in-progress: false
@@ -26,8 +22,11 @@ run-name: Deploy to ${{ inputs.environment }} environment by @${{ github.actor }
 
 jobs:
   deploy:
+    permissions:
+      contents: read
+      id-token: write # Required for OIDC authentication w/ AWS
     runs-on: ubuntu-latest
-    environment: 
+    environment:
       name: ${{ inputs.environment }}
       url: ${{ vars.HOSTNAME }}
 

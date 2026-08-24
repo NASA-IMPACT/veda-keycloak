@@ -2,14 +2,14 @@ import json
 import textwrap
 
 from aws_cdk import (
-    Duration,
     CfnOutput,
+    Duration,
     Stack,
     aws_ecr_assets as ecr_assets,
     aws_ecs as ecs,
     aws_iam as iam,
-    aws_lambda as _lambda,
     aws_kms as kms,
+    aws_lambda as _lambda,
     aws_secretsmanager as secretsmanager,
 )
 from constructs import Construct
@@ -17,7 +17,8 @@ from constructs import Construct
 
 class KeycloakConfig(Construct):
     """
-    Responsible for creating infrastructure to apply configuration to a Keycloak instance.
+    Responsible for creating infrastructure
+    to apply configuration to a Keycloak instance.
     """
 
     def __init__(
@@ -57,7 +58,7 @@ class KeycloakConfig(Construct):
             secret = secretsmanager.Secret(
                 self,
                 f"{client_slug}-client-secret",
-                # WARNING: Changing this construct (name, id, template) will cause new client
+                # WARNING: Changing construct (name, id, template) will cause new client
                 # secrets to be generated!
                 secret_name=f"{Stack.of(self).stack_name}-client-{client_slug}",
                 encryption_key=kms_key,
@@ -67,9 +68,15 @@ class KeycloakConfig(Construct):
                     secret_string_template=json.dumps(
                         {
                             "id": client_slug,
-                            "auth_url": f"{hostname}/realms/{realm}/protocol/openid-connect/auth",
-                            "token_url": f"{hostname}/realms/{realm}/protocol/openid-connect/token",
-                            "userinfo_url": f"{hostname}/realms/{realm}/protocol/openid-connect/userinfo",
+                            "auth_url": (
+                                f"{hostname}/realms/{realm}/protocol/openid-connect/auth",
+                            ),
+                            "token_url": (
+                                f"{hostname}/realms/{realm}/protocol/openid-connect/token"
+                            ),
+                            "userinfo_url": (
+                                f"{hostname}/realms/{realm}/protocol/openid-connect/userinfo"
+                            ),
                         },
                         separators=(",", ":"),
                     ),
@@ -81,16 +88,19 @@ class KeycloakConfig(Construct):
                 secret.add_to_resource_policy(
                     iam.PolicyStatement(
                         effect=iam.Effect.ALLOW,
-                        principals=[iam.ArnPrincipal(arn) for arn in application_role_arn],
+                        principals=[
+                            iam.ArnPrincipal(arn) for arn in application_role_arn
+                        ],
                         actions=["secretsmanager:GetSecretValue"],
                         resources=["*"],
-
                     )
                 )
                 kms_key.add_to_resource_policy(
                     iam.PolicyStatement(
                         effect=iam.Effect.ALLOW,
-                        principals=[iam.ArnPrincipal(arn) for arn in application_role_arn],
+                        principals=[
+                            iam.ArnPrincipal(arn) for arn in application_role_arn
+                        ],
                         actions=["kms:Decrypt", "kms:DescribeKey"],
                         resources=["*"],
                     )
@@ -105,7 +115,8 @@ class KeycloakConfig(Construct):
             )
             imported_client_secrets.append((client_slug, imported_secret))
 
-        # Create env vars from secrets for each client, e.g. GRAFANA_CLIENT_ID, GRAFANA_CLIENT_SECRET
+        # Create env vars from secrets for each client
+        # e.g. GRAFANA_CLIENT_ID, GRAFANA_CLIENT_SECRET
         task_client_secrets = {}
         for client_slug, secret in created_client_secrets + imported_client_secrets:
             for key in ["id", "secret"]:
@@ -163,10 +174,12 @@ class KeycloakConfig(Construct):
                         containerOverrides: [
                             {{
                                 name: "{container_name}",
-                                environment: Object.entries(event).map(([name, value]) => ({{
-                                name,
-                                value: String(value),
-                                }})),
+                                environment: Object.entries(event).map(
+                                    ([name, value]) => ({{
+                                        name,
+                                        value: String(value),
+                                    }})
+                                ),
                             }},
                         ],
                     }},

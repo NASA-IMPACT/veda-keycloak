@@ -57,7 +57,7 @@ updates:
     schedule:
       interval: weekly
     groups:
-      github-actions:
+      pre-commit:
         patterns:
         - "*"
     commit-message:

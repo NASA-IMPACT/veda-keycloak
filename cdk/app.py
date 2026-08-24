@@ -1,16 +1,20 @@
 #!/usr/bin/env -S uv run --script
-import os
 import logging
+import os
 
 from aws_cdk import (
     App,
     DefaultStackSynthesizer,
     PermissionsBoundary,
 )
-
 from lib.keycloak import KeycloakStack
-from lib.utils import get_oauth_secrets, get_private_client_ids, get_send_email_addresses, get_application_role_arns
 from lib.settings import Settings
+from lib.utils import (
+    get_application_role_arns,
+    get_oauth_secrets,
+    get_private_client_ids,
+    get_send_email_addresses,
+)
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -43,7 +47,7 @@ else:
         "No private client IDs found in %s",
         settings.keycloak_config_cli_config_dir,
     )
-    
+
 send_email_addresses = get_send_email_addresses()
 if send_email_addresses:
     logging.info(
@@ -57,7 +61,9 @@ application_role_arns = get_application_role_arns()
 if application_role_arns:
     logging.info(
         "Found application role ARNs in environment: %s",
-        ", ".join(f"{key}: {', '.join(arns)}" for key, arns in application_role_arns.items()),
+        ", ".join(
+            f"{key}: {', '.join(arns)}" for key, arns in application_role_arns.items()
+        ),
     )
 else:
     logging.warning("No application role ARNs found in the environment.")

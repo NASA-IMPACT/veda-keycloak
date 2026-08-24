@@ -1,24 +1,23 @@
 import logging
 import os
 import re
+from pathlib import Path
+
 import yaml
 
 
 def get_oauth_secrets() -> dict[str, str]:
     """
-    Extracts OAuth client secrets from environment variables starting with 'IDP_SECRET_ARN_'.
+    Extracts OAuth client secrets from environment variables
+        starting with 'IDP_SECRET_ARN_'.
     Returns a dictionary mapping each client slug to its secret ARN.
     """
     oauth_secret_prefix = "IDP_SECRET_ARN_"
-    client_secrets = {}
-
-    for key, value in os.environ.items():
-        if key.startswith(oauth_secret_prefix):
-            # The client slug is the remainder of the key after the prefix
-            client_slug = key[len(oauth_secret_prefix) :]
-            client_secrets[client_slug] = value
-
-    return client_secrets
+    return {
+        key[len(oauth_secret_prefix) :]: value
+        for key, value in os.environ.items()
+        if key.startswith(oauth_secret_prefix)
+    }
 
 
 def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
@@ -29,13 +28,14 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
     client_ids = []
 
     # List YAML/YML files
-    for filename in os.listdir(config_dir):
+    for file_path in Path(config_dir).iterdir():
+        filename = file_path.name
         if not filename.endswith(".yaml") and not filename.endswith(".yml"):
             logging.debug("Ignoring %s due to filename extension", filename)
+            continue
 
         # Parse the YAML file
-        file_path = os.path.join(config_dir, filename)
-        with open(file_path, "r", encoding="utf-8") as f:
+        with file_path.open(encoding="utf-8") as f:
             logging.debug("Parsing %s", filename)
             data = yaml.safe_load(f)
 
@@ -63,24 +63,30 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
 
     return client_ids
 
+
 def get_application_role_arns() -> dict[str, list[str]]:
     """
-    Extracts application role ARNs from environment variables starting with 'APPLICATION_ROLE_ARN_'.
+    Extracts application role ARNs from environment variables
+        starting with 'APPLICATION_ROLE_ARN_'.
     Returns a dictionary mapping each client id to its app role ARN.
     """
     app_role_arn_prefix = "APPLICATION_ROLE_ARN_"
     app_role_arns = {}
-    for key, value in os.environ.items(): # value can be comma separated list of ARNs
+    for key, value in os.environ.items():  # value can be comma separated list of ARNs
         if key.startswith(app_role_arn_prefix):
             env_suffix = key[len(app_role_arn_prefix) :]
-            client_id = env_suffix.lower().replace("_", "-") # example: convert AIRFLOW_INGEST_API to airflow-ingest-api
+            client_id = env_suffix.lower().replace(
+                "_", "-"
+            )  # example: convert AIRFLOW_INGEST_API to airflow-ingest-api
             arns = [arn.strip() for arn in value.split(",") if arn.strip()]
             app_role_arns[client_id] = arns
     return app_role_arns
 
+
 def get_send_email_addresses() -> dict[str, str]:
     """
-    Extracts send email addresses from environment variables starting with 'KEYCLOAK_SEND_EMAIL_ADDRESS_'.
+    Extracts send email addresses from environment variables
+        starting with 'KEYCLOAK_SEND_EMAIL_ADDRESS_'.
     Returns a dictionary mapping each realm to its email address.
     """
     send_email_addresses = {}

@@ -1,12 +1,13 @@
 import re
-from constructs import Construct
+
 from aws_cdk import (
+    CfnOutput,
     Stack,
+    aws_elasticloadbalancingv2 as elbv2,
     aws_route53 as route53,
     aws_route53_targets as route53_targets,
-    aws_elasticloadbalancingv2 as elbv2,
-    CfnOutput,
 )
+from constructs import Construct
 
 
 class KeycloakUrl(Construct):
@@ -27,7 +28,8 @@ class KeycloakUrl(Construct):
         parts = cleaned_hostname.split(".")
         if len(parts) < 3:
             raise ValueError(
-                'Hostname must be a fully qualified domain name, e.g., "keycloak.foo.com".'
+                "Hostname must be a fully qualified domain name, "
+                'e.g., "keycloak.foo.com".'
             )
 
         subdomain = ".".join(parts[:-2])  # e.g., "keycloak"
@@ -48,8 +50,9 @@ class KeycloakUrl(Construct):
                 route53_targets.LoadBalancerTarget(alb)
             ),
             delete_existing=True,
-            comment=f"Alias record for Keycloak, created by {Stack.of(self).stack_name}",
+            comment=(
+                f"Alias record for Keycloak, created by {Stack.of(self).stack_name}"
+            ),
         )
-
         CfnOutput(self, "Arecord", key="aRecord", value=record.domain_name)
         CfnOutput(self, "Url", key="Url", value=f"https://{record.domain_name}")

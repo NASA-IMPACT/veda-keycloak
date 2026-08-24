@@ -51,7 +51,7 @@ clients:
       - stac:collection:delete
     defaultClientScopes:
       - roles
-  
+
   - clientId: ghgc-ingest-api
     name: GHGC Ingest API
     rootUrl: https://dev.ghg.center/api/ingest
@@ -135,7 +135,7 @@ clients:
     optionalClientScopes:
       - dataset:update
       - dataset:create
-    
+
 roles:
   client:
     ghgc-stac:
