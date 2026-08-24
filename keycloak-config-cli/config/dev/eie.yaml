@@ -28,8 +28,8 @@ accessTokenLifespan: 300
 accessCodeLifespan: 60
 accessCodeLifespanUserAction: 300
 actionTokenGeneratedByUserLifespan: 3600
-ssoSessionIdleTimeout: 1800
-ssoSessionMaxLifespan: 36000
+ssoSessionIdleTimeout: 43200
+ssoSessionMaxLifespan: 43200
 offlineSessionMaxLifespanEnabled: false
 oauth2DeviceCodeLifespan: 600
 
