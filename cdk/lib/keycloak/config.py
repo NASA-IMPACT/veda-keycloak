@@ -69,7 +69,7 @@ class KeycloakConfig(Construct):
                         {
                             "id": client_slug,
                             "auth_url": (
-                                f"{hostname}/realms/{realm}/protocol/openid-connect/auth",
+                                f"{hostname}/realms/{realm}/protocol/openid-connect/auth"
                             ),
                             "token_url": (
                                 f"{hostname}/realms/{realm}/protocol/openid-connect/token"
