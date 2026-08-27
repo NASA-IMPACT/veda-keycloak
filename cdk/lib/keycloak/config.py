@@ -68,15 +68,9 @@ class KeycloakConfig(Construct):
                     secret_string_template=json.dumps(
                         {
                             "id": client_slug,
-                            "auth_url": (
-                                f"{hostname}/realms/{realm}/protocol/openid-connect/auth",
-                            ),
-                            "token_url": (
-                                f"{hostname}/realms/{realm}/protocol/openid-connect/token"
-                            ),
-                            "userinfo_url": (
-                                f"{hostname}/realms/{realm}/protocol/openid-connect/userinfo"
-                            ),
+                            "auth_url": f"{hostname}/realms/{realm}/protocol/openid-connect/auth",
+                            "token_url": f"{hostname}/realms/{realm}/protocol/openid-connect/token",
+                            "userinfo_url": f"{hostname}/realms/{realm}/protocol/openid-connect/userinfo",
                         },
                         separators=(",", ":"),
                     ),
