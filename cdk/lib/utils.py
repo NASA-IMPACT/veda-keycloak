@@ -28,7 +28,7 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
     client_ids = []
 
     # List YAML/YML files
-    for file_path in Path(config_dir).iterdir():
+    for file_path in sorted(Path(config_dir).iterdir()):
         filename = file_path.name
         if not filename.endswith(".yaml") and not filename.endswith(".yml"):
             logging.debug("Ignoring %s due to filename extension", filename)
