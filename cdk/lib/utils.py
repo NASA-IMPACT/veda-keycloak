@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-from pathlib import Path
 
 import yaml
 
@@ -34,7 +33,7 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
 
         # Parse the YAML file
         file_path = os.path.join(config_dir, filename)
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             logging.debug("Parsing %s", filename)
             data = yaml.safe_load(f)
 
