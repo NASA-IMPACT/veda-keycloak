@@ -6,6 +6,14 @@ displayNameHtml: VEDA Ecosystem
 loginTheme: veda
 
 clients:
+  - clientId: test-rollback-client
+    name: Test Rollback Client
+    secret: $(env:TEST_ROLLBACK_CLIENT_CLIENT_SECRET)
+    publicClient: false
+    protocol: openid-connect
+    standardFlowEnabled: false
+    serviceAccountsEnabled: true
+
   - clientId: grafana
     name: Grafana
     rootUrl: https://monitoring.dev.openveda.cloud
