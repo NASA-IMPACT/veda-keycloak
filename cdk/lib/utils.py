@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-from pathlib import Path
 
 import yaml
 
@@ -28,14 +27,13 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
     client_ids = []
 
     # List YAML/YML files
-    for file_path in Path(config_dir).iterdir():
-        filename = file_path.name
+    for filename in os.listdir(config_dir):
         if not filename.endswith(".yaml") and not filename.endswith(".yml"):
             logging.debug("Ignoring %s due to filename extension", filename)
-            continue
 
         # Parse the YAML file
-        with file_path.open(encoding="utf-8") as f:
+        file_path = os.path.join(config_dir, filename)
+        with open(file_path, encoding="utf-8") as f:
             logging.debug("Parsing %s", filename)
             data = yaml.safe_load(f)
 
