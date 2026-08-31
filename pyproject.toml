@@ -52,3 +52,6 @@ MD033 = { allowed_elements = ["details", "summary"] }
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"cdk/lib/utils.py" = ["PTH208", "PTH118", "PTH123"]
