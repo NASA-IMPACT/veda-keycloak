@@ -10,7 +10,13 @@ clients:
     rootUrl: https://hub.maap-project.org
     secret: $(env:JUPYTERHUB_MAAP_CLIENT_SECRET)
     publicClient: false
-    attributes: {}
+    attributes: 
+      # RP-initiated logout target: the hub's Authenticator.logout_redirect_url
+      # sends users to Keycloak's end-session endpoint with
+      # post_logout_redirect_uri on the paired web env. Without this the
+      # Keycloak session survives hub logout and oauth_login silently
+      # re-authenticates.
+      post.logout.redirect.uris: https://maap-project.org/*
     redirectUris:
       - https://hub.maap-project.org/hub/oauth_callback/*
     webOrigins:
@@ -21,6 +27,11 @@ clients:
       - basic
       - profile
       - email
+      # 'roles' emits realm_access/resource_access claims into tokens. The MAAP
+      # API's Keycloak broker call (EDL token retrieval) requires
+      # resource_access.broker.roles to contain read-token — without this scope
+      # the broker endpoint 403s even when the user holds the role.
+      - roles
     protocolMappers:
       - name: client-roles-claim
         protocol: openid-connect
@@ -34,8 +45,146 @@ clients:
           multivalued: "true"
           usermodel.clientRoleMapping.clientId: jupyterhub-maap
           usermodel.clientRoleMapping.rolePrefix: ""
+      # Unconditionally stamp the MAAP API audience (its KEYCLOAK_CLIENT_ID) into
+      # access tokens. The roles-scope audience-resolve mapper only adds
+      # jupyterhub-maap when the user already holds a client role here, so a
+      # brand-new role-less user's token omits it and the API's
+      # jwt.decode(audience=jupyterhub-maap) 401s — which breaks the hub
+      # post-auth webhook that auto-creates the pending member.
+      - name: maap-api-audience
+        protocol: openid-connect
+        protocolMapper: oidc-audience-mapper
+        config:
+          included.client.audience: jupyterhub-maap
+          access.token.claim: "true"
+          id.token.claim: "false"
 
+  # MAAP WordPress (maap-project.org) — replaces the legacy CAS SSO
+  # integration. WordPress sends this client's access tokens to the MAAP API
+  # as `proxy-ticket: jwt:<token>` / `cpticket: jwt:<token>`.
+  - clientId: maap-wordpress
+    name: MAAP WordPress
+    description: WordPress (maap-project.org) OIDC client — replaces the legacy CAS SSO integration
+    secret: $(env:MAAP_WORDPRESS_CLIENT_SECRET)
+    publicClient: false
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: false
+    frontchannelLogout: true
+    attributes:
+      post.logout.redirect.uris: https://maap-project.org/*
+      frontchannel.logout.session.required: "true"
+    redirectUris:
+      - https://maap-project.org/*
+    webOrigins:
+      - https://maap-project.org
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - basic
+      - profile
+      - email
+      - roles
+    protocolMappers:
+      # The MAAP API validates token audience against its KEYCLOAK_CLIENT_ID
+      # (jupyterhub-maap). Without this mapper every WordPress API call 401s.
+      - name: maap-api-audience
+        protocol: openid-connect
+        protocolMapper: oidc-audience-mapper
+        config:
+          included.client.audience: jupyterhub-maap
+          access.token.claim: "true"
+          id.token.claim: "false"
+
+  # MAAP Console (console.maap-project.org) — public SPA client (PKCE);
+  # previously hand-managed in the admin console, codified to prevent drift.
+  - clientId: maap-console
+    name: MAAP User console
+    rootUrl: http://localhost:5173
+    publicClient: true
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: false
+    frontchannelLogout: true
+    attributes:
+      post.logout.redirect.uris: https://console.maap-project.org/##https://maap-project.org/
+      frontchannel.logout.session.required: "true"
+    redirectUris:
+      - http://localhost:5173/*
+      - http://localhost:3001/*
+      - https://console.maap-project.org/*
+      - https://maap-project.org/
+    webOrigins:
+      - http://localhost:5173
+      - http://localhost:3001
+      - https://console.maap-project.org
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - basic
+      - profile
+      - email
+      - roles
+    protocolMappers:
+      # Same audience fix as jupyterhub-maap: without this, a role-less user's
+      # console token omits the jupyterhub-maap audience and 401s against the
+      # MAAP API (e.g. the members/self call that auto-creates the member).
+      - name: maap-api-audience
+        protocol: openid-connect
+        protocolMapper: oidc-audience-mapper
+        config:
+          included.client.audience: jupyterhub-maap
+          access.token.claim: "true"
+          id.token.claim: "false"
+
+  # MAAP Console admin service account — the console BFF exchanges these
+  # client credentials for an admin token to read/write JupyterHub group
+  # membership via the Keycloak Admin API (Review User modal). Its
+  # realm-management roles are assigned in the users: section below.
+  - clientId: maap-console-admin
+    name: MAAP Console Admin Service
+    secret: $(env:MAAP_CONSOLE_ADMIN_CLIENT_SECRET)
+    publicClient: false
+    attributes: {}
+    protocol: openid-connect
+    # Full scope so the service account's realm-management roles reach the
+    # token (with fullScopeAllowed=false they are stripped and every Admin
+    # API call 403s). Safe: this client has no browser flows and its service
+    # account holds only the four query/view/manage roles.
+    fullScopeAllowed: true
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    defaultClientScopes:
+      - roles
 roles:
+  realm:
+    # The MAAP API bootstraps each member's EDL (URS) token via Keycloak's
+    # broker endpoint (/realms/maap/broker/edl/token), which requires the
+    # caller's token to carry the broker read-token client role. Granting it
+    # via the realm default role covers all users, existing and future.
+    # The composite list is managed as a whole, so the stock default
+    # composites must be listed alongside the broker addition.
+    - name: default-roles-maap
+      description: "${role_default-roles}"
+      composite: true
+      composites:
+        realm:
+          - offline_access
+          - uma_authorization
+        client:
+          account:
+            - manage-account
+            - view-profile
+          broker:
+            - read-token
   client:
     jupyterhub-maap: &jupyterhub-roles
       - name: Admin
@@ -87,6 +236,10 @@ groups:
       jupyterhub-maap:
         - GPU:T4
 
+  - name: Realm Admin #Needed for users that can't be added to NASA-IMPACT Github org 
+    clientRoles:
+      realm-management:
+        - realm-admin
 identityProviders:
   # EDL
   - alias: edl
@@ -95,7 +248,9 @@ identityProviders:
     enabled: true
     updateProfileFirstLoginMode: on
     trustEmail: false
-    storeToken: false
+    # storeToken must be on: the MAAP API reads the stored EDL token via the
+    # broker endpoint to bootstrap member urs_token/urs_refresh_token.
+    storeToken: true
     addReadTokenRoleOnCreate: false
     authenticateByDefault: false
     linkOnly: false
@@ -420,3 +575,17 @@ authenticatorConfig:
       defaultProvider: edl
   - alias: admin-login
     config: {}
+
+users:
+  # Service account for maap-console-admin: minimal realm-management roles for
+  # hub-group administration (user lookup, group listing, membership writes).
+  - username: service-account-maap-console-admin
+    emailVerified: true
+    enabled: true
+    serviceAccountClientId: maap-console-admin
+    clientRoles:
+      realm-management:
+        - query-groups
+        - query-users
+        - view-users
+        - manage-users
