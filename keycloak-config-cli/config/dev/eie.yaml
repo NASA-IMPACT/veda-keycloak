@@ -211,6 +211,16 @@ components:
                     "edit": [ "admin", "user" ]
                   },
                   "multivalued": false
+                },
+                {
+                  "name": "dataUsePolicyAcknowledged",
+                  "displayName": "Data use policy acknowledged",
+                  "validations": { "length": { "max": 10 } },
+                  "permissions": {
+                    "view": [ "admin", "user" ],
+                    "edit": [ "admin", "user" ]
+                  },
+                  "multivalued": false
                 }
               ],
               "groups": [],

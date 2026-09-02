@@ -568,6 +568,24 @@ body.eie-wide .eie-panel {
   margin-top: 0.1rem;
 }
 
+.eie-data-policy-inline {
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  margin-bottom: 1rem;
+}
+
+.eie-data-policy-inline .eie-check-label {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.eie-data-policy-inline a {
+  font-weight: 600;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
 .eie-wizard-step {
   display: none;
 }
@@ -634,6 +652,40 @@ body.eie-center .eie-title {
 
 body.eie-center .eie-btn-primary {
   margin-top: 0.5rem;
+}
+
+body.eie-policy-page .eie-panel {
+  max-width: 38rem;
+}
+
+body.eie-policy-page .eie-title {
+  margin-top: 0;
+}
+
+.eie-policy-list {
+  color: var(--muted);
+  display: grid;
+  gap: 0.75rem;
+  line-height: 1.55;
+  margin: 1.25rem 0 0;
+  overflow-wrap: anywhere;
+  padding-left: 1.2rem;
+}
+
+.eie-policy-links {
+  border-top: 1px solid var(--border);
+  display: grid;
+  font-size: 0.8125rem;
+  gap: 0.35rem;
+  line-height: 1.4;
+  margin-top: 1.25rem;
+  overflow-wrap: anywhere;
+  padding-top: 1rem;
+}
+
+.eie-policy-links a {
+  font-weight: 600;
+  text-decoration: underline;
 }
 
 .alert {
