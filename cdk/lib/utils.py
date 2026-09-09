@@ -70,7 +70,9 @@ def get_application_role_arns() -> dict[str, list[str]]:
     """
     app_role_arn_prefix = "APPLICATION_ROLE_ARN_"
     app_role_arns = {}
-    for key, value in sorted(os.environ.items()):  # value can be comma separated list of ARNs
+    for key, value in sorted(
+        os.environ.items()
+    ):  # value can be comma separated list of ARNs
         if key.startswith(app_role_arn_prefix):
             env_suffix = key[len(app_role_arn_prefix) :]
             client_id = env_suffix.lower().replace(
