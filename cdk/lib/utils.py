@@ -14,7 +14,7 @@ def get_oauth_secrets() -> dict[str, str]:
     oauth_secret_prefix = "IDP_SECRET_ARN_"
     return {
         key[len(oauth_secret_prefix) :]: value
-        for key, value in os.environ.items()
+        for key, value in sorted(os.environ.items())
         if key.startswith(oauth_secret_prefix)
     }
 
@@ -27,7 +27,7 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
     client_ids = []
 
     # List YAML/YML files
-    for filename in os.listdir(config_dir):
+    for filename in sorted(os.listdir(config_dir)):
         if not filename.endswith(".yaml") and not filename.endswith(".yml"):
             logging.debug("Ignoring %s due to filename extension", filename)
 
@@ -70,7 +70,7 @@ def get_application_role_arns() -> dict[str, list[str]]:
     """
     app_role_arn_prefix = "APPLICATION_ROLE_ARN_"
     app_role_arns = {}
-    for key, value in os.environ.items():  # value can be comma separated list of ARNs
+    for key, value in sorted(os.environ.items()):  # value can be comma separated list of ARNs
         if key.startswith(app_role_arn_prefix):
             env_suffix = key[len(app_role_arn_prefix) :]
             client_id = env_suffix.lower().replace(
@@ -89,7 +89,7 @@ def get_send_email_addresses() -> dict[str, str]:
     """
     send_email_addresses = {}
     send_email_address_prefix = "KEYCLOAK_SEND_EMAIL_ADDRESS_"
-    for key, value in os.environ.items():
+    for key, value in sorted(os.environ.items()):
         if key.startswith(send_email_address_prefix):
             realm = key.split("_")[-1].upper()
             send_email_addresses[f"KEYCLOAK_EMAIL_ADDRESS_{realm}"] = str(value)
