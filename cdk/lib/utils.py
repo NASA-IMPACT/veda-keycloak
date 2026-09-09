@@ -59,7 +59,7 @@ def get_private_client_ids(config_dir: str) -> list[dict[str, str]]:
     for client in client_ids:
         validate_client_id(client["id"])
 
-    return client_ids
+    return sorted(client_ids, key=lambda client: client["id"])
 
 
 def get_application_role_arns() -> dict[str, list[str]]:
@@ -78,7 +78,7 @@ def get_application_role_arns() -> dict[str, list[str]]:
             client_id = env_suffix.lower().replace(
                 "_", "-"
             )  # example: convert AIRFLOW_INGEST_API to airflow-ingest-api
-            arns = [arn.strip() for arn in value.split(",") if arn.strip()]
+            arns = sorted(arn.strip() for arn in value.split(",") if arn.strip())
             app_role_arns[client_id] = arns
     return app_role_arns
 
