@@ -188,6 +188,10 @@ roles:
             - view-profile
           broker:
             - read-token
+    # Example placeholder for org roles (see NASA-IMPACT/veda-jupyterhub#111).
+    # Org roles express organizational identity.
+    - name: org:jpl
+      description: "Members of JPL team"
   client:
     jupyterhub-maap: &jupyterhub-roles
       - name: Admin
@@ -208,8 +212,88 @@ roles:
         description: Access to extra extra extra large instances (~121GB RAM)
       - name: GPU:T4
         description: Access to T4 GPU instances (1 T4 GPU)
+      # Tiered capability roles (see NASA-IMPACT/veda-jupyterhub#111).
+      # These express "what a user can do on this hub" as a small composite
+      # hierarchy.
+      # JupyterHub can then gate login and access to resource profiles and
+      # other capabilities based on these roles.
+      # They coexist with the per-size CPU:*/GPU:* roles above during the
+      # transition for now; the per-size roles are slated for deprecation once
+      # the role tiered design is validated on staging.
+      - name: basic-user
+        description: Access to standard compute profiles
+      - name: power-user
+        description: Access to large memory / high CPU profiles
+        composites:
+          client:
+            jupyterhub-maap:
+              - basic-user
+      - name: gpu-user
+        description: Access to GPU profiles
+        composites:
+          client:
+            jupyterhub-maap:
+              - basic-user
+      - name: admin
+        description: JupyterHub admin panel access
+        composites:
+          client:
+            jupyterhub-maap:
+              - power-user
 
 groups:
+  # Capability groups: the admin-facing knob for granting the tiered
+  # capability roles defined above. Membership in a group grants the matching
+  # client-scoped role on jupyterhub-maap; the role composites take care of
+  # implying the lower tiers (e.g. Power Users are automatically basic-user).
+  # The "Staging" level namespaces the groups per hub environment so a future
+  # prod rollout can sit alongside as /JupyterHub/Prod/*.
+  - name: JupyterHub
+    subGroups:
+      - name: Staging
+        subGroups:
+          - name: Basic Users
+            clientRoles:
+              jupyterhub-maap:
+                - basic-user
+          - name: Power Users
+            clientRoles:
+              jupyterhub-maap:
+                - power-user
+          - name: GPU Users
+            clientRoles:
+              jupyterhub-maap:
+                - gpu-user
+          - name: Admins
+            clientRoles:
+              jupyterhub-maap:
+                - admin
+
+  # Placeholder org groups, the admin-facing knob for the org axis.
+  # Like the realm-scoped org:<org> roles they grant, org groups are
+  # deliberately independent of any one service: /Orgs/<Org> membership
+  # states who a user is in terms of organization identity.
+  # Org groups can also bundle service-specific capability roles so a single
+  # group assignment is enough for most users: here JPL bundles power-user
+  # on jupyterhub-maap, so every JPL member can launch the standard and
+  # large compute profiles on staging (power-user composes basic-user).
+  - name: Orgs
+    subGroups:
+      - name: JPL
+        realmRoles:
+          - org:jpl
+        clientRoles:
+          jupyterhub-maap:
+            - power-user
+
+  # Default group for newly created users: they can authenticate (proving
+  # identity) but hold no roles, so they cannot launch anything until an
+  # admin adds them to a group.
+  - name: No Access
+
+  # The flat "JupyterHub MAAP *" groups below will be deprecated in favor of the
+  # /JupyterHub/Staging/* capability groups above. They are kept during the
+  # transition so existing memberships keep working without immediate disruption.
   - name: JupyterHub MAAP Admin
     clientRoles:
       jupyterhub-maap:
@@ -244,6 +328,8 @@ groups:
       realm-management:
         - realm-admin
 
+defaultGroups:
+  - /No Access
 
 identityProviders:
   # EDL
