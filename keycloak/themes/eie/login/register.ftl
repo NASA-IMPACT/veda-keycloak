@@ -226,6 +226,11 @@
 
                 <hr class="eie-divider" />
 
+                <label class="eie-check-row eie-data-policy-inline">
+                    <input id="dataUsePolicyAcknowledged" type="checkbox" name="dataUsePolicyAcknowledged" value="true" <#if (register.formData.dataUsePolicyAcknowledged!'') == 'true'>checked</#if> required />
+                    <span class="eie-check-label">I agree to the <a href="${url.resourcesPath}/data-use-policy.html">data use policy</a> terms.</span>
+                </label>
+
                 <label class="eie-check-row">
                     <input type="checkbox" name="updatesOptIn" value="true" />
                     <span>
