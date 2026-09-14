@@ -16,7 +16,7 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.UserModel;
 import java.util.Map;
 import java.util.Collections;
- 
+
 
 public class UserCreationEmailEventListenerProvider implements EventListenerProvider {
 
@@ -50,14 +50,14 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             String realmName = session.getContext().getRealm().getName();
 
             log.infof("Registration event for realm '%s' detected (stage='%s')", realmName, stage);
-            
+
             String toAddresses = realmToEmail.get(realmName);
             if (toAddresses == null || toAddresses.isBlank()) {
                 log.infof("No email mapping for realm '%s'; skipping notification", realmName);
                 return;
             }
             toAddresses = toAddresses.trim();  // Clean up any leading/trailing whitespace
-            
+
             // Split comma-separated addresses
             String[] recipients = toAddresses.split(",");
             log.infof("Sending new-user notification for realm '%s' to %d recipient(s) (stage='%s')", realmName, recipients.length, stage);
@@ -73,7 +73,7 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             String sponsor = user != null ? user.getFirstAttribute("sponsor") : null;
             String funding = user != null ? user.getFirstAttribute("funding") : null;
             String additionalDetails = user != null ? user.getFirstAttribute("additional_details") : null;
-            
+
             StringBuilder sbtxt = new StringBuilder();
             sbtxt.append("A new Keycloak user has registered in the %s realm (%s)%n%n".formatted(realmName, stage));
             sbtxt.append("Username: ").append(username).append("\n");
@@ -97,7 +97,7 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
             if (sponsor != null) sbhtml.append("<p>Sponsor: ").append(sponsor).append("</p>");
             if (funding != null) sbhtml.append("<p>Funding: ").append(funding).append("</p>");
             if (additionalDetails != null) sbhtml.append("<p>Additional Details: ").append(additionalDetails).append("</p>");
-            
+
 
              String subject = "New User Registration with Keycloak"
                     + (username != null && !username.isBlank() ? " (" + username.trim() + ")" : "");
@@ -107,7 +107,7 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
                 String trimmedRecipient = recipient.trim();
                 Map<String, String> smtpConfig = new java.util.HashMap<>(session.getContext().getRealm().getSmtpConfig());
                 if (email != null && !email.isBlank()) {
-                    smtpConfig.put("cc", email);  
+                    smtpConfig.put("cc", email);
                 }
 
                 try {
@@ -135,5 +135,5 @@ public class UserCreationEmailEventListenerProvider implements EventListenerProv
 
     }
 
- 
+
 }

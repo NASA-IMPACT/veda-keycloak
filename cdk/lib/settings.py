@@ -1,4 +1,3 @@
-from typing import Optional
 from pydantic import DirectoryPath, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -6,9 +5,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     aws_account_id: str
     aws_region: str = "us-west-2"
-    cdk_bootstrap_qualifier: Optional[str] = None
-    vpc_id: Optional[str] = None
-    permissions_boundary_arn: Optional[str] = None
+    cdk_bootstrap_qualifier: str | None = None
+    vpc_id: str | None = None
+    permissions_boundary_arn: str | None = None
     ssl_certificate_arn: str
     hostname: str
     stage: str = "dev"
@@ -17,14 +16,14 @@ class Settings(BaseSettings):
     ses_relay_app_dir: DirectoryPath = DirectoryPath("cdk/lib/sesrelay")
     keycloak_config_cli_version: str = "latest-26"
     keycloak_config_cli_app_dir: DirectoryPath = DirectoryPath("keycloak-config-cli")
-    rds_snapshot_identifier: Optional[str] = Field(
+    rds_snapshot_identifier: str | None = Field(
         default=None,
         pattern=r"^arn:aws:rds:[a-z0-9-]+:\d{12}:snapshot:.+$",
     )
-    configure_route53: Optional[bool] = True
-    alb_access_logs_bucket: Optional[str] = None
-    alb_access_logs_prefix: Optional[str] = None
-    
+    configure_route53: bool | None = True
+    alb_access_logs_bucket: str | None = None
+    alb_access_logs_prefix: str | None = None
+
     @field_validator("rds_snapshot_identifier", mode="before")
     @classmethod
     def convert_empty_string_to_none(cls, v):

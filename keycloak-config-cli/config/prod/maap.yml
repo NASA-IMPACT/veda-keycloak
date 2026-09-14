@@ -2,7 +2,7 @@
 enabled: true
 realm: maap
 displayName: MAAP
-displayNameHtml: MAAP 
+displayNameHtml: MAAP
 
 clients:
   - clientId: jupyterhub-maap
@@ -81,7 +81,7 @@ groups:
         - CPU:XS
         - CPU:M
         - CPU:L
-  
+
   - name: JupyterHub MAAP GPU User
     clientRoles:
       jupyterhub-maap:

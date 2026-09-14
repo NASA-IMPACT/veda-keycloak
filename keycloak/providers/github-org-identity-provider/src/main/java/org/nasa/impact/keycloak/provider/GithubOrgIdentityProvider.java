@@ -16,7 +16,7 @@ import org.keycloak.events.EventBuilder;
  * @author <a href="mailto:alukach@developmentseed.org">Anthony Lukach</a>
  */
 public class GithubOrgIdentityProvider extends GitHubIdentityProvider {
-    
+
     private final String apiUrl;
     private final String organization;
     private final String team;

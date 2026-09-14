@@ -307,7 +307,7 @@ roles:
         description: Viewer permissions plus additional permissions
       - name: Dag_Launcher
         description: Programmatic DAG runs
-      
+
 clientScopeMappings:
   disasters-stac:
     - clientScope: stac:item:create

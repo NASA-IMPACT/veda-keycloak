@@ -2,7 +2,7 @@
 enabled: true
 realm: maap
 displayName: MAAP
-displayNameHtml: MAAP 
+displayNameHtml: MAAP
 
 clients:
   - clientId: jupyterhub-maap
@@ -233,13 +233,13 @@ groups:
         - CPU:XS
         - CPU:M
         - CPU:L
-  
+
   - name: JupyterHub MAAP GPU User
     clientRoles:
       jupyterhub-maap:
         - GPU:T4
 
-  - name: Realm Admin #Needed for users that can't be added to NASA-IMPACT Github org 
+  - name: Realm Admin #Needed for users that can't be added to NASA-IMPACT Github org
     clientRoles:
       realm-management:
         - realm-admin

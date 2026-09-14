@@ -1,20 +1,17 @@
-from typing import Optional
-
 from aws_cdk import (
     Stack,
     aws_ec2 as ec2,
 )
 from constructs import Construct
+from lib.sesrelay import SesRelayStack
 
+from .config import KeycloakConfig
 from .database import KeycloakDatabase
 from .service import KeycloakService
-from .config import KeycloakConfig
 from .url import KeycloakUrl
-from lib.sesrelay import SesRelayStack
 
 
 class KeycloakStack(Stack):
-
     def __init__(
         self,
         scope: Construct,
@@ -33,11 +30,11 @@ class KeycloakStack(Stack):
         private_oauth_clients: list,
         application_role_arns: dict[str, list[str]],
         configure_route53: bool,
-        alb_access_logs_bucket: Optional[str] = None,
-        alb_access_logs_prefix: Optional[str] = None,
-        vpc_id: Optional[str] = None,
-        rds_snapshot_identifier: Optional[str] = None,
-        keycloak_send_email_addresses: Optional[dict[str, str]] = None,
+        alb_access_logs_bucket: str | None = None,
+        alb_access_logs_prefix: str | None = None,
+        vpc_id: str | None = None,
+        rds_snapshot_identifier: str | None = None,
+        keycloak_send_email_addresses: dict[str, str] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -92,7 +89,7 @@ class KeycloakStack(Stack):
             stage=stage,
         )
 
-        ses_relay_stack = SesRelayStack(
+        SesRelayStack(
             self,
             "ses-relay",
             vpc=vpc,
@@ -107,4 +104,7 @@ class KeycloakStack(Stack):
                 alb=kc_service.alb_service.load_balancer,
             )
         else:
-            print("Warning: Environment is set to manual DNS configuration--new record for keycloak service load balancer must be added to hosted zone")
+            print(
+                "Warning: Environment is set to manual DNS configuration--new record "
+                "for keycloak service load balancer must be added to hosted zone"
+            )
