@@ -14,9 +14,12 @@ clients:
     redirectUris:
       - https://disasters.openveda.cloud/api/stac/*
       - https://dev.disasters.openveda.cloud/api/stac/*
+      # Base API Gateway URL includes /api/stac
+      - https://wqcz92kba3.execute-api.us-west-2.amazonaws.com/*
     webOrigins:
       - https://disasters.openveda.cloud
       - https://dev.disasters.openveda.cloud
+      - https://wqcz92kba3.execute-api.us-west-2.amazonaws.com
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -62,9 +65,12 @@ clients:
     redirectUris:
       - https://disasters.openveda.cloud/api/ingest/*
       - https://dev.disasters.openveda.cloud/api/ingest/*
+      # Base API Gateway URL includes /api/stac
+      - https://tx63bl55i8.execute-api.us-west-2.amazonaws.com/*
     webOrigins:
       - https://disasters.openveda.cloud
       - https://dev.disasters.openveda.cloud
+      - https://tx63bl55i8.execute-api.us-west-2.amazonaws.com
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
