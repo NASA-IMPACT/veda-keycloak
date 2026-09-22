@@ -196,6 +196,10 @@ roles:
     jupyterhub-maap: &jupyterhub-roles
       - name: Admin
         description: Can use the JupyterHub Admin Panel
+        composites:
+          client:
+            jupyterhub-maap:
+              - power-user
       - name: CPU:XS
         description: Access to extra small instances (~1.9GB RAM)
       - name: CPU:S
@@ -234,41 +238,8 @@ roles:
           client:
             jupyterhub-maap:
               - basic-user
-      - name: admin
-        description: JupyterHub admin panel access
-        composites:
-          client:
-            jupyterhub-maap:
-              - power-user
 
 groups:
-  # Capability groups: the admin-facing knob for granting the tiered
-  # capability roles defined above. Membership in a group grants the matching
-  # client-scoped role on jupyterhub-maap; the role composites take care of
-  # implying the lower tiers (e.g. Power Users are automatically basic-user).
-  # The "Staging" level namespaces the groups per hub environment so a future
-  # prod rollout can sit alongside as /JupyterHub/Prod/*.
-  - name: JupyterHub
-    subGroups:
-      - name: Staging
-        subGroups:
-          - name: Basic Users
-            clientRoles:
-              jupyterhub-maap:
-                - basic-user
-          - name: Power Users
-            clientRoles:
-              jupyterhub-maap:
-                - power-user
-          - name: GPU Users
-            clientRoles:
-              jupyterhub-maap:
-                - gpu-user
-          - name: Admins
-            clientRoles:
-              jupyterhub-maap:
-                - admin
-
   # Placeholder org groups, the admin-facing knob for the org axis.
   # Like the realm-scoped org:<org> roles they grant, org groups are
   # deliberately independent of any one service: /Orgs/<Org> membership
@@ -291,9 +262,6 @@ groups:
   # admin adds them to a group.
   - name: No Access
 
-  # The flat "JupyterHub MAAP *" groups below will be deprecated in favor of the
-  # /JupyterHub/Staging/* capability groups above. They are kept during the
-  # transition so existing memberships keep working without immediate disruption.
   - name: JupyterHub MAAP Admin
     clientRoles:
       jupyterhub-maap:
@@ -308,8 +276,8 @@ groups:
         - CPU:L
         - CPU:XL
         - CPU:XXL
-        - CPU:XXL
         - CPU:XXXL
+        - power-user
 
   - name: JupyterHub MAAP Basic User
     clientRoles:
@@ -317,11 +285,13 @@ groups:
         - CPU:XS
         - CPU:M
         - CPU:L
+        - basic-user
 
   - name: JupyterHub MAAP GPU User
     clientRoles:
       jupyterhub-maap:
         - GPU:T4
+        - gpu-user
 
   - name: Realm Admin #Needed for users that can't be added to NASA-IMPACT Github org
     clientRoles:
