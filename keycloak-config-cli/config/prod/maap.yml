@@ -10,7 +10,7 @@ clients:
     rootUrl: https://hub.maap-project.org
     secret: $(env:JUPYTERHUB_MAAP_CLIENT_SECRET)
     publicClient: false
-    attributes: 
+    attributes:
       # RP-initiated logout target: the hub's Authenticator.logout_redirect_url
       # sends users to Keycloak's end-session endpoint with
       # post_logout_redirect_uri on the paired web env. Without this the
@@ -236,7 +236,7 @@ groups:
       jupyterhub-maap:
         - GPU:T4
 
-  - name: Realm Admin #Needed for users that can't be added to NASA-IMPACT Github org 
+  - name: Realm Admin #Needed for users that can't be added to NASA-IMPACT Github org
     clientRoles:
       realm-management:
         - realm-admin
