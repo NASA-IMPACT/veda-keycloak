@@ -154,8 +154,8 @@ clients:
       oauth2.device.authorization.grant.enabled: "false"
       backchannel.logout.revoke.offline.tokens: "false"
     redirectUris:
-      - http://sm2a.eic.earth.gov/oauth-authorized/keycloak
-      - http://sm2a.eic-staging.staging.earth.gov/oauth-authorized/keycloak
+      - http://sm2a.eic.earth.gov/auth/oauth-authorized/keycloak
+      - http://sm2a.eic-staging.staging.earth.gov/auth/oauth-authorized/keycloak
     webOrigins:
       - https://sm2a.eic.earth.gov
       - https://sm2a.eic-staging.staging.earth.gov
