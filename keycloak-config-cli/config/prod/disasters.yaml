@@ -222,9 +222,11 @@ clients:
     redirectUris:
       - http://sm2a.disasters.openveda.cloud/oauth-authorized/keycloak
       - http://sm2a.dev.disasters.openveda.cloud/oauth-authorized/keycloak
+      - http://sm2a.staging.disasters.openveda.cloud/oauth-authorized/keycloak
     webOrigins:
       - http://sm2a.disasters.openveda.cloud
       - http://sm2a.dev.disasters.openveda.cloud
+      - http://sm2a.staging.disasters.openveda.cloud
     protocol: openid-connect
     standardFlowEnabled: true
     implicitFlowEnabled: false
