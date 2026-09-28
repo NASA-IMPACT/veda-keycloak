@@ -645,12 +645,12 @@ users:
     clientRoles:
       disasters-ingest-api:
       - Admin
-  - username: service-account-eic-airflow-webserver-fab
+  - username: service-account-disasters-airflow-webserver-fab
     emailVerified: true
     enabled: true
-    serviceAccountClientId: eic-airflow-webserver-fab
+    serviceAccountClientId: disasters-airflow-webserver-fab
     clientRoles:
-      eic-airflow-webserver-fab:
+      disasters-airflow-webserver-fab:
       - Dag_Launcher
 
 defaultGroups:
