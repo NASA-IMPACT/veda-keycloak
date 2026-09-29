@@ -14,12 +14,11 @@ clients:
     redirectUris:
       - https://disasters.openveda.cloud/api/stac/*
       - https://dev.disasters.openveda.cloud/api/stac/*
-      # Base API Gateway URL includes /api/stac
-      - https://qub6pg3cua.execute-api.us-west-2.amazonaws.com/*
+      - https://staging.disasters.openveda.cloud/api/stac/*
     webOrigins:
       - https://disasters.openveda.cloud
       - https://dev.disasters.openveda.cloud
-      - https://qub6pg3cua.execute-api.us-west-2.amazonaws.com
+      - https://staging.disasters.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -65,12 +64,11 @@ clients:
     redirectUris:
       - https://disasters.openveda.cloud/api/ingest/*
       - https://dev.disasters.openveda.cloud/api/ingest/*
-      # Base API Gateway URL includes /api/stac
-      - https://wbe86k59m0.execute-api.us-west-2.amazonaws.com/*
+      - https://staging.disasters.openveda.cloud/api/ingest/*
     webOrigins:
       - https://disasters.openveda.cloud
       - https://dev.disasters.openveda.cloud
-      - https://wbe86k59m0.execute-api.us-west-2.amazonaws.com
+      - https://staging.disasters.openveda.cloud
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -220,7 +218,7 @@ clients:
       oauth2.device.authorization.grant.enabled: "false"
       backchannel.logout.revoke.offline.tokens: "false"
     redirectUris:
-      - http://sm2a.disasters.openveda.cloud/oauth-authorized/keycloak
+      - http://sm2a.disasters.openveda.cloud/auth/oauth-authorized/keycloak
       - http://sm2a.dev.disasters.openveda.cloud/oauth-authorized/keycloak
       - http://sm2a.staging.disasters.openveda.cloud/auth/oauth-authorized/keycloak
     webOrigins:
