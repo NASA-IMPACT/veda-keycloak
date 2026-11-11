@@ -481,7 +481,7 @@ components:
                 },
                 {
                   "name": "funding",
-                  "displayName": "Funding Source",
+                  "displayName": "NASA Funding Source",
                   "validations": {},
                   "annotations": {},
                   "required": {
