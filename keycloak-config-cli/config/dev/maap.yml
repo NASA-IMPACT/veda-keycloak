@@ -167,6 +167,34 @@ clients:
     defaultClientScopes:
       - roles
 
+  # MAAP DPS STAC Browser - public SPA client
+  - clientId: maap-stac-browser
+    name: MAAP DPS STAC Browser
+    rootUrl: https://dps-stac-browser.maap-project.org
+    publicClient: true
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: false
+    frontchannelLogout: true
+    attributes:
+      pkce.code.challenge.method: S256
+      post.logout.redirect.uris: https://dps-stac-browser.maap-project.org/
+      frontchannel.logout.session.required: "true"
+    redirectUris:
+      - https://dps-stac-browser.maap-project.org/auth
+    webOrigins:
+      - https://dps-stac-browser.maap-project.org
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - basic
+      - profile
+      - email
+      - roles
+
 roles:
   realm:
     # The MAAP API bootstraps each member's EDL (URS) token via Keycloak's
