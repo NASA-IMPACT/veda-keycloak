@@ -170,7 +170,7 @@ clients:
   # MAAP DPS STAC Browser - public SPA client
   - clientId: maap-stac-browser
     name: MAAP DPS STAC Browser
-    rootUrl: https://dps-stac-browser.maap-project.org
+    rootUrl: https://dps-stac-browser.dit.maap-project.org
     publicClient: true
     standardFlowEnabled: true
     implicitFlowEnabled: false
@@ -179,12 +179,16 @@ clients:
     frontchannelLogout: true
     attributes:
       pkce.code.challenge.method: S256
-      post.logout.redirect.uris: https://dps-stac-browser.maap-project.org/
+      post.logout.redirect.uris: https://dps-stac-browser.dit.maap-project.org/
       frontchannel.logout.session.required: "true"
     redirectUris:
-      - https://dps-stac-browser.maap-project.org/auth
+      - https://dps-stac-browser.dit.maap-project.org/auth
+      # Swagger UI on the DPS STAC API (/api.html) logs in with this same
+      # client (MAAP_AUTH_SWAGGER_CLIENT_ID=maap-stac-browser).
+      - https://dps-stac.dit.maap-project.org/docs/oauth2-redirect
     webOrigins:
-      - https://dps-stac-browser.maap-project.org
+      - https://dps-stac-browser.dit.maap-project.org
+      - https://dps-stac.dit.maap-project.org
     protocol: openid-connect
     fullScopeAllowed: true
     defaultClientScopes:
@@ -194,6 +198,44 @@ clients:
       - profile
       - email
       - roles
+
+  # MAAP DPS STAC API resource server which exists so the "reader" client role
+  # can gate who receives the maap-dps-stac audience. The roles scope
+  # (audience-resolve) adds this audience to a token only when the
+  # user holds a role on this client, so the stac-auth-proxy audience check
+  # (USER_STAC_OIDC_ALLOWED_AUDIENCES=maap-dps-stac) rejects role-less users.
+  - clientId: maap-dps-stac
+    name: MAAP DPS STAC API
+    publicClient: false
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: false
+    protocol: openid-connect
+    fullScopeAllowed: false
+
+clientScopes:
+  # These write scopes are enforced by the DPS STAC API (stac-auth-proxy).
+  # Intentionally, they are not attached to maap-stac-browser (read-only)
+  # but we can attach to a service-account client when a writer is needed.
+  - name: stac:collection:create
+    description: Create STAC collections
+    protocol: openid-connect
+  - name: stac:collection:update
+    description: Update STAC collections
+    protocol: openid-connect
+  - name: stac:collection:delete
+    description: Delete STAC collections
+    protocol: openid-connect
+  - name: stac:catalog:create
+    description: Create STAC catalogs
+    protocol: openid-connect
+  - name: stac:catalog:update
+    description: Update STAC catalogs
+    protocol: openid-connect
+  - name: stac:catalog:delete
+    description: Delete STAC catalogs
+    protocol: openid-connect
 
 roles:
   realm:
@@ -221,6 +263,9 @@ roles:
     - name: org:jpl
       description: "Members of JPL team"
   client:
+    maap-dps-stac:
+      - name: reader
+        description: Read access to the MAAP DPS STAC API and browser
     jupyterhub-maap: &jupyterhub-roles
       - name: Admin
         description: Can use the JupyterHub Admin Panel
@@ -254,6 +299,13 @@ roles:
       # the role tiered design is validated on staging.
       - name: basic-user
         description: Access to standard compute profiles
+        # Also grants read access to the DPS STAC API and browser: the
+        # maap-dps-stac audience is only issued to holders of this role.
+        # power-user and gpu-user compose basic-user, so they inherit it.
+        composites:
+          client:
+            maap-dps-stac:
+              - reader
       - name: power-user
         description: Access to large memory / high CPU profiles
         composites:
@@ -320,6 +372,11 @@ groups:
       jupyterhub-maap:
         - GPU:T4
         - gpu-user
+
+  - name: MAAP STAC Reader
+    clientRoles:
+      maap-dps-stac:
+        - reader
 
   - name: Realm Admin #Needed for users that can't be added to NASA-IMPACT Github org
     clientRoles:
