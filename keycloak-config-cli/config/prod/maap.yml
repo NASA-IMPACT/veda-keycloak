@@ -164,6 +164,74 @@ clients:
     serviceAccountsEnabled: true
     defaultClientScopes:
       - roles
+  # MAAP DPS STAC Browser - public SPA client
+  - clientId: maap-stac-browser
+    name: MAAP DPS STAC Browser
+    rootUrl: https://dps-stac-browser.maap-project.org
+    publicClient: true
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: false
+    frontchannelLogout: true
+    attributes:
+      pkce.code.challenge.method: S256
+      post.logout.redirect.uris: https://dps-stac-browser.maap-project.org/
+      frontchannel.logout.session.required: "true"
+    redirectUris:
+      - https://dps-stac.maap-project.org/docs/oauth2-redirect
+      - https://dps-stac-browser.maap-project.org/auth
+    webOrigins:
+      - https://dps-stac-browser.maap-project.org
+      - https://dps-stac.maap-project.org
+    protocol: openid-connect
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - acr
+      - basic
+      - profile
+      - email
+      - roles
+
+ # MAAP DPS STAC API resource server which exists so the "reader" client role
+  # can gate who receives the maap-dps-stac audience. The roles scope
+  # (audience-resolve) adds this audience to a token only when the
+  # user holds a role on this client, so the stac-auth-proxy audience check
+  # (USER_STAC_OIDC_ALLOWED_AUDIENCES=maap-dps-stac) rejects role-less users.
+  - clientId: maap-dps-stac
+    name: MAAP DPS STAC API
+    publicClient: false
+    standardFlowEnabled: false
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: false
+    protocol: openid-connect
+    fullScopeAllowed: false
+
+clientScopes:
+  # These write scopes are enforced by the DPS STAC API (stac-auth-proxy).
+  # Intentionally, they are not attached to maap-stac-browser (read-only)
+  # but we can attach to a service-account client when a writer is needed.
+  - name: stac:collection:create
+    description: Create STAC collections
+    protocol: openid-connect
+  - name: stac:collection:update
+    description: Update STAC collections
+    protocol: openid-connect
+  - name: stac:collection:delete
+    description: Delete STAC collections
+    protocol: openid-connect
+  - name: stac:catalog:create
+    description: Create STAC catalogs
+    protocol: openid-connect
+  - name: stac:catalog:update
+    description: Update STAC catalogs
+    protocol: openid-connect
+  - name: stac:catalog:delete
+    description: Delete STAC catalogs
+    protocol: openid-connect
+
 roles:
   realm:
     # The MAAP API bootstraps each member's EDL (URS) token via Keycloak's
@@ -186,6 +254,9 @@ roles:
           broker:
             - read-token
   client:
+    maap-dps-stac:
+      - name: reader
+        description: Read access to the MAAP DPS STAC API and browser
     jupyterhub-maap: &jupyterhub-roles
       - name: Admin
         description: Can use the JupyterHub Admin Panel
@@ -211,6 +282,8 @@ groups:
     clientRoles:
       jupyterhub-maap:
         - Admin
+      maap-dps-stac:
+        - reader
 
   - name: JupyterHub MAAP User
     clientRoles:
@@ -223,6 +296,8 @@ groups:
         - CPU:XXL
         - CPU:XXL
         - CPU:XXXL
+      maap-dps-stac:
+        - reader
 
   - name: JupyterHub MAAP Basic User
     clientRoles:
@@ -230,11 +305,20 @@ groups:
         - CPU:XS
         - CPU:M
         - CPU:L
+      maap-dps-stac:
+        - reader
 
   - name: JupyterHub MAAP GPU User
     clientRoles:
       jupyterhub-maap:
         - GPU:T4
+      maap-dps-stac:
+        - reader
+
+  - name: MAAP STAC Reader
+    clientRoles:
+      maap-dps-stac:
+        - reader
 
   - name: Realm Admin #Needed for users that can't be added to NASA-IMPACT Github org
     clientRoles:
