@@ -13,7 +13,7 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-core</artifactId>
-            <version>26.0.0</version>
+            <version>26.1.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -25,13 +25,13 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-server-spi-private</artifactId>
-            <version>26.0.0</version>
+            <version>26.6.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-services</artifactId>
-            <version>26.0.0</version>
+            <version>26.7.2</version>
             <scope>provided</scope>
         </dependency>
         <!-- Provides jakarta.ws.rs.core.UriBuilder, used to build the sign-in link -->
